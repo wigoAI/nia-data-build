@@ -7,7 +7,7 @@
     -   mecab-ko-dic-2.1.1-20180720
     -   mecab-java-0.996
 # Request (rest api)
--   필수여부가 N 인 목록은 결과 테스트용으로 실 운영에는 설정 값 사용을 권장함
+-   필수여부가 N 인 목록은 결과 테스트용으로 실 운영에는 설정 값 사용을 권장함(전송하지 않으면 설정 값 사용)
 -   method: post
 -   address/stopword/wordclass/highlight
 -   request param
