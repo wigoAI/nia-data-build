@@ -1,0 +1,12 @@
+server:
+  port: 8080
+stopword:
+  out:
+    - M
+    - S
+    - E
+    - V
+    - J
+    - X
+  startTag: <s>
+  endTag: </s>
