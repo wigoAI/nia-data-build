@@ -23,8 +23,8 @@
 
 | Key | Description  | Type |
 | ------ | ------ | ------ |
-| contents | 컨텐츠 (내용) | Y | String |
-
+| contents | 컨텐츠 (변경된값)  | String |
+| message | 성공 실패 메시지 성공일떄만 success | String |
 # API 상세 설명 및 예제
 상세설명 및 예제 아래 주소 참조
 https://wigoai.atlassian.net/wiki/spaces/WIGO/pages/146767873/wigo-nlp-java
