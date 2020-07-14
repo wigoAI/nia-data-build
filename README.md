@@ -6,7 +6,7 @@
     -   mecab-0.996-ko-0.9.2
     -   mecab-ko-dic-2.1.1-20180720
     -   mecab-java-0.996
-# Request API
+# Request (rest api)
 -   필수여부가 N 인 목록은 결과 테스트용으로 실 운영에는 설정 값 사용을 권장함
 -   method: post
 -   address/stopword/wordclass/highlight
@@ -19,7 +19,7 @@
 | start_tag | 시작 테그 | N | String |  | app.yml 설정 값
 | end_tag | 끝 테그 | N | String |  | app.yml 설정 값
 
-# Response Api
+# Response
 
 | Key | Description  | Type |
 | ------ | ------ | ------ |
