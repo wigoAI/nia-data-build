@@ -32,7 +32,7 @@ public class MecabWordClassHighlight {
             System.loadLibrary("MeCab");
         } catch (Exception e) {
             logger.error(ExceptionUtil.getStackTrace(e));
-            logger.error("Cannot load the example native code.\nMake sure your LD_LIBRARY_PATH contains \'.\'\n" + e);
+            logger.error("Cannot load the example native code.\nMake sure your LD_LIBRARY_PATH contains '.'\n" + e);
             System.exit(1);
         }
 
@@ -66,6 +66,8 @@ public class MecabWordClassHighlight {
                 last =words[k].length();
             }
             String wordClassValue = words[k].substring(index +1 ,last).trim();
+
+
 
 
             int startIndex = str.indexOf(syllable, lastEnd);
@@ -103,9 +105,81 @@ public class MecabWordClassHighlight {
             changeBuilder.append(startTag).append(tagBuilder).append(endTag);
             tagBuilder.setLength(0);
         }
-
-
-
         return changeBuilder.toString();
     }
+
+
+    public static String indexValue(String str, String [] outArray){
+        if(outArray == null || outArray.length ==0){
+            logger.error("out array set error");
+            return str;
+        }
+
+
+        Tagger tagger = new Tagger();
+        String parse = tagger.parse(str);
+        String [] words =  parse.split("\n");
+
+        StringBuilder indexBuilder = new StringBuilder();
+
+        int lastEnd = 0;
+
+        for (int k = 0; k <words.length -1 ; k++) {
+            int index = words[k].indexOf('\t');
+
+            int last = words[k].indexOf(',',index);
+            if(last == -1){
+                last =words[k].length();
+            }
+
+            String wordClassValue = words[k].substring(index +1 ,last).trim();
+            boolean isOut = false;
+
+            for(String out : outArray){
+                if(wordClassValue.startsWith(out)){
+
+                    isOut = true;
+                    break;
+                }
+            }
+
+            String syllable = words[k].substring(0,index).trim();
+            int startIndex = str.indexOf(syllable, lastEnd);
+            lastEnd = startIndex + syllable.length();
+
+            if(isOut){
+
+                indexBuilder.append(";").append(startIndex).append(",").append(lastEnd);
+            }
+
+
+        }
+
+        if(indexBuilder.length() == 0){
+            return "";
+        }
+
+        return indexBuilder.substring(1);
+
+    }
+
+    public static void main(String[] args) {
+
+        String [] outArray= {
+                "M"
+//                , "S"
+//                , "E"
+//                , "V"
+//                , "J"
+//                , "X"
+//                , "E"
+        };
+
+        String text = "2017년 2월(404억2,921만원) 보다 무려 161.7%(653억8,751만원) 증액됐다.";
+
+        System.out.println(change(text, outArray,"<s>","</s>"));
+        System.out.println(indexValue(text, outArray));
+
+    }
+
 }

@@ -54,6 +54,9 @@ public class StopwordHighlight {
             , "E"
     };
 
+
+
+
     private String configPath = "config/app.yml";
 
 
@@ -89,6 +92,11 @@ public class StopwordHighlight {
 
     private StopwordHighlight(){
 
+    }
+
+
+    public String highlightWordClass(String value){
+       return MecabWordClassHighlight.change(value, outArray, startTag, endTag);
     }
 
     /**
