@@ -10,21 +10,20 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.chasen.mecab', name: 'mecab-java', version: '0.993'
+    implementation group: 'org.chasen.mecab', name: 'mecab-java', version: '0.993'
 
 
-    compile group: 'org.springframework.boot', name: 'spring-boot-dependencies', version: '2.2.1.RELEASE', ext: 'pom'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.2.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-dependencies', version: '2.2.1.RELEASE', ext: 'pom'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.2.RELEASE'
     //oracle 오라클 버전 오류로 인한 dependencies 활용 ojdbc7 gradle error
     //compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
     //log
-    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
-    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'ch.qos.logback', name: 'logback-access', version: '1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-access:1.2.3'
 
-    compile group: 'org.yaml', name: 'snakeyaml', version: '1.26'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.26'
 
-    compile group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'org.json', name: 'json', version: '20200518'
 }

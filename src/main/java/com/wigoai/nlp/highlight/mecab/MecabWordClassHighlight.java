@@ -15,10 +15,12 @@
  */
 package com.wigoai.nlp.highlight.mecab;
 
-import com.wigoai.util.ExceptionUtil;
 import org.chasen.mecab.Tagger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * mecab을 활용한 단어 품사별 하이라이트
@@ -33,7 +35,9 @@ public class MecabWordClassHighlight {
         try {
             System.loadLibrary("MeCab");
         } catch (Exception e) {
-            logger.error(ExceptionUtil.getStackTrace(e));
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            logger.error(sw.toString());
             logger.error("Cannot load the example native code.\nMake sure your LD_LIBRARY_PATH contains '.'\n" + e);
             System.exit(1);
         }
