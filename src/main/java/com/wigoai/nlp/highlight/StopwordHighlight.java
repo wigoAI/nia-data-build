@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 Wigo Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wigoai.nlp.highlight;
 
 import com.wigoai.nlp.highlight.mecab.MecabWordClassHighlight;
@@ -14,22 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <pre>
- *  파 일 명 : StopwordhighlightDefaultOption.java
- *  설    명 : 하이라이트 기본 옵션정보
- *             초기에는 mecab 하나만 활용 하므로 여러 형태소 분석기에 대한 옵션처리 하지 않음 
- *             다른 형태소 분석기를 같이 사용할 떄 옵션처리 함
- *          
- *  작 성 자 : macle(김용수)
- *  작 성 일 : 2020.07
- *  버    전 : 1.0
- *  수정이력 :
- *  기타사항 :
- * </pre>
+ * 뷸용어 하이라이트
  *
- * @author Copyrights 2020 by ㈜ WIGO. All right reserved.
+ * @author macle
  */
-
 public class StopwordHighlight {
     private static final Logger logger = LoggerFactory.getLogger(StopwordHighlight.class);
     

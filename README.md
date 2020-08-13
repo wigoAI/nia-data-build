@@ -29,8 +29,3 @@
 상세설명 및 예제 아래 주소 참조
 https://wigoai.atlassian.net/wiki/spaces/WIGO/pages/146767873/wigo-nlp-java
 
-License
-----
-무료 소프트웨어입니다. GPL (the GNU General Public License), LGPL (Lesser GNU General Public License) 또는 BSD 라이선스에 따라 소프트웨어를 사용, 재배포할 수 있습니다. 자세한 내용은 COPYING, GPL, LGPL, BSD 각 파일을 참조하십시오.
-
-
