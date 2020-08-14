@@ -16,7 +16,6 @@
 package com.wigoai.nlp.highlight;
 
 import com.wigoai.nlp.highlight.mecab.MecabWordClassHighlight;
-import com.wigoai.util.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,7 +23,9 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,10 @@ public class StopwordHighlight {
 
             yamlFile.close();
         }catch(Exception e) {
-            logger.error(ExceptionUtil.getStackTrace(e));
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            logger.error(sw.toString());
+
         }
 
     }
@@ -149,7 +153,9 @@ public class StopwordHighlight {
 
             return resultObject.toString();
         }catch(Exception e){
-            logger.error(ExceptionUtil.getStackTrace(e));
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            logger.error(sw.toString());
             jsonObject.put("message", "error");
             return jsonObject.toString();
         }
