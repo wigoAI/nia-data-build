@@ -17,7 +17,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.2.RELEASE'
     //oracle 오라클 버전 오류로 인한 dependencies 활용 ojdbc7 gradle error
-    //compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
+    implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
     //log
     implementation 'ch.qos.logback:logback-core:1.2.3'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
@@ -25,8 +25,54 @@ dependencies {
 
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.26'
 
+    // json 처리
+    implementation 'com.google.code.gson:gson:2.8.0'
     implementation group: 'org.json', name: 'json', version: '20200518'
 
+    // excel read
+    implementation 'org.apache.poi:poi-ooxml:3.16'
     implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.1'
+
+    // moara-core
+    implementation files('libs/moara.jar')
+    implementation 'commons-beanutils:commons-beanutils:1.9.3'
+    implementation 'commons-dbcp:commons-dbcp:1.4'
+    implementation 'commons-io:commons-io:1.4'
+    implementation 'commons-pool:commons-pool:1.4'
+    implementation 'org.apache.commons:commons-lang3:3.8'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-access:1.2.3'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.json:json:20190722'
+
+    implementation 'org.apache.poi:poi-ooxml:3.16'
+    implementation 'au.com.bytecode:opencsv:2.4'
+    implementation 'javax.mail:javax.mail-api:1.5.0'
+    implementation 'org.mybatis:mybatis:3.2.2'
+    implementation 'org.quartz-scheduler:quartz:2.1.7'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
+
+    //report
+    implementation 'org.freemarker:freemarker:2.3.28'
+
+    //connection pool
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
+    //스프링 부트 실행시킬때
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
+
+
+    /* 수집기 */
+    implementation 'org.twitter4j:twitter4j-core:4.0.4'
+    implementation 'org.twitter4j:twitter4j-stream:4.0.4'
+    implementation 'org.facebook4j:facebook4j-core:2.4.3'
+
+    implementation 'org.xerial:sqlite-jdbc:3.8.7'
+
+    // redis for java
+    //compile 'io.lettuce:lettuce-core:5.2.2.RELEASE'
+    implementation fileTree (dir: 'lib/default', include: ['/**/*.jar'])
+    implementation fileTree (dir: 'lib/support/google', include: ['/**/*.jar'])
 
 }
