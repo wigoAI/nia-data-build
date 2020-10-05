@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wigoai.nlp.highlight.mecab;
+package org.moara.nia.data.build.mecab;
 
 import org.chasen.mecab.Tagger;
 import org.slf4j.Logger;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wigoai.nlp.highlight;
+package org.moara.nia.data.build;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;

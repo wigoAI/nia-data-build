@@ -1,6 +1,6 @@
 package com.wigoai.nlp.example;
 
-import com.wigoai.nlp.highlight.mecab.MecabWordClassHighlight;
+import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
 /**
  * <pre>

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wigoai.nlp.highlight;
+package org.moara.nia.data.build;
 
-import com.wigoai.nlp.highlight.mecab.MecabWordClassHighlight;
+import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
