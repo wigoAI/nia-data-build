@@ -26,4 +26,7 @@ dependencies {
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.26'
 
     implementation group: 'org.json', name: 'json', version: '20200518'
+
+    implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.1'
+
 }
