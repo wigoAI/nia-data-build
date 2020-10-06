@@ -21,18 +21,18 @@ import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-public class TestWorksImpl implements TestWorks{
 
+public class TestWorksImpl implements TestWorks{
     private static final Logger logger = LoggerFactory.getLogger(TestWorksImpl.class);
     private final ExcelUtil excelUtil = new ExcelUtil();
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
+    private XSSFRow row;
     private final String [] outArray= {
             "M"
 //                , "S"
@@ -43,7 +43,6 @@ public class TestWorksImpl implements TestWorks{
 //                , "E"
     };
 
-    private XSSFRow row;
 
     @Override
     public void makeByPath(String path) {
@@ -61,10 +60,11 @@ public class TestWorksImpl implements TestWorks{
     @Override
     public void make(File file, String outputPath) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonObject jsonObject = initJsonObject(file);
-
         logger.debug("start file name: " +file.getName());
-        addDocumentList(file, jsonObject);
+
+        JsonObject jsonObject = initJsonObject(file);
+        addDocumentArray(file, jsonObject);
+
         FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + getFileNameWithoutFormat(file) + ".json",false);
         logger.debug("end file name: " +file.getName());
 
@@ -80,7 +80,7 @@ public class TestWorksImpl implements TestWorks{
         return jsonObject;
     }
 
-    private void addDocumentList(File file, JsonObject jsonObject) {
+    private void addDocumentArray(File file, JsonObject jsonObject) {
         JsonArray documents = new JsonArray();
         XSSFSheet sheet = getExcelSheet(file);
         int rowCount = getRowCount(sheet);
@@ -155,10 +155,7 @@ public class TestWorksImpl implements TestWorks{
             }
         }
 
-        if(!getCellValue(2).trim().equals("온라인")){
-            System.out.println("온라인 아님 : " + getCellValue(2).trim());
-            return null;
-        }
+        if(!getCellValue(2).trim().equals("온라인")){ return null; }
 
         switch (sizeType) {
             case "대":
@@ -192,26 +189,18 @@ public class TestWorksImpl implements TestWorks{
         List<String> paragraphList = new ArrayList<>();
         int lsatIndex = 0;
         while(true){
-
             int index = contents.indexOf("\\r\\n\\r\\n", lsatIndex);
-            if(index == -1){
-                break;
-            }
+            if(index == -1){ break; }
 
             String value = contents.substring(lsatIndex, index).trim();
             lsatIndex = index + 8;
-
-            if("".equals(value) || ".".equals(value)){
-                continue;
-            }
+            if("".equals(value) || ".".equals(value)){ continue; }
 
             value = editEscapeChar(value);
             paragraphList.add(value);
-
         }
 
         if(lsatIndex != contents.length()){
-
             String value = contents.substring(lsatIndex).trim();
 
             if(!"".equals(value) && !".".equals(value)){
@@ -255,17 +244,11 @@ public class TestWorksImpl implements TestWorks{
     }
 
 
-
-
-
-
-
-
     private String editEscapeChar(String value) {
-        value = value.replace("\\r","\n");
-        value = value.replace("\\n","\n");
-        value = value.replace("\\t","\t");
-        value = value.replace("　"," ");
+        value = value.replace("\\r","\n")
+                .replace("\\n","\n")
+                .replace("\\t","\t")
+                .replace("　"," ");
 
         return value;
     }
