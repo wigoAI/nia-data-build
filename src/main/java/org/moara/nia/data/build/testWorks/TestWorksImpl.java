@@ -9,15 +9,18 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;
 import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtract;
 import org.moara.ara.datamining.textmining.document.Document;
 import org.moara.ara.datamining.textmining.document.sentence.Sentence;
 import org.moara.common.code.LangCode;
+
 import org.moara.common.data.file.FileUtil;
 import org.moara.common.data.office.excel.ExcelUtil;
 import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,9 +121,7 @@ public class TestWorksImpl implements TestWorks{
 
         // 문단 리스트
         List<String> paragraphList = getParagraphList(contents);
-
         JsonArray text = getText(paragraphList);
-
         document.add("text", text);
 
         return document;

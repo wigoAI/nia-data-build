@@ -8,8 +8,8 @@ public class CreateJsonTest {
 
     @Test
     public void createJsonTestByTestWorks() {
-
-        String dirPath ="D:\\moara\\data\\testworks\\";
+        String dirPath ="D:\\moara\\data\\allData\\excel\\";
+//        String dirPath ="D:\\moara\\data\\testworks\\";
 
         TestWorks testWorks = new TestWorksImpl();
         testWorks.makeByPath(dirPath);
