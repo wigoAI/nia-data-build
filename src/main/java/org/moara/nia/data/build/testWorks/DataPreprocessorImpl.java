@@ -209,6 +209,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -221,7 +223,6 @@ import org.moara.ara.datamining.textmining.document.sentence.Sentence;
 import org.moara.common.code.LangCode;
 
 import org.moara.common.data.file.FileUtil;
-import org.moara.common.data.office.excel.ExcelUtil;
 import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
@@ -252,7 +253,7 @@ import java.util.List;
 
 public class DataPreprocessorImpl implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    private final ExcelUtil excelUtil = new ExcelUtil();
+    private final ExcelGet excelGet = new ExcelGet();
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private XSSFRow row;
     private final String [] outArray= {
@@ -268,7 +269,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
     @Override
     public void makeByPath(String path) {
-        List<File> fileList = excelUtil.getExcelFileList(path);
+        List<File> fileList = FileUtil.getFileList(path, ".xlsx");
         int count = 0;
 
         for(File file : fileList) {
@@ -313,7 +314,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private void addDocumentArray(File file, JsonObject jsonObject) {
         JsonArray documents = new JsonArray();
         XSSFSheet sheet = getExcelSheet(file);
-        int rowCount = getRowCount(sheet);
+        int rowCount = excelGet.getRowCount(sheet);
 
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
 
@@ -362,7 +363,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             e.printStackTrace();
         }
 
-        excelUtil.setXSSFWorkbook(work);
+        excelGet.setXSSFWorkbook(work);
         logger.debug("excel load complete");
 
         return work.getSheetAt(0);
@@ -455,21 +456,36 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private JsonArray getParagraph(int index, String paragraphValue) {
         JsonArray paragraph = new JsonArray();
 
+
+        OpenChecker openChecker = new OpenChecker();
+        String tmp = "";
+
         // sentence split
         for(Sentence sentence : senExtract.extractSentenceList(0, paragraphValue,"N")){
             String sentenceValue = sentence.getValue();
-            JsonObject senObj = new JsonObject();
 
-            senObj.addProperty("index", index++);
-            senObj.addProperty("sentence", sentenceValue);
-            senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue,outArray));
+            openChecker.openCheck(sentenceValue);
 
-            paragraph.add(senObj);
+            tmp += (sentenceValue + " ");
+
+            if(!openChecker.isOpen()) {
+                JsonObject senObj = new JsonObject();
+                senObj.addProperty("index", index++);
+                senObj.addProperty("sentence", tmp.trim());
+                senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(tmp,outArray));
+                paragraph.add(senObj);
+                openChecker.clean();
+                tmp = "";
+
+            }
+
+
         }
 
         return paragraph;
 
     }
+
 
 
     private String editEscapeChar(String value) {
@@ -488,7 +504,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
     private String getCellValue(int cellNum){
-        String value = excelUtil.getCellValue(row, cellNum);
+        String value = excelGet.getCellValue(row, cellNum);
 
         if(value != null){
             value = value.trim();
@@ -496,7 +512,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         return value;
     }
-    private int getRowCount(XSSFSheet sheet){ return excelUtil.getRowCount(sheet); }
     private String getFileNameWithoutFormat(File file) {
         String fileName = file.getName();
         return fileName.substring(0, fileName.lastIndexOf("."));

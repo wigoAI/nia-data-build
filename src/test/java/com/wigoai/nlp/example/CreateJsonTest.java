@@ -6,16 +6,17 @@ import org.moara.nia.data.build.testWorks.*;
 
 public class CreateJsonTest {
 
+//    『』
+
     @Test
     public void createJsonTestByTestWorks() {
-        String dirPath ="D:\\moara\\data\\allData\\";
+        String dirPath ="D:\\moara\\data\\allData\\test\\";
 //        String dirPath ="D:\\moara\\data\\testworks\\";
         DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
-        for(int i = 0 ; i < 6 ; i++) {
-            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
-        }
-
-
+//        for(int i = 0 ; i < 6 ; i++) {
+//            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
+//        }
+        dataPreprocessor.makeByPath(dirPath);
 
     }
 

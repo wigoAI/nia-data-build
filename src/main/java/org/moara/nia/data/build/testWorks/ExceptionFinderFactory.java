@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class ExceptionFinderFactory {
     public static ExceptionFinder getExceptionFinder(String dataType) {
         ExceptionFinder exceptionFinder = text -> 0;
-
+//        String r = "[\\<\\{\\[\\(\\'\\\"]+[^\\>\\}\\]\\)\\'\\\"]*[^\\<\\{\\[\\(\\'\\\"]*[\\>\\}\\]\\)\\'\\\"]+";
         if(dataType.equals("동양일보")) {
             String targetException = " 기자)";
             exceptionFinder =  text -> text.lastIndexOf(targetException) + targetException.length();

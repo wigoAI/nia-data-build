@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     implementation group: 'org.chasen.mecab', name: 'mecab-java', version: '0.993'
-
+    implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.2'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-dependencies', version: '2.2.1.RELEASE', ext: 'pom'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
@@ -29,9 +29,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation group: 'org.json', name: 'json', version: '20200518'
 
-    // excel read
-    implementation 'org.apache.poi:poi-ooxml:3.16'
-    implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.1'
+//    // excel read
+//    implementation 'org.apache.poi:poi-ooxml:3.16'
+//    implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.1'
 
     // moara-core
     implementation files('libs/moara.jar')
@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'org.json:json:20190722'
 
-    implementation 'org.apache.poi:poi-ooxml:3.16'
+//    implementation 'org.apache.poi:poi-ooxml:3.16'
     implementation 'au.com.bytecode:opencsv:2.4'
     implementation 'javax.mail:javax.mail-api:1.5.0'
     implementation 'org.mybatis:mybatis:3.2.2'
