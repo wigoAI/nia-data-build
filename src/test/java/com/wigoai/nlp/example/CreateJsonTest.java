@@ -8,11 +8,15 @@ public class CreateJsonTest {
 
     @Test
     public void createJsonTestByTestWorks() {
-        String dirPath ="D:\\moara\\data\\allData\\excel\\";
+        String dirPath ="D:\\moara\\data\\allData\\";
 //        String dirPath ="D:\\moara\\data\\testworks\\";
+        DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
+        for(int i = 0 ; i < 6 ; i++) {
+            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
+        }
 
-        TestWorks testWorks = new TestWorksImpl();
-        testWorks.makeByPath(dirPath);
+
+
     }
 
     @Test
@@ -27,5 +31,7 @@ public class CreateJsonTest {
         String text2 = "여야4당, 패스트트랙 추진에 한국당 “의원직 총사퇴” 반발 공전끝낸 국회 차질 불가피 김형민 기자l jal74@naver.com \\r\\n3월 임시국회가 11일부터 ";
 
         Assert.assertEquals(exceptionFinder2.find(text2), 71);
+
     }
+
 }
