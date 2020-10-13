@@ -2,7 +2,7 @@ package com.wigoai.nlp.example;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.moara.nia.data.build.testWorks.*;
+import org.moara.nia.data.build.preprocess.*;
 
 public class CreateJsonTest {
 
