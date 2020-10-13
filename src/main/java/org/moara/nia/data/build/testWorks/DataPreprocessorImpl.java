@@ -226,6 +226,9 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
+import org.moara.nia.data.build.personalData.PersonalData;
+import org.moara.nia.data.build.personalData.PersonalDataFinderImpl;
+import org.moara.nia.data.build.testWorks.exception.OverlapDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -256,6 +259,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private final ExcelGet excelGet = new ExcelGet();
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private XSSFRow row;
+    private PersonalDataFinderImpl emailFinder = new PersonalDataFinderImpl("email");
+    private PersonalDataFinderImpl urlFinder = new PersonalDataFinderImpl("url");
+    private PersonalDataFinderImpl phFinder = new PersonalDataFinderImpl("ph");
+
     private final String [] outArray= {
             "M"
 //                , "S"
@@ -342,15 +349,29 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             return null;
         }
 
+
         String contents = getCellValue(9);
         if(contents == null){
             return null;
         }
 
+        int documentId = document.get("id").getAsInt();
+
         // 문단 리스트
         List<String> paragraphList = getParagraphList(contents);
-        JsonArray text = getText(paragraphList);
-        document.add("text", text);
+//        System.out.println("Preprocessing... : " + documentId);
+        try {
+            JsonArray text = getText(paragraphList, documentId);
+            document.add("text", text);
+        } catch (OverlapDataException e) {
+            System.out.println("drop data in id : " + documentId);
+            System.out.println(e.toString());
+        } catch (Exception e) {
+            System.out.println("Some date is wrong : " + documentId + " so drop the data");
+            System.out.println(e.toString());
+        }
+
+
 
         return document;
     }
@@ -441,51 +462,75 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return paragraphList;
     }
 
-    private JsonArray getText(List<String> paragraphList) {
+    private JsonArray getText(List<String> paragraphList, int documentId) throws OverlapDataException {
         JsonArray text = new JsonArray();
+        String overlapCheck = "";
         int index = 0;
 
         for(String paragraphValue  : paragraphList){
-            JsonArray paragraph = getParagraph(index, paragraphValue);
+            paragraphValue = paragraphValue.trim();
+
+            if(paragraphValue.length() == 0)
+                continue;
+            if(overlapCheck.equals(paragraphValue)) {
+                throw new OverlapDataException("data overlap : [" + paragraphValue + "]");
+            }
+            JsonArray paragraph = getParagraph(index, paragraphValue, documentId);
+
             text.add(paragraph);
             index += paragraph.size();
+            overlapCheck = paragraphValue;
         }
         return text;
     }
 
-    private JsonArray getParagraph(int index, String paragraphValue) {
+    private JsonArray getParagraph(int index, String paragraphValue, int documentId) {
         JsonArray paragraph = new JsonArray();
 
-
-        OpenChecker openChecker = new OpenChecker();
-        String tmp = "";
 
         // sentence split
         for(Sentence sentence : senExtract.extractSentenceList(0, paragraphValue,"N")){
             String sentenceValue = sentence.getValue();
+            JsonObject senObj = new JsonObject();
 
-            openChecker.openCheck(sentenceValue);
+            List<PersonalData> personalDataList = findPersonalData(sentenceValue);
 
-            tmp += (sentenceValue + " ");
-
-            if(!openChecker.isOpen()) {
-                JsonObject senObj = new JsonObject();
-                senObj.addProperty("index", index++);
-                senObj.addProperty("sentence", tmp.trim());
-                senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(tmp,outArray));
-                paragraph.add(senObj);
-                openChecker.clean();
-                tmp = "";
-
+//            for (PersonalData personalData : personalDataList) {
+//                System.out.print("Personal Data in index [" + index + "] : ");
+//                System.out.println(personalData.getValue() + " (" + personalData.getStart() + ", " + personalData.getEnd()
+//                        + ") -> " + personalData.getType());
+//            }
+            if(personalDataList.size() != 0) {
+                System.out.println("Personal Data in index [" + documentId + ", " + index + "] : " + sentenceValue);
             }
+            for (PersonalData personalData : personalDataList) {
+                System.out.println(personalData.getValue() + " (" + personalData.getStart() + ", " + personalData.getEnd()
+                        + ") -> " + personalData.getType());
+            }
+
+            senObj.addProperty("index", index++);
+            senObj.addProperty("sentence", sentenceValue);
+            senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
+            paragraph.add(senObj);
+
+
+
 
 
         }
 
         return paragraph;
-
     }
 
+    private List<PersonalData> findPersonalData(String text) {
+        List<PersonalData> personalDataList = new ArrayList<>();
+
+//        personalDataList.addAll(urlFinder.find(text));
+//        personalDataList.addAll(emailFinder.find(text));
+        personalDataList.addAll(phFinder.find(text));
+
+        return personalDataList;
+    }
 
 
     private String editEscapeChar(String value) {
