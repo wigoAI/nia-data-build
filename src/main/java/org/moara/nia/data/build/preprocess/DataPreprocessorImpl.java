@@ -39,6 +39,9 @@ import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
 import org.moara.nia.data.build.preprocess.exception.OverlapDataException;
+import org.moara.nia.data.build.Area;
+import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
+import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +130,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
 
             JsonObject document = getDocument(sheet, rowIndex);
-            if(document == null)
+            if(document == null) {
                 continue;
+            }
             documents.add(document);
+
 
         }
 
@@ -160,9 +165,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         // 문단 리스트
         List<String> paragraphList = getParagraphList(contents);
-//        System.out.println("Preprocessing... : " + documentId);
         try {
-            JsonArray text = getText(paragraphList, documentId);
+            JsonArray text = getText(paragraphList);
             document.add("text", text);
         } catch (OverlapDataException e) {
             System.out.println("drop data in id : " + documentId);
@@ -263,29 +267,46 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return paragraphList;
     }
 
-    private JsonArray getText(List<String> paragraphList, int documentId) throws OverlapDataException {
+    private JsonArray getText(List<String> paragraphList) throws OverlapDataException {
         JsonArray text = new JsonArray();
         String overlapCheck = "";
         int index = 0;
 
-        for(String paragraphValue  : paragraphList){
-            paragraphValue = paragraphValue.trim();
+//        for(String paragraphValue  : paragraphList){
+        for(int i = 0 ; i < paragraphList.size() ; i++){
+            String paragraphValue = paragraphList.get(i).trim();
 
-            if(paragraphValue.length() == 0)
-                continue;
+
+            if(paragraphValue.length() == 0) { continue; }
+
             if(overlapCheck.equals(paragraphValue)) {
                 throw new OverlapDataException("data overlap : [" + paragraphValue + "]");
             }
-            JsonArray paragraph = getParagraph(index, paragraphValue, documentId);
+
+            boolean exceptionDataCheck = false;
+            if(i < 2) {
+                exceptionDataCheck = true;
+
+            }
+            else if(i > paragraphList.size() - 3) {
+                exceptionDataCheck = true;
+            }
+
+            JsonArray paragraph = getParagraph(index, paragraphValue, exceptionDataCheck);
+
+            if(paragraph.size() == 0)
+                continue;
 
             text.add(paragraph);
             index += paragraph.size();
             overlapCheck = paragraphValue;
+
+
         }
         return text;
     }
 
-    private JsonArray getParagraph(int index, String paragraphValue, int documentId) {
+    private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) {
         JsonArray paragraph = new JsonArray();
 
         /* if want recreate personalDataFinder
@@ -296,19 +317,38 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         * */
 
         // sentence split
-        for(Sentence sentence : senExtract.extractSentenceList(0, paragraphValue,"N")){
+        List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
+        for(Sentence sentence : extractSentenceList ){
             String sentenceValue = sentence.getValue();
             JsonObject senObj = new JsonObject();
 
+            if(exceptionDataCheck) { sentenceValue = deleteExceptionData(sentenceValue, 50); }
+            if(sentenceValue.length() == 0){ continue; }
 
             senObj.addProperty("index", index++);
-            senObj.addProperty("sentence", sentenceValue);
+            senObj.addProperty("sentence", sentenceValue.trim());
             senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
             paragraph.add(senObj);
 
         }
 
         return paragraph;
+    }
+
+    private String deleteExceptionData(String text, int limit) {
+        // 정규 표현식에 적용하기 위한 공백 추가
+        // 처리 후 제거된다.
+        text += " ";
+        ExceptionDataFinder reporterFinder = ExceptionFinderFactory.getExceptionFinder("reporter");
+        Area targetArea = reporterFinder.find(text);
+
+        if(targetArea.getEnd() > 0 && targetArea.getEnd() < limit) {
+//            System.out.print("[" + text + "] -> ");
+            text = text.substring(targetArea.getEnd());
+//            System.out.println("[" + text + "] del length : " + targetArea.getEnd());
+        }
+
+        return text.trim();
     }
 
 

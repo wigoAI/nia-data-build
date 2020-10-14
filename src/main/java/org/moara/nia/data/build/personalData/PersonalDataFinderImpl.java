@@ -32,12 +32,14 @@ import java.util.regex.Pattern;
 public class PersonalDataFinderImpl implements PersonalDataFinder {
 
     private final Pattern pattern;
-    private String type;
+    private final String type;
+
     public PersonalDataFinderImpl(String type) {
         this.type = type;
         String regx = fileReader.apply(type);
         pattern = Pattern.compile(regx);
     }
+
     @Override
     public List<PersonalData> find(String text) {
         Matcher urlMatcher = pattern.matcher(text);

@@ -15,7 +15,9 @@
  */
 
 
-package org.moara.nia.data.build.preprocess;
+package org.moara.nia.data.build.preprocess.exceptionData;
+
+import org.moara.nia.data.build.Area;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,25 +31,28 @@ import java.util.regex.Pattern;
  * @author 조승현
  */
 public class ExceptionFinderFactory {
-    public static ExceptionFinder getExceptionFinder(String dataType) {
+    private static final String reporterFindRegx = "(기자[^가-힣a-zA-Z0-9]{1,10})([0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10}))?";
+    private static final Pattern reporterFindPattern = Pattern.compile(reporterFindRegx);
 
-        ExceptionFinder exceptionFinder = text -> 0;
+    public static ExceptionDataFinder getExceptionFinder(String dataType) {
 
-        if(dataType.equals("동양일보")) {
-            String targetException = " 기자)";
-            exceptionFinder =  text -> text.lastIndexOf(targetException) + targetException.length();
-        } else if(dataType.equals("전라일보")) {
-            String regular = "[0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}";
-
-            exceptionFinder = text -> {
-                Matcher emailMatcher = Pattern.compile(regular).matcher(text);
-                while (emailMatcher.find()) {
-                    return emailMatcher.end();
+        if(dataType.equals("reporter")) {
+            return text -> {
+                Matcher matcher = reporterFindPattern.matcher(text);
+                int start = 0;
+                int end = 0;
+                while(matcher.find()) {
+                    start = matcher.start();
+                    end = matcher.end();
                 }
-                return 0;
+                return new Area(start, end);
+
             };
+        } else {
+            return text -> new Area(0, 0);
         }
 
-        return exceptionFinder;
+
+
     }
 }

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.moara.nia.data.build.preprocess;
+package org.moara.nia.data.build.preprocess.exceptionData;
+
+import org.moara.nia.data.build.Area;
 
 @FunctionalInterface
-public interface ExceptionFinder {
-    int find(String text);
+public interface ExceptionDataFinder {
+    Area find(String text);
 }
