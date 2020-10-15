@@ -64,18 +64,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private final ExcelGet excelGet = new ExcelGet();
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private XSSFRow row;
-
-//    private PersonalDataFinderImpl phFinder = new PersonalDataFinderImpl("ph");
-
-    private final String [] outArray= {
-            "M"
-//                , "S"
-//                , "E"
-//                , "V"
-//                , "J"
-//                , "X"
-//                , "E"
-    };
+    private final String [] outArray= {"M"};
 
 
     @Override
@@ -127,17 +116,35 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         XSSFSheet sheet = getExcelSheet(file);
         int rowCount = excelGet.getRowCount(sheet);
 
+//        int testCount = 0;
+        int dropDataCount = 0;
+        int normalDataCount = 0;
+        int oldRandomIndex = 0;
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
 
+//            int newRandomIndex = (int)(Math.random()*(rowCount/200))+ oldRandomIndex;
+//            if(newRandomIndex >= rowCount)
+//                break;
             JsonObject document = getDocument(sheet, rowIndex);
+//            JsonObject document = getDocument(sheet, newRandomIndex);
+
             if(document == null) {
+                dropDataCount++;
                 continue;
             }
+
             documents.add(document);
+            normalDataCount++;
+//            if(testCount++ > 200)
+//                break;
 
-
+//            oldRandomIndex = newRandomIndex;
         }
-
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.print("All data : " + (rowCount - 2));
+        System.out.print("  Drop data : " + dropDataCount );
+        System.out.println("  Normal data : " + (normalDataCount));
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         jsonObject.add("documents", documents);
     }
 
@@ -171,11 +178,12 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         } catch (OverlapDataException e) {
             System.out.println("drop data in id : " + documentId);
             System.out.println(e.toString());
+            return null;
         } catch (Exception e) {
             System.out.println("Some date is wrong : " + documentId + " so drop the data");
             System.out.println(e.toString());
+            return null;
         }
-
 
 
         return document;
@@ -339,7 +347,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         // 정규 표현식에 적용하기 위한 공백 추가
         // 처리 후 제거된다.
         text += " ";
-        ExceptionDataFinder reporterFinder = ExceptionFinderFactory.getExceptionFinder("reporter");
+        ExceptionDataFinder reporterFinder = ExceptionFinderFactory.getExceptionFinder("reporter2");
         Area targetArea = reporterFinder.find(text);
 
         if(targetArea.getEnd() > 0 && targetArea.getEnd() < limit) {
@@ -360,6 +368,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
                 .replace("\\n","\n")
                 .replace("\\t","\t")
                 .replace("　"," ")
+                .replace("`", "'")
                 .replace("‘", "'")
                 .replace("’", "'")
                 .replace("“", "\"")

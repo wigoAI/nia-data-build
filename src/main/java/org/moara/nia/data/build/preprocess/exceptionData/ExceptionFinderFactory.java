@@ -26,19 +26,21 @@ import java.util.regex.Pattern;
  * 예외 데이터 탐색기 팩토리
  * 각 문서마다 적용 될 예외 데이터 탐색기를 제공
  *
- * TODO 1. [기자] 단어가 포함된 문장 제거하기
- *      2. 또다른 반복 데이터 제거하기
  * @author 조승현
  */
 public class ExceptionFinderFactory {
-    private static final String reporterFindRegx = "(기자[^가-힣a-zA-Z0-9]{1,10})([0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10}))?";
-    private static final Pattern reporterFindPattern = Pattern.compile(reporterFindRegx);
+    private static final String reporterAndEmailFindRegx = "(기자[^가-힣a-zA-Z0-9]{1,10})([0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10}))?";
+    private static final String reporterRegx = "기자[^가-힣]";
+    private static final String emailFindRegx = "[0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10})";
+    private static final Pattern reporterAndEmailFindPattern = Pattern.compile(reporterAndEmailFindRegx);
+    private static final Pattern reporterFindPattern = Pattern.compile(reporterRegx);
+    private static final Pattern emailFindPattern = Pattern.compile(emailFindRegx);
 
     public static ExceptionDataFinder getExceptionFinder(String dataType) {
 
         if(dataType.equals("reporter")) {
             return text -> {
-                Matcher matcher = reporterFindPattern.matcher(text);
+                Matcher matcher = reporterAndEmailFindPattern.matcher(text);
                 int start = 0;
                 int end = 0;
                 while(matcher.find()) {
@@ -47,6 +49,31 @@ public class ExceptionFinderFactory {
                 }
                 return new Area(start, end);
 
+            };
+        } else if(dataType.equals("reporter2")) {
+            return text -> {
+                Area area;
+                Matcher reporterMatcher = reporterFindPattern.matcher(text);
+                if(reporterMatcher.find()) {
+
+                    Matcher emailMatcher = emailFindPattern.matcher(text);
+
+                    int start = reporterMatcher.start();
+                    int end = reporterMatcher.end();
+
+                    while(emailMatcher.find()) {
+                        if(emailMatcher.start() < start)
+                            start = emailMatcher.start();
+                        end = emailMatcher.end();
+                    }
+
+                  area = new Area(start, end);
+
+                } else {
+                  area = new Area(0,0);
+                }
+
+                return area;
             };
         } else {
             return text -> new Area(0, 0);
