@@ -16,7 +16,6 @@ public class CreateJsonTest {
             dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
         }
 
-
     }
 
     @Test

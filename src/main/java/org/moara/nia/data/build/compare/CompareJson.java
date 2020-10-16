@@ -24,8 +24,6 @@ public class CompareJson implements CompareData {
 
     @Override
     public void compare(JsonObject beforeJson, JsonObject afterJson) {
-
-
         JsonArray beforeDocuments = beforeJson.getAsJsonArray("documents");
         JsonArray afterDocuments = afterJson.getAsJsonArray("documents");
 
@@ -35,56 +33,95 @@ public class CompareJson implements CompareData {
         for(int i = 0 ; i < afterDocuments.size() ; i++) {
             JsonObject afterDocument = (JsonObject) afterDocuments.get(i);
             System.out.println(afterDocument.get("id"));
-            if(!beforeTextHash.containsKey(afterDocument.get("id").toString())) {
-                throw new NullPointerException();
-            }
 
             JsonArray beforeText = beforeTextHash.get(afterDocument.get("id").toString());
             JsonArray afterText = afterDocument.getAsJsonArray("text");
-            List<String> beforeSentenceList = new ArrayList<>();
-            List<String> afterSentenceList = new ArrayList<>();
-            // same text size
 
-            addSentenceList(beforeText, beforeSentenceList);
-            addSentenceList(afterText, afterSentenceList);
-            int afterSentenceIndex = 0;
+            if(beforeText.size() == afterText.size()) {
+                for(int j = 0 ; j < beforeText.size() ; j++) {
+                    JsonArray beforeParagraph = (JsonArray) beforeText.get(j);
+                    JsonArray afterParagraph = (JsonArray) afterText.get(j);
 
-            for(int j = 0 ; j < beforeSentenceList.size() ; j++) {
-                String beforeSentence = beforeSentenceList.get(j);
-                String afterSentence = "";
-                if(afterSentenceIndex < afterSentenceList.size())
-                    afterSentence = afterSentenceList.get(afterSentenceIndex);
-
-                if(editEscapeChar(beforeSentence).contains(afterSentence)) {
-                    System.out.println("before  : " + beforeSentence);
-                    System.out.println("after   : " + afterSentence);
-
-                    afterSentenceIndex++;
-                } else {
-                    if(editEscapeChar(beforeSentence).length() > afterSentence.length()) {
-
-                    } else {
-
+                    for(String str : getSentenceList(beforeParagraph)) {
+                        System.out.println("before  : " + str);
                     }
-                    System.out.println("before  : " + beforeSentence);
-                    System.out.println("after   : ");
+                    for(String str : getSentenceList(afterParagraph)) {
+                        System.out.println("after   : " + str);
+                    }
+
+                    System.out.println();
                 }
+            } else {
+                List<String> beforeSentenceList = new ArrayList<>();
+                List<String> afterSentenceList = new ArrayList<>();
+
+                for(int j = 0 ; j < beforeText.size() ; j++) {
+                    JsonArray beforeParagraph = (JsonArray) beforeText.get(j);
+                    beforeSentenceList.addAll(getSentenceList(beforeParagraph));
+                }
+                for(int j = 0 ; j < afterText.size() ; j++) {
+                    JsonArray afterParagraph = (JsonArray) afterText.get(j);
+                    afterSentenceList.addAll(getSentenceList(afterParagraph));
+                }
+
+                int afterSentenceIndex = 0;
+                int notSplitStack = 0;
+                for(String str : beforeSentenceList) {
+
+                    System.out.println("before  : " + str);
+                    if(editEscapeChar(str).equals(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
+                        System.out.println("after   : " + afterSentenceList.get(afterSentenceIndex++));
+                    } else if(editEscapeChar(str).contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
+
+                        while(editEscapeChar(str).contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
+                            System.out.print("after : " + afterSentenceList.get(afterSentenceIndex++));
+                            if(afterSentenceList.size() == afterSentenceIndex)
+                                break;
+                        }
+                    } else if(editEscapeChar(afterSentenceList.get(afterSentenceIndex)).contains(editEscapeChar(str))) {
+//                        System.out.println("after don't split");
+                        notSplitStack++;
+                    } else if(notSplitStack > 0) {
+
+                        for(int k = 0 ; k < notSplitStack ; k++) {
+                            if(afterSentenceIndex == afterSentenceList.size())
+                                break;
+                            System.out.println("after : " + afterSentenceList.get(afterSentenceIndex++));
+
+                        }
+
+                        notSplitStack = 0;
+                    }
+
+                    if(afterSentenceIndex == afterSentenceList.size())
+                        afterSentenceIndex--;
+
+                    System.out.println();
+                }
+
+
+
             }
+
             System.out.println();
         }
 
     }
 
-    private void addSentenceList(JsonArray text, List<String> sentenceList) {
-        for(int i = 0 ; i < text.size() ; i++) {
-            JsonArray beforeSentenceArray = (JsonArray) text.get(i);
-            for (int j = 0 ; j < beforeSentenceArray.size() ; j++) {
-                JsonObject sentence = (JsonObject) beforeSentenceArray.get(j);
-                sentenceList.add(sentence.get("sentence").toString());
-            }
-        }
-    }
 
+
+
+    private List<String> getSentenceList(JsonArray jsonArray) {
+        List<String> sentenceList = new ArrayList<>();
+        for (int i = 0 ; i < jsonArray.size() ; i++) {
+            JsonObject sentenceJson = (JsonObject) jsonArray.get(i);
+            String sentence = sentenceJson.get("sentence").toString();
+            sentence = sentence.substring(1,sentence.length() - 1);
+            sentenceList.add(sentence);
+        }
+
+        return sentenceList;
+    }
 
     private HashMap<String, JsonArray> getHashMapByJsonObject(JsonArray beforeDocuments) {
         HashMap<String, JsonArray> beforeTextHash = new HashMap<>();
@@ -110,16 +147,18 @@ public class CompareJson implements CompareData {
 
     private String editEscapeChar(String value) {
 
-        value = value.replace("\\r","\n")
-                .replace("\\n","\n")
-                .replace("\\t","\t")
-                .replace("　"," ")
-                .replace("`", "'")
-                .replace("‘", "'")
-                .replace("’", "'")
-                .replace("“", "\\\"")
-                .replace("”", "\\\"");
-
+        value = value.replace("`", "")
+                .replace(" ", "")
+                .replace(" ", "")
+                .replace("‘", "")
+                .replace("’", "")
+                .replace("`", "")
+                .replace("“", "")
+                .replace("'", "")
+                .replace("”", "")
+                .replace("\\\"", "")
+                .replace("\"", "").trim();
+//        System.out.println(value);
         return value;
     }
 

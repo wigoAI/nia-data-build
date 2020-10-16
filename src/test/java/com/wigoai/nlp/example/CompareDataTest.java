@@ -31,4 +31,8 @@ public class CompareDataTest {
         String afterPath = "D:\\moara\\data\\allData\\change\\after";
         outputFile.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
     }
+
+
+
+
 }
