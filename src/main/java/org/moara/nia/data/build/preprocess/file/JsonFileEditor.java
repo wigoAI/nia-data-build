@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public class OutputFile {
+public class JsonFileEditor {
     public void fileNameChange(List<File> fileList, String path) {
         for(File file : fileList) {
             JsonObject jsonObject = getJsonObjectByFile(file);
@@ -49,9 +49,7 @@ public class OutputFile {
         }
     }
 
-    private JsonObject getJsonObjectByFile(File file) {
-
-
+    public JsonObject getJsonObjectByFile(File file) {
         JsonElement element = null;
         try {
             element = JsonParser.parseReader(new FileReader(file.getPath()));
@@ -60,5 +58,20 @@ public class OutputFile {
         }
 
         return element.getAsJsonObject();
+    }
+
+
+    public int jsonCounter(List<File> fileList) {
+        int total = 0;
+        for(File file : fileList) {
+            JsonObject jsonObject = getJsonObjectByFile(file);
+            JsonArray documents = jsonObject.getAsJsonArray("documents");
+
+            int documentsSize = documents.size();
+            System.out.println(file.getName() + " : " + documentsSize);
+            total += documentsSize;
+        }
+        System.out.println("total : " + total);
+        return total;
     }
 }

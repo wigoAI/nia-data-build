@@ -12,7 +12,7 @@ public class CreateJsonTest {
     public void createJsonTestByTestWorks() {
         String dirPath ="D:\\moara\\data\\allData\\";
         DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
-        for(int i = 0; i < 6 ; i++) {
+        for(int i = 4; i < 6 ; i++) {
             dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
         }
 
