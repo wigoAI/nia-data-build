@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * 예외 데이터 탐색기 팩토리
  * 각 문서마다 적용 될 예외 데이터 탐색기를 제공
- *
+ * TODO 1. "reporter" 제거 해도 되는지 확인하고 제거하기
  * @author 조승현
  */
 public class ExceptionFinderFactory {
@@ -36,6 +36,15 @@ public class ExceptionFinderFactory {
     private static final Pattern reporterFindPattern = Pattern.compile(reporterRegx);
     private static final Pattern emailFindPattern = Pattern.compile(emailFindRegx);
 
+
+    /**
+     *
+     * 해당 Factory는 인스턴스를 생성할 필요 없이 바로 ExceptionDataFinder 를 반환받을 수 있다.
+     * 탐색을 원하는 예외 데이터의 유형을 입력값으로 전달하면 그에 맞는 ExceptionDataFinder 를 반환한다.
+     *
+     * @param dataType String
+     * @return ExceptionDataFinder
+     */
     public static ExceptionDataFinder getExceptionFinder(String dataType) {
 
         if(dataType.equals("reporter")) {

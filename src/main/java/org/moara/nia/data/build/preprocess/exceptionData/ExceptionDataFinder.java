@@ -18,7 +18,27 @@ package org.moara.nia.data.build.preprocess.exceptionData;
 
 import org.moara.nia.data.build.Area;
 
+/**
+ * 예외 데이터 탐색기 추상체
+ * ExceptionFinderFactory 에서 구현하여 반환한다.
+ *
+ * @author 조승현
+ */
 @FunctionalInterface
 public interface ExceptionDataFinder {
+
+    /**
+     *
+     * 입력값으로 받은 text에서 구현체의 방식에 맞게 예외 데이터를 찾는다.
+     * 찾은 예외 데이터는 Area객체로 위치를 반환한다.
+     *
+     * TODO 1. Area 객체의 필요성 다시 생각해보기
+     *          - int 로 충분하지 않은가?
+     *
+     *
+     *
+     * @param text String
+     * @return Area
+     */
     Area find(String text);
 }

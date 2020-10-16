@@ -26,6 +26,22 @@ import java.io.File;
  */
 public interface DataPreprocessor {
 
+    /**
+     *
+     * 정제 데이터 생성
+     * 입력된 파일을 구현체에서 알맞게 정제하여 반환한다.
+     * 파일 형태로 출력하기 때문에 반환값이 없다.
+     * @param file File
+     * @param outputPath String
+     */
     void make(File file, String outputPath);
+
+    /**
+     *
+     * 경로에 있는 정제 데이터 확인
+     * 데이터 정제시 많은 양의 데이터를 처리하기 때문에
+     * File 리스트를 생성하는 메서드 필요
+     * @param path
+     */
     void makeByPath(String path);
 }

@@ -34,7 +34,7 @@ public class CompareDataTest {
     public void changeFileTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        for(int i = 4 ; i < 6 ; i++) {
+        for(int i = 0 ; i < 1 ; i++) {
             String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
 
             jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
