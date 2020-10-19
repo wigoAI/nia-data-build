@@ -26,15 +26,7 @@ import java.io.File;
  */
 public interface DataPreprocessor {
 
-    /**
-     *
-     * 정제 데이터 생성
-     * 입력된 파일을 구현체에서 알맞게 정제하여 반환한다.
-     * 파일 형태로 출력하기 때문에 반환값이 없다.
-     * @param file File
-     * @param outputPath String
-     */
-    void make(File file, String outputPath);
+
 
     /**
      *
@@ -44,4 +36,6 @@ public interface DataPreprocessor {
      * @param path
      */
     void makeByPath(String path);
+
+
 }

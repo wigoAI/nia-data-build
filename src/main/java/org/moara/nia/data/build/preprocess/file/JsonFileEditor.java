@@ -123,4 +123,9 @@ public class JsonFileEditor {
         System.out.println("total : " + total);
         return total;
     }
+
+    public String getFileNameWithoutFormat(File file) {
+        String fileName = file.getName();
+        return fileName.substring(0, fileName.lastIndexOf("."));
+    }
 }

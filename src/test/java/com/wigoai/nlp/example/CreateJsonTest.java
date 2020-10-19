@@ -15,7 +15,6 @@ public class CreateJsonTest {
         for(int i = 4; i < 6 ; i++) {
             dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
         }
-
     }
 
     @Test
@@ -27,5 +26,12 @@ public class CreateJsonTest {
         dataPreprocessor.makeByPath(dirPath);
     }
 
+    @Test
+    public void createXmlJsonTest() {
+        String dirPath = "D:\\moara\\data\\law\\Data\\test\\";
+        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
 
+        xmlPreprocessor.makeByPath(dirPath);
+
+    }
 }
