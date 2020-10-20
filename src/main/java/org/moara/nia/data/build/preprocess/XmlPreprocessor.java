@@ -25,6 +25,7 @@ import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtrac
 import org.moara.ara.datamining.textmining.document.sentence.Sentence;
 import org.moara.common.code.LangCode;
 import org.moara.common.data.file.FileUtil;
+import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ import java.io.File;
 
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +53,7 @@ import java.util.List;
 public class XmlPreprocessor implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
-    private final String [] outArray= {"NNP"};
+    private final String [] outArray= {"PERSON_NAME", "M"};
 
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
@@ -157,7 +159,7 @@ public class XmlPreprocessor implements DataPreprocessor {
 
         int documentSize = dom.getElementsByTagName("Content").item(0).getTextContent().length();
         document.addProperty("char_count", documentSize);
-        System.out.println(documentSize);
+
         if(documentSize < 4000)
             document.addProperty("size","small");
         else if( documentSize < 8000 )
@@ -221,13 +223,53 @@ public class XmlPreprocessor implements DataPreprocessor {
             JsonObject senObj = new JsonObject();
 
             senObj.addProperty("index", index++);
+            String[] mecabResult = MecabWordClassHighlight.indexValue(sentenceValue, outArray).split(";");
+            StringBuilder highlightIndexBuilder = new StringBuilder();
+            List<Area> nameAreas = new ArrayList<>();
+
+            for(String str : mecabResult) {
+                if(str.startsWith("N")) {
+                    nameAreas.add(parseArea(str.substring(1)));
+                } else {
+                    highlightIndexBuilder.append(";").append(str);
+                }
+            }
+            sentenceValue = blindArea(sentenceValue, nameAreas);
             senObj.addProperty("sentence", sentenceValue.trim());
-            senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
+
+            String highlightIndex = "";
+            if(highlightIndexBuilder.length() > 0)
+                highlightIndex = highlightIndexBuilder.substring(1);
+            senObj.addProperty("highlight_indices" , highlightIndex);
             paragraph.add(senObj);
 
         }
 
         return paragraph;
+    }
+
+    private Area parseArea(String str) {
+        int start = Integer.parseInt(str.split(",")[0]);
+        int end = Integer.parseInt(str.split(",")[1]);
+
+        return new Area(start, end);
+    }
+
+    private String blindArea(String text, List<Area> targetAreas) {
+        if (targetAreas.size() == 0)
+            return text;
+        System.out.println("target data : " + text.replace("\n", " "));
+        StringBuilder builder = new StringBuilder(text);
+        for(Area area : targetAreas) {
+            int index = area.getStart();
+
+            while(index <= area.getEnd() - 1) {
+                builder.setCharAt(index++, '*');
+            }
+
+        }
+
+        return builder.toString();
     }
 
     private String editEscapeChar(String value) {
