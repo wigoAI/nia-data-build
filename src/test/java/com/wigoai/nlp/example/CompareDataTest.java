@@ -34,11 +34,20 @@ public class CompareDataTest {
     public void changeFileTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        for(int i = 4 ; i < 6 ; i++) {
-            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
+//        for(int i = 4 ; i < 6 ; i++) {
+//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
+//
+//            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+//        }
 
-            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
-        }
+
+//        String afterPath = "D:\\moara\\data\\law\\Data\\판례_2012\\json";
+//
+//        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+
+
+        String afterPath = "D:\\moara\\data\\allData\\기고문 done\\json\\";
+        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
     }
 
     @Test
@@ -52,11 +61,20 @@ public class CompareDataTest {
 //        }
 
 
-        for(int i = 0 ; i < 4 ; i++) {
-            String afterPath = "D:\\moara\\data\\nia_json\\NIA_" + (i + 1) + "차\\";
-            System.out.println((i + 1) + "차");
+//        for(int i = 4 ; i < 6 ; i++) {
+//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\new\\";
+//            System.out.println((i + 1) + "차");
+//            total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
+//        }
+            String afterPath = "D:\\moara\\data\\allData\\json\\";
+
             total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
-        }
+//
+//
+//        String afterPath = "D:\\moara\\data\\law\\Data\\판례_2012\\json";
+//
+//        total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
+
 
         System.out.println("All total : " + total);
     }

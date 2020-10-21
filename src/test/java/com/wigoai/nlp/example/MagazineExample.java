@@ -31,12 +31,12 @@ public class MagazineExample {
 
     public static void main(String[] args) {
 
-
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\김용수\\Downloads\\8차분\\잡지_주간경향.월간중앙.이코노미스트_13429건(Tab_Delimited).txt"), StandardCharsets.UTF_8))){
+        int count = 0;
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("D:\\moara\\data\\allData\\잡지\\잡지_주간경향.월간중앙.이코노미스트_13429건(Tab_Delimited).txt"), StandardCharsets.UTF_8))){
 
             String line;
             while ((line = br.readLine()) != null) {
-
+                count++;
                 String [] columns = line.split("\t");
 
 
@@ -53,13 +53,15 @@ public class MagazineExample {
                 document.addProperty("publish_date", columns[4] );
                 document.addProperty("title", columns[8]);
 
+                System.out.println(columns[9]);
+
             }
         }catch(Exception e){
             e.printStackTrace();
         }
 
 
-
+        System.out.println(count);
 
 
     }

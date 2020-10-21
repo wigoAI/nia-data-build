@@ -28,6 +28,7 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
+import org.moara.nia.data.build.preprocess.personNameFinder.PersonNameFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -77,7 +78,7 @@ public class XmlPreprocessor implements DataPreprocessor {
         if(!outputDir.exists()) {
             outputDir.mkdir();
         }
-
+        jsonFileName += "_" + fileList.size() + "건";
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
 
@@ -117,24 +118,6 @@ public class XmlPreprocessor implements DataPreprocessor {
         JsonObject document = initJsonObject(dom);
         JsonArray text = getText(dom);
         document.add("text", text);
-//        for (int i = 0 ; i < childNodes.getLength() ; i++ ) {
-//            Node node = childNodes.item(i);
-//
-//            if (node.getNodeType() == Node.TEXT_NODE) { continue; }
-//            String value = node.getTextContent();
-//
-////            Element nodeElement = (Element)node;
-////            System.out.println(node.getNodeName() + " : " + nodeElement.getAttribute("Desc") + " : " + data.trim());
-//
-//            if(node.getNodeName().equals("Content") ){
-//                JsonArray content = getContent(value);
-//                document.add("Content", content);
-//
-//            } else {
-//
-//                document.addProperty(node.getNodeName(), value.trim());
-//            }
-//        }
 
         return document;
     }
@@ -181,7 +164,6 @@ public class XmlPreprocessor implements DataPreprocessor {
 
 
     private Element getDomElement(File file) {
-
         Element root = null;
         try {
             Document document = documentBuilder.parse(file);

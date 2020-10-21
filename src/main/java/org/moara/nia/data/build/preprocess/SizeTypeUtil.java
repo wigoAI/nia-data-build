@@ -30,17 +30,13 @@ public class SizeTypeUtil {
 
         switch (typeValue) {
             case "대":
+            case "초대":
                 return "large";
 
             case "중":
                 return "medium";
 
             case "소":
-                return "small";
-
-            case "초대":
-                return "large";
-
             case "초소":
                 return "small";
 

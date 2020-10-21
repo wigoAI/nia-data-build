@@ -10,16 +10,22 @@ public class CreateJsonTest {
 
     @Test
     public void createJsonTestByTestWorks() {
-        String dirPath ="D:\\moara\\data\\allData\\";
+//        String dirPath ="D:\\moara\\data\\allData\\";
+//        DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
+//        for(int i = 4; i < 6 ; i++) {
+//            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
+//        }
+
+        String dirPath ="D:\\moara\\data\\allData\\기고문\\";
         DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
-        for(int i = 4; i < 6 ; i++) {
-            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
-        }
+
+        dataPreprocessor.makeByPath(dirPath);
+
     }
 
     @Test
     public void createTestJsonTest() {
-        String dirPath ="D:\\moara\\data\\allData\\test\\";
+        String dirPath ="D:\\moara\\data\\allData\\test\\기고test\\";
 
         DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
 

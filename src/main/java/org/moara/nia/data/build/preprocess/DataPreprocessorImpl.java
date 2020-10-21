@@ -38,8 +38,10 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
+import org.moara.nia.data.build.preprocess.exception.LongDataException;
 import org.moara.nia.data.build.preprocess.exception.OverlapDataException;
 import org.moara.nia.data.build.Area;
+import org.moara.nia.data.build.preprocess.exception.QaDataException;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 import org.slf4j.Logger;
@@ -62,9 +64,9 @@ import java.util.List;
 public class DataPreprocessorImpl implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
     private final ExcelGet excelGet = new ExcelGet();
-    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
+    private SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private XSSFRow row;
-    private final String [] outArray= {"M"};
+    private String [] outArray= {"M"};
 
 
     @Override
@@ -89,7 +91,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             System.out.println("create dir : " + outputPath);
         }
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         logger.debug("start file name: " +file.getName());
 
         JsonObject jsonObject = initJsonObject(file);
@@ -100,7 +102,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
     }
 
-    private JsonObject initJsonObject(File file) {
+    protected JsonObject initJsonObject(File file) {
         JsonObject jsonObject = new JsonObject() ;
         String delivery_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
@@ -110,7 +112,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return jsonObject;
     }
 
-    private void addDocumentArray(File file, JsonObject jsonObject) {
+    protected void addDocumentArray(File file, JsonObject jsonObject) {
         JsonArray documents = new JsonArray();
         XSSFSheet sheet = getExcelSheet(file);
         int rowCount = excelGet.getRowCount(sheet);
@@ -119,6 +121,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         int dropDataCount = 0;
         int normalDataCount = 0;
         int oldRandomIndex = 0;
+        int countDecimal = 1000;
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
 
 //            int newRandomIndex = (int)(Math.random()*(rowCount/200))+ oldRandomIndex;
@@ -138,9 +141,12 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 //                break;
 
 //            oldRandomIndex = newRandomIndex;
+            if(normalDataCount > countDecimal) {
+                System.out.println(normalDataCount + " / " + rowCount);
+                countDecimal += 1000;
+            }
         }
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.print("All data : " + (rowCount - 2));
         System.out.print("  Drop data : " + dropDataCount );
         System.out.println("  Normal data : " + (normalDataCount));
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -167,21 +173,19 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             return null;
         }
 
-        int documentId = document.get("id").getAsInt();
+        String documentId = document.get("id").getAsString();
 
         // 문단 리스트
         List<String> paragraphList = getParagraphList(contents);
         try {
             JsonArray text = getText(paragraphList);
             document.add("text", text);
-        } catch (OverlapDataException e) {
+        } catch (OverlapDataException | QaDataException | LongDataException e) {
             System.out.println("drop data in id : " + documentId);
             System.out.println(e.toString());
             return null;
         } catch (Exception e) {
-            System.out.println("Some date is wrong : " + documentId + " so drop the data");
-            System.out.println(e.toString());
-            return null;
+            System.out.println("this data something is wrong : " + documentId);
         }
 
 
@@ -219,20 +223,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         if(!getCellValue(2).trim().equals("온라인")){ return null; }
 
-        switch (sizeType) {
-            case "대":
-                sizeType = "large";
-                break;
-            case "중":
-                sizeType = "medium";
-                break;
-            case "소":
-                sizeType = "small";
-                break;
-            default:
-                logger.error("size type error: " + sizeType);
-                return null;
-        }
+        sizeType = SizeTypeUtil.getSizeType(sizeType);
 
         document.addProperty("id", id);
         document.addProperty("category", getCellValue(5));
@@ -247,9 +238,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return document;
     }
 
-    private List<String> getParagraphList(String contents) {
+    protected List<String> getParagraphList(String contents) {
         List<String> paragraphList = new ArrayList<>();
         int lsatIndex = 0;
+        contents = contents.replace("\\\\", "\\");
+
         while(true){
             int index = contents.indexOf("\\r\\n\\r\\n", lsatIndex);
             if(index == -1){ break; }
@@ -274,7 +267,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return paragraphList;
     }
 
-    private JsonArray getText(List<String> paragraphList) throws OverlapDataException {
+    protected JsonArray getText(List<String> paragraphList) throws OverlapDataException, QaDataException, LongDataException{
         JsonArray text = new JsonArray();
         String overlapCheck = "";
         int index = 0;
@@ -313,14 +306,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return text;
     }
 
-    private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) {
+    private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) throws QaDataException, LongDataException{
         JsonArray paragraph = new JsonArray();
-
         /* if want recreate personalDataFinder
-        *
         * check this commit
         * https://github.com/wigoAI/nia-data-build/commit/a24d2ed9d0e8b17f97a6316f70883ae421dd8e48
-        *
         * */
 
         // sentence split
@@ -330,7 +320,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             JsonObject senObj = new JsonObject();
 
             if(exceptionDataCheck) { sentenceValue = deleteExceptionData(sentenceValue, 50); }
-            if(sentenceValue.length() == 0){ continue; }
+            if(sentenceValue.length() == 0){
+                continue;
+            } else if(sentenceValue.contains("Q : ") || sentenceValue.contains("A : ")){
+                throw new QaDataException("this data is Q&A type : " + sentenceValue);
+            }else if(sentenceValue.length() > 300) {
+                throw new LongDataException("this data is too long : " + sentenceValue);
+            }
 
             senObj.addProperty("index", index++);
             senObj.addProperty("sentence", sentenceValue.trim());
@@ -361,9 +357,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
 
     private String editEscapeChar(String value) {
-
-
-        value = value.replace("\\r","\n")
+        value = value.replace("\\r\\n", " ")
+                .replace("  ", " ")
+                .replace("[", "")
+                .replace("]", "")
+                .replace("\\r","\n")
                 .replace("\\n","\n")
                 .replace("\\t","\t")
                 .replace("　"," ")
@@ -371,7 +369,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
                 .replace("‘", "'")
                 .replace("’", "'")
                 .replace("“", "\"")
-                .replace("”", "\"");
+                .replace("”", "\"")
+                .replace("＂", "\"");
 
         return value;
     }
@@ -385,7 +384,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         return value;
     }
-    private String getFileNameWithoutFormat(File file) {
+    protected String getFileNameWithoutFormat(File file) {
         String fileName = file.getName();
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
