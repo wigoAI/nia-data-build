@@ -15,8 +15,10 @@ public class CompareDataTest {
     public void compareDataTest() {
         CompareJson compareData = new CompareJson();
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
-        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
-        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
+//        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
+//        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
+        String beforePath = "D:\\moara\\data\\allData\\change\\edit\\before\\";
+        String afterPath = "D:\\moara\\data\\allData\\change\\edit\\after\\";
 
 //        List<File> beforeFileList =  FileUtil.getFileList(beforePath, ".json");
         List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
@@ -46,7 +48,7 @@ public class CompareDataTest {
 //        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
 
 
-        String afterPath = "D:\\moara\\data\\allData\\기고문 done\\json\\";
+        String afterPath = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\classify\\";
         jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
     }
 

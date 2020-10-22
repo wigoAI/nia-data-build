@@ -103,7 +103,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
     protected JsonObject initJsonObject(File file) {
-        JsonObject jsonObject = new JsonObject() ;
+        JsonObject jsonObject = new JsonObject();
         String delivery_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
         jsonObject.addProperty("name", getFileNameWithoutFormat(file));

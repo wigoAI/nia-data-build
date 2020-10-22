@@ -101,6 +101,7 @@ public class TextPreprocessor extends DataPreprocessorImpl{
         if(contents == null || contents.length() < 2){
             return null;
         }
+//        System.out.println(contents);
         List<String> paragraphList = getParagraphList(contents);
 
         String documentId = columns[0];

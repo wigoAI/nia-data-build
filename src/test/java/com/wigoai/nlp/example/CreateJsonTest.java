@@ -3,6 +3,9 @@ package com.wigoai.nlp.example;
 import org.junit.Assert;
 import org.junit.Test;
 import org.moara.nia.data.build.preprocess.*;
+import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
+
+import java.io.File;
 
 public class CreateJsonTest {
 
@@ -39,5 +42,29 @@ public class CreateJsonTest {
 
         xmlPreprocessor.makeByPath(dirPath);
 
+    }
+
+    @Test
+    public void editJsonTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+//        for(int i = 0 ; i < 6 ; i++) {
+//            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\new\\";
+//            jsonFileEditor.editJsonFileByPath(path);
+//        }
+
+
+        String path = "D:\\moara\\data\\allData\\잡지\\json\\new\\";
+        jsonFileEditor.editJsonFileByPath(path);
+
+
+    }
+
+    @Test
+    public void classifyJsonTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+        String path = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\";
+        jsonFileEditor.classifyJsonFileByPath(path);
     }
 }

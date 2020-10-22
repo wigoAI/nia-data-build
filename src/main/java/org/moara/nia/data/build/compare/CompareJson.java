@@ -49,7 +49,7 @@ public class CompareJson implements CompareData {
         String fileName = jsonName.substring(1, jsonName.length() - 1);
         HashMap<String, JsonArray> beforeTextHash = getHashMapByJsonObject(beforeDocuments);
 
-        String resultPath = "D:\\moara\\data\\allData\\change\\";
+        String resultPath = "D:\\moara\\data\\allData\\change\\edit\\compare\\";
         try ( BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + fileName + ".txt"))) {
 
 
@@ -79,17 +79,17 @@ public class CompareJson implements CompareData {
                     int notSplitStack = 0;
                     for(String str : beforeSentenceList) {
 
-//                        System.out.println("before  : " + str);
-                        bw.write("before  : " + str + "\n");
+//                        System.out.println("before\t: " + str);
+                        bw.write("before\t: " + str + "\n");
 
                         if(editEscapeChar(str).equals(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
-//                            System.out.println("after   : " + afterSentenceList.get(afterSentenceIndex++));
-                            bw.write("after   : " + afterSentenceList.get(afterSentenceIndex++) + "\n");
+//                            System.out.println("after	: " + afterSentenceList.get(afterSentenceIndex++));
+                            bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                         } else if(editEscapeChar(str).contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
 
                             while(editEscapeChar(str).contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
-//                                System.out.print("after : " + afterSentenceList.get(afterSentenceIndex++));
-                            bw.write("after   : " + afterSentenceList.get(afterSentenceIndex++) + "\n");
+//                                System.out.print("after\t: " + afterSentenceList.get(afterSentenceIndex++));
+                            bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                                 if(afterSentenceList.size() == afterSentenceIndex)
                                     break;
                             }
@@ -101,8 +101,8 @@ public class CompareJson implements CompareData {
                             for(int k = 0 ; k < notSplitStack ; k++) {
                                 if(afterSentenceIndex == afterSentenceList.size())
                                     break;
-//                                System.out.println("after : " + afterSentenceList.get(afterSentenceIndex++));
-                                bw.write("after   : " + afterSentenceList.get(afterSentenceIndex++) + "\n");
+//                                System.out.println("after\t: " + afterSentenceList.get(afterSentenceIndex++));
+                                bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                             }
 
                             notSplitStack = 0;
@@ -118,7 +118,7 @@ public class CompareJson implements CompareData {
                         for(int k = 0 ; k < notSplitStack ; k++) {
                             if(afterSentenceIndex == afterSentenceList.size())
                                 break;
-                            bw.write("after   : " + afterSentenceList.get(afterSentenceIndex++) + "\n");
+                            bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                         }
                     }
 
