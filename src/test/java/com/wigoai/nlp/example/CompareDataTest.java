@@ -48,7 +48,7 @@ public class CompareDataTest {
 //        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
 
 
-        String afterPath = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\classify\\";
+        String afterPath = "D:\\moara\\data\\allData\\잡지\\json\\edit\\";
         jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
     }
 

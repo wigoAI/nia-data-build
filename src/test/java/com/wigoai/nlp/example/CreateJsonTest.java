@@ -54,7 +54,7 @@ public class CreateJsonTest {
 //        }
 
 
-        String path = "D:\\moara\\data\\allData\\잡지\\json\\new\\";
+        String path = "D:\\moara\\data\\allData\\잡지\\json\\";
         jsonFileEditor.editJsonFileByPath(path);
 
 
