@@ -37,11 +37,22 @@ public class CreateJsonTest {
 
     @Test
     public void createXmlJsonTest() {
-        String dirPath = "D:\\moara\\data\\law\\Data\\test\\";
+        String dirPath = "D:\\moara\\data\\law\\Data\\2019\\";
         XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
-
         xmlPreprocessor.makeByPath(dirPath);
 
+    }
+
+    @Test
+    public void creatXmlJsonByFileListTest() {
+        String dirPath = "D:\\moara\\data\\law\\Data\\";
+        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
+
+        for(int i = 2019 ; i > 1999 ; i--) {
+            String path = dirPath + i + "\\";
+
+            xmlPreprocessor.makeByPath(path);
+        }
     }
 
     @Test

@@ -28,7 +28,6 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
-import org.moara.nia.data.build.preprocess.personNameFinder.PersonNameFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -48,13 +47,16 @@ import java.util.List;
 
 /**
  * XML 형태의 데이터 전처리기
+ * TODO 1. 판례내용이 아닌 참조조문으로 문장구분 실행할 것
  *
  * @author 조승현
  */
 public class XmlPreprocessor implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
-    private final String [] outArray= {"PERSON_NAME", "M"};
+    private final String [] outArray= {
+//            "PERSON_NAME",
+            "M"};
 
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
@@ -87,6 +89,8 @@ public class XmlPreprocessor implements DataPreprocessor {
         logger.debug("end file name : " +jsonFileName);
 
     }
+
+
     private JsonArray getDocuments(List<File> fileList) {
         JsonArray documents = new JsonArray();
 
@@ -97,12 +101,16 @@ public class XmlPreprocessor implements DataPreprocessor {
 
             count++;
             logger.debug("end length: " + count + "/" + fileList.size());
+            if(count > 100) {
+                break;
+            }
         }
 
         return documents;
     }
 
     private JsonObject initJsonObject(String name) {
+        System.out.println("init json");
         JsonObject jsonObject = new JsonObject() ;
         String delivery_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
@@ -135,17 +143,14 @@ public class XmlPreprocessor implements DataPreprocessor {
         document.addProperty("category", getTagValue("CaseType", dom));
         document.addProperty("case_code", getTagValue("CaseCode", dom));
         document.addProperty("case_type", getTagValue("CaseType", dom, 1));
-        document.addProperty("decision", getTagValue("Decision", dom));
-        document.addProperty("jurisdiction", getTagValue("Jurisdiction", dom));
-        document.addProperty("reference_1", getTagValue("Reference1", dom));
-        document.addProperty("reference_2", getTagValue("Reference2", dom));
 
-        int documentSize = dom.getElementsByTagName("Content").item(0).getTextContent().length();
+
+        int documentSize = dom.getElementsByTagName("Jurisdiction").item(0).getTextContent().length();
         document.addProperty("char_count", documentSize);
 
-        if(documentSize < 4000)
+        if(documentSize < 600)
             document.addProperty("size","small");
-        else if( documentSize < 8000 )
+        else if( documentSize < 1500 )
             document.addProperty("size","medium");
         else
             document.addProperty("size", "large");
@@ -178,7 +183,7 @@ public class XmlPreprocessor implements DataPreprocessor {
 
     private JsonArray getText(Element dom) {
         JsonArray content = new JsonArray();
-        String text = dom.getElementsByTagName("Content").item(0).getTextContent();
+        String text = dom.getElementsByTagName("Jurisdiction").item(0).getTextContent();
 
         int index = 0;
         for(String str : text.trim().split("\\n")) {

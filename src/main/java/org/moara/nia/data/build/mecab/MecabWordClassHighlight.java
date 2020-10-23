@@ -199,16 +199,13 @@ public class MecabWordClassHighlight {
     }
 
     public static void findPersonName(String str, int start, int end, StringBuilder indexBuilder) {
-
-
         if(isPersonName(str, start, end)) {
-//                System.out.println("input str : " + str);
-////                System.out.println(words[k]);
-//                System.out.println(str.substring(start, end) + " : " + start + ", " + end);
-//                System.out.println();
-            indexBuilder.append(";").append("N").append(start).append(",").append(end);
+            indexBuilder.append(";")
+                    .append("N")
+                    .append(start)
+                    .append(",")
+                    .append(end);
         }
-
     }
 
     /**

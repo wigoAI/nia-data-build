@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
  * 데이터 정제 결과로 도출된 JSON 파일의 관리를 한다.
  *
  * TODO 1. 유동적이지 않은 구조 개선하기
+ *      2. JAVADOC 추가하기
+ *      3. 문장 길이에 변화가 생길 때 mecab 인덱스 변화줄 것
  *
  * @author 조승현
  */
@@ -128,6 +130,11 @@ public class JsonFileEditor {
         return total;
     }
 
+    /**
+     *
+     *
+     * @param path String
+     */
     public void editJsonFileByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
@@ -162,12 +169,7 @@ public class JsonFileEditor {
     }
 
     public void classifyJsonFileBySize(File file, String outputPath, String size) throws Exception {
-        File outputDir = new File(outputPath + "classify\\");
-
-        if(!outputDir.exists()) {
-            outputDir.mkdir();
-            System.out.println("create dir : " + outputPath + "classify\\");
-        }
+        createDir(outputPath, "classify");
         JsonObject newsJson = getJsonObjectByFile(file);
         JsonObject classifyJson = copyJsonObjectInfo(newsJson);
         JsonArray documents = newsJson.getAsJsonArray("documents");
@@ -198,28 +200,15 @@ public class JsonFileEditor {
         FileUtil.fileOutput(gson.toJson(classifyJson), outputPath + "classify\\" + size + "_" + file.getName() ,false);
 
     }
+    public void editMagazineJsonFile(File file, String outputPath) {
+        createDir(outputPath, "edit");
 
-    public void editJsonFile(File file, String outputPath) {
-        File outputDir = new File(outputPath + "edit\\");
-        boolean isMagazine = file.getName().contains("잡지");
-
-        if(!outputDir.exists()) {
-            outputDir.mkdir();
-            System.out.println("create dir : " + outputPath + "edit\\");
-        }
-        String regxStr = "[a-zA-Z0-9]@";
-        String regxStrMagazine1 = "-.*@";
-        String regxStrMagazine2 = "<.*[a-zA-Z0-9]@+.*>";
-        String regxStrMagazine3 = "기자\\s[0-9a-zA-Z][0-9a-zA-Z]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10})";
-
-        Pattern pattern = Pattern.compile(regxStr);
-        Pattern patternMagazine1 = Pattern.compile(regxStrMagazine1);
-        Pattern patternMagazine2 = Pattern.compile(regxStrMagazine2);
-        Pattern patternMagazine3 = Pattern.compile(regxStrMagazine3);
+        Pattern pattern1 = getPattern("-.*@");
+        Pattern pattern2 = getPattern("<.*[a-zA-Z0-9]@+.*>");
+        Pattern pattern3 = getPattern("기자\\s[0-9a-zA-Z][0-9a-zA-Z]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10})");
 
         JsonObject newsJson = getJsonObjectByFile(file);
         JsonObject editJson = copyJsonObjectInfo(newsJson);
-
 
         JsonArray documents = newsJson.getAsJsonArray("documents");
         JsonArray editDocuments = new JsonArray();
@@ -239,31 +228,23 @@ public class JsonFileEditor {
                     JsonObject sentence = paragraph.get(k).getAsJsonObject();
                     JsonObject editSentence;
                     String targetSentence = sentence.get("sentence").getAsString();
-                    Matcher matcher = pattern.matcher(targetSentence);
 
-                    if(isMagazine) {
-                        Matcher matcherMagazine1 = patternMagazine1.matcher(targetSentence);
-                        Matcher matcherMagazine2 = patternMagazine2.matcher(targetSentence);
-                        Matcher matcherMagazine3 = patternMagazine3.matcher(targetSentence);
+                    Matcher matcher1 = pattern1.matcher(targetSentence);
+                    Matcher matcher2 = pattern2.matcher(targetSentence);
+                    Matcher matcher3 = pattern3.matcher(targetSentence);
 
-                        if(matcherMagazine1.find()) {
-                            System.out.println(targetSentence);
-                            targetSentence = targetSentence.substring(0, matcherMagazine1.start()).trim();
-                            if (targetSentence.length() < 2)
-                                continue;
-                            sentence.addProperty("sentence", targetSentence);
-                        } else if(matcherMagazine2.find()) {
-                            System.out.println(targetSentence);
-                            continue;
-                        } else if(matcherMagazine3.find()) {
-                            if(matcherMagazine3.group().length() > (targetSentence.length() / 2))
-                            System.out.println(targetSentence);
-                            continue;
-
-                        }
-
-                    } else if( targetSentence.length() < 40 && matcher.find()) {
+                    if(matcher1.find()) {
                         System.out.println(targetSentence);
+                        targetSentence = targetSentence.substring(0, matcher1.start()).trim();
+                        if (targetSentence.length() < 2)
+                            continue;
+                        sentence.addProperty("sentence", targetSentence);
+                    } else if(matcher2.find()) {
+                        System.out.println(targetSentence);
+                        continue;
+                    } else if(matcher3.find()) {
+                        if(matcher3.group().length() > (targetSentence.length() / 2))
+                            System.out.println(targetSentence);
                         continue;
                     }
 
@@ -291,7 +272,89 @@ public class JsonFileEditor {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         FileUtil.fileOutput(gson.toJson(editJson), outputPath + "edit\\" + file.getName() ,false);
+    }
 
+    /**
+     * Json 파일 수정 메서드
+     * TODO 1. 완벽하게 모듈화 할 것
+     *      2. 생성된 json 을 수정하는 기능은 이후에 많이 쓰일것으로 예상됨
+     * @param file File
+     * @param outputPath String
+     */
+    public void editJsonFile(File file, String outputPath) {
+        createDir(outputPath, "edit");
+
+
+        JsonObject newsJson = getJsonObjectByFile(file);
+        JsonObject editJson = copyJsonObjectInfo(newsJson);
+        JsonArray documents = newsJson.getAsJsonArray("documents");
+        JsonArray editDocuments = new JsonArray();
+
+        int dropCount = 0;
+        Pattern pattern = getPattern("[a-zA-Z0-9]@");
+        for (int i = 0 ; i < documents.size() ; i++) {
+            JsonObject document = documents.get(i).getAsJsonObject();
+            JsonObject editDocument = copyDocumentInfo(document);
+            JsonArray text = document.get("text").getAsJsonArray();
+            JsonArray editText = new JsonArray();
+
+            int index = 0;
+            for(int j = 0 ; j < text.size() ; j++) {
+                JsonArray paragraph = text.get(j).getAsJsonArray();
+                JsonArray editParagraph = new JsonArray();
+
+                for (int k = 0 ; k < paragraph.size() ; k++) {
+                    JsonObject sentence = paragraph.get(k).getAsJsonObject();
+                    JsonObject editSentence;
+                    String targetSentence = sentence.get("sentence").getAsString();
+                    Matcher matcher = pattern.matcher(targetSentence);
+
+
+                    if( targetSentence.length() < 40 && matcher.find()) {
+                        System.out.println(targetSentence);
+                        continue;
+                    }
+
+
+                    editSentence = copySentence(index++, sentence);
+                    editParagraph.add(editSentence);
+                }
+
+                if(editParagraph.size() != 0) {
+                    editText.add(editParagraph);
+                }
+
+            }
+            if(editText.size() == 0) {
+                System.out.println("drop data : " + document.get("id").getAsString() );
+                dropCount++;
+                continue;
+            }
+
+            editDocument.add("text", editText);
+            editDocuments.add(editDocument);
+        }
+        editJson.add("documents", editDocuments);
+        System.out.println("drop " + dropCount +" data in " + newsJson.get("name").getAsString());
+
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        FileUtil.fileOutput(gson.toJson(editJson), outputPath + "edit\\" + file.getName() ,false);
+
+    }
+
+    private Pattern getPattern(String regxStr) {
+        return Pattern.compile(regxStr);
+    }
+
+    private void createDir(String outputPath, String dirName) {
+        dirName += "\\";
+        File outputDir = new File(outputPath + dirName);
+
+        if (!outputDir.exists()) {
+            outputDir.mkdir();
+            System.out.println("create dir : " + outputPath + dirName);
+        }
     }
 
     private JsonObject copySentence(int index, JsonObject targetSentence) {

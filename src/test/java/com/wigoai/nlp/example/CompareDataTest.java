@@ -3,6 +3,7 @@ package com.wigoai.nlp.example;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
+import org.moara.nia.data.build.compare.BlindCompare;
 import org.moara.nia.data.build.compare.CompareJson;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
 
@@ -48,7 +49,7 @@ public class CompareDataTest {
 //        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
 
 
-        String afterPath = "D:\\moara\\data\\allData\\잡지\\json\\edit\\";
+        String afterPath = "D:\\moara\\data\\law\\Data\\2019\\json\\";
         jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
     }
 
@@ -81,7 +82,26 @@ public class CompareDataTest {
         System.out.println("All total : " + total);
     }
 
+    @Test
+    public void blindCompareTest() {
+        BlindCompare blindCompare = new BlindCompare();
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+//        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
+//        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
+        String beforePath = "D:\\moara\\data\\law\\compare\\blind\\before\\";
+        String afterPath = "D:\\moara\\data\\law\\compare\\blind\\after\\";
 
+//        List<File> beforeFileList =  FileUtil.getFileList(beforePath, ".json");
+        List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
+        for (File file : afterFileList) {
+            System.out.println(file.getName());
+            JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
+            JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
+            blindCompare.compare(beforeJson, afterJson);
+
+        }
+
+    }
 
 
 }

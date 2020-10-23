@@ -3,7 +3,6 @@ package com.wigoai.nlp.example;
 import org.junit.Test;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.moara.nia.data.build.preprocess.personNameFinder.Api;
-import org.moara.nia.data.build.preprocess.personNameFinder.PersonNameFinder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

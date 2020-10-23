@@ -137,7 +137,7 @@ public class CompareJson implements CompareData {
 
 
 
-    private List<String> getSentenceList(JsonArray jsonArray) {
+    protected List<String> getSentenceList(JsonArray jsonArray) {
         List<String> sentenceList = new ArrayList<>();
         for (int i = 0 ; i < jsonArray.size() ; i++) {
             JsonObject sentenceJson = (JsonObject) jsonArray.get(i);
@@ -149,7 +149,7 @@ public class CompareJson implements CompareData {
         return sentenceList;
     }
 
-    private HashMap<String, JsonArray> getHashMapByJsonObject(JsonArray beforeDocuments) {
+    protected HashMap<String, JsonArray> getHashMapByJsonObject(JsonArray beforeDocuments) {
         HashMap<String, JsonArray> beforeTextHash = new HashMap<>();
         for(int i = 0 ; i < beforeDocuments.size() ; i++) {
             JsonObject document = (JsonObject) beforeDocuments.get(i);
