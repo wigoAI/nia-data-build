@@ -24,6 +24,8 @@ public class CreateJsonTest {
 
         dataPreprocessor.makeByPath(dirPath);
 
+
+
     }
 
     @Test
@@ -59,14 +61,14 @@ public class CreateJsonTest {
     public void editJsonTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-//        for(int i = 0 ; i < 6 ; i++) {
-//            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\new\\";
-//            jsonFileEditor.editJsonFileByPath(path);
-//        }
+        for(int i = 0 ; i < 6 ; i++) {
+            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
+            jsonFileEditor.editJsonFileByPath(path);
+        }
 
-
-        String path = "D:\\moara\\data\\allData\\잡지\\json\\";
-        jsonFileEditor.editJsonFileByPath(path);
+//
+//        String path = "D:\\moara\\data\\allData\\test\\jsonDelTest\\";
+//        jsonFileEditor.editJsonFileByPath(path);
 
 
     }
