@@ -47,10 +47,10 @@ public class CreateJsonTest {
 
     @Test
     public void creatXmlJsonByFileListTest() {
-        String dirPath = "D:\\moara\\data\\law\\Data\\";
+        String dirPath = "D:\\moara\\data\\law\\data_1947-2020\\";
         XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
 
-        for(int i = 2019 ; i > 1999 ; i--) {
+        for(int i = 1947 ; i <= 2020 ; i++) {
             String path = dirPath + i + "\\";
 
             xmlPreprocessor.makeByPath(path);
@@ -69,6 +69,17 @@ public class CreateJsonTest {
 //
 //        String path = "D:\\moara\\data\\allData\\test\\jsonDelTest\\";
 //        jsonFileEditor.editJsonFileByPath(path);
+
+
+    }
+
+    @Test
+    public void editLawJsonTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+
+        String path = "D:\\moara\\data\\law\\json\\";
+        jsonFileEditor.editLawJsonFileByPath(path);
 
 
     }

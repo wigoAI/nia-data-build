@@ -37,11 +37,15 @@ public class CompareDataTest {
     public void changeFileTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        for(int i = 0 ; i < 6 ; i++) {
-            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\edit\\";
+//        for(int i = 0 ; i < 6 ; i++) {
+//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\edit\\";
+//
+//            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+//        }
 
-            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
-        }
+        String afterPath = "D:\\moara\\data\\law\\json\\edit\\";
+
+        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
 
 
 
@@ -64,7 +68,7 @@ public class CompareDataTest {
 //            System.out.println((i + 1) + "차");
 //            total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
 //        }
-            String afterPath = "D:\\moara\\data\\allData\\json\\";
+            String afterPath = "D:\\moara\\data\\law\\json\\edit\\new\\";
 
             total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
 //

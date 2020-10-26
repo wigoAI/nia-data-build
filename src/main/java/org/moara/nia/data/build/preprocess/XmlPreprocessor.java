@@ -74,7 +74,7 @@ public class XmlPreprocessor implements DataPreprocessor {
     @Override
     public void makeByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".xml");
-        String outputPath = path + "json";
+        String outputPath = "D:\\moara\\data\\law\\json";
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
 
@@ -103,9 +103,7 @@ public class XmlPreprocessor implements DataPreprocessor {
 
             count++;
             logger.debug("end length: " + count + "/" + fileList.size());
-            if(count > 100) {
-                break;
-            }
+
         }
 
         return documents;

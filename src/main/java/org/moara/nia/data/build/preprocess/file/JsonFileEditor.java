@@ -152,6 +152,25 @@ public class JsonFileEditor {
     }
 
     /**
+     *
+     * 파일 경로에 있는 json 수정
+     *
+     * @param path String
+     */
+    public void editLawJsonFileByPath(String path) {
+        List<File> fileList = FileUtil.getFileList(path, ".json");
+
+        int count = 0;
+
+        for(File file : fileList) {
+            editLawJsonFile(file, path);
+            count++;
+            logger.debug("end length: " + count + "/" + fileList.size());
+        }
+
+    }
+
+    /**
      * 파일 경로에 있는 json 분류
      *
      * @param path String
@@ -177,6 +196,13 @@ public class JsonFileEditor {
 
     }
 
+    /**
+     * 문서 크기에 따른 파일 분류 메서드
+     * @param file File
+     * @param outputPath String
+     * @param size String
+     * @throws Exception If size data empty
+     */
     public void classifyJsonFileBySize(File file, String outputPath, String size) throws Exception {
         createDir(outputPath, "classify");
         JsonObject newsJson = getJsonObjectByFile(file);
@@ -209,79 +235,13 @@ public class JsonFileEditor {
         FileUtil.fileOutput(gson.toJson(classifyJson), outputPath + "classify\\" + size + "_" + file.getName() ,false);
 
     }
-    public void editMagazineJsonFile(File file, String outputPath) {
-        createDir(outputPath, "edit");
 
-        Pattern pattern1 = getPattern("-.*@");
-        Pattern pattern2 = getPattern("<.*[a-zA-Z0-9]@+.*>");
-        Pattern pattern3 = getPattern("기자\\s[0-9a-zA-Z][0-9a-zA-Z]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10})");
+    /**
+     * Edit magazine json file method (Delete)
+     * @param file File
+     * @param outputPath String
+     */
 
-        JsonObject newsJson = getJsonObjectByFile(file);
-        JsonObject editJson = copyJsonObjectInfo(newsJson);
-
-        JsonArray documents = newsJson.getAsJsonArray("documents");
-        JsonArray editDocuments = new JsonArray();
-        int dropCount = 0;
-        for (int i = 0 ; i < documents.size() ; i++) {
-            JsonObject document = documents.get(i).getAsJsonObject();
-            JsonObject editDocument = copyDocumentInfo(document);
-            JsonArray text = document.get("text").getAsJsonArray();
-            JsonArray editText = new JsonArray();
-
-            int index = 0;
-            for(int j = 0 ; j < text.size() ; j++) {
-                JsonArray paragraph = text.get(j).getAsJsonArray();
-                JsonArray editParagraph = new JsonArray();
-
-                for (int k = 0 ; k < paragraph.size() ; k++) {
-                    JsonObject sentence = paragraph.get(k).getAsJsonObject();
-                    JsonObject editSentence;
-                    String targetSentence = sentence.get("sentence").getAsString();
-
-                    Matcher matcher1 = pattern1.matcher(targetSentence);
-                    Matcher matcher2 = pattern2.matcher(targetSentence);
-                    Matcher matcher3 = pattern3.matcher(targetSentence);
-
-                    if(matcher1.find()) {
-                        System.out.println(targetSentence);
-                        targetSentence = targetSentence.substring(0, matcher1.start()).trim();
-                        if (targetSentence.length() < 2)
-                            continue;
-                        sentence.addProperty("sentence", targetSentence);
-                    } else if(matcher2.find()) {
-                        System.out.println(targetSentence);
-                        continue;
-                    } else if(matcher3.find()) {
-                        if(matcher3.group().length() > (targetSentence.length() / 2))
-                            System.out.println(targetSentence);
-                        continue;
-                    }
-
-                    editSentence = copySentence(index++, sentence);
-                    editParagraph.add(editSentence);
-                }
-
-                if(editParagraph.size() != 0) {
-                    editText.add(editParagraph);
-                }
-
-            }
-            if(editText.size() == 0) {
-                System.out.println("drop data : " + document.get("id").getAsString() );
-                dropCount++;
-                continue;
-            }
-
-            editDocument.add("text", editText);
-            editDocuments.add(editDocument);
-        }
-
-        editJson.add("documents", editDocuments);
-        System.out.println("drop " + dropCount +" data in " + newsJson.get("name").getAsString());
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        FileUtil.fileOutput(gson.toJson(editJson), outputPath + "edit\\" + file.getName() ,false);
-    }
 
     /**
      * Json 파일 수정 메서드
@@ -307,28 +267,116 @@ public class JsonFileEditor {
 
     }
 
-    private JsonArray getEditDocuments(JsonArray documents) {
-        Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
+    /**
+     * 판례 데이터 Json 파일 수정 메서드
+     *
+     * @param file File
+     * @param outputPath String
+     */
+    public void editLawJsonFile(File file, String outputPath) {
+        createDir(outputPath, "edit");
 
+        JsonObject newsJson = getJsonObjectByFile(file);
+        JsonObject editJson = copyJsonObjectInfo(newsJson);
+        JsonArray documents = newsJson.getAsJsonArray("documents");
+        JsonArray editDocuments = getEditLawDocuments(documents);
+
+        System.out.println(newsJson.get("name").getAsString());
+        editJson.add("documents", editDocuments);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        FileUtil.fileOutput(gson.toJson(editJson), outputPath + "edit\\" + file.getName() ,false);
+
+    }
+
+    private JsonArray getEditLawDocuments(JsonArray documents) {
+        Pattern dropDataPattern = Pattern.compile(".*[^\\\\.\\]다\\)례예]$");
+        JsonArray editDocuments = new JsonArray();
+
+        int dropCount = 0;
+        // Document 복사 & text 접근
+        for (int i = 0; i < documents.size() ; i++) {
+            JsonObject document = documents.get(i).getAsJsonObject();
+            JsonObject editDocument = copyDocumentInfo(document);
+            boolean dropDocumentFlag = false;
+            JsonArray text = document.get("text").getAsJsonArray();
+            JsonArray editText = new JsonArray();
+
+
+            // text 접근
+            int index = 0;
+            for(int j = 0 ; j < text.size() ; j++) {
+
+                JsonArray paragraph = text.get(j).getAsJsonArray();
+                JsonArray editParagraph = new JsonArray();
+
+                // 문단 수정
+                for (int k = 0 ; k < paragraph.size() ; k++) {
+                    JsonObject sentence = paragraph.get(k).getAsJsonObject();
+                    JsonObject editSentence;
+                    String targetSentence = sentence.get("sentence").getAsString();
+                    Matcher dropDataMatcher = dropDataPattern.matcher(targetSentence);
+
+                    if(j != text.size() - 1 && k != paragraph.size() && dropDataMatcher.find()) {
+                        System.out.println(document.get("id").getAsString() + " Drop data : " + targetSentence);
+                        dropDocumentFlag = true;
+                        break;
+                    }
+
+
+
+                    sentence.addProperty("sentence", targetSentence);
+                    editSentence = copySentence(index++, sentence);
+                    editParagraph.add(editSentence);
+                }
+                if(dropDocumentFlag) {
+                    break;
+                }
+                if(editParagraph.size() != 0) {
+                    editText.add(editParagraph);
+                }
+
+            }
+
+            if(editText.size() == 0 || dropDocumentFlag) {
+                System.out.println("drop data : " + document.get("id").getAsString() );
+                dropCount++;
+                continue;
+            }
+
+            editDocument.add("text", editText);
+            editDocuments.add(editDocument);
+
+        }
+        System.out.print("drop " + dropCount +" data in ");
+
+        return editDocuments;
+    }
+
+
+    private JsonArray getEditDocuments(JsonArray documents) {
+        JsonArray editDocuments = new JsonArray();
+        Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
         String[] editPatterns = {"\\[사진.*\\]",
                 "/[^a-zA-Z0-9]*기자.*",
                 "<[^>]*[>.]",
                 "^/[^a-zA-Z0-9]+/$",
                 "\\([^\\(\\)]*[^포자전]기자[^차\\(\\)]*\\)"};
 
-        JsonArray editDocuments = new JsonArray();
         int dropCount = 0;
-
         // Document 복사 & text 접근
         for (int i = 0; i < documents.size() ; i++) {
             JsonObject document = documents.get(i).getAsJsonObject();
             JsonObject editDocument = copyDocumentInfo(document);
             JsonArray text = document.get("text").getAsJsonArray();
             JsonArray editText = new JsonArray();
+
             System.out.println("Edit " + document.get("id").getAsString());
+
             // text 접근
             int index = 0;
             for(int j = 0 ; j < text.size() ; j++) {
+
                 JsonArray paragraph = text.get(j).getAsJsonArray();
                 JsonArray editParagraph = new JsonArray();
 
@@ -339,14 +387,7 @@ public class JsonFileEditor {
                     String targetSentence = sentence.get("sentence").getAsString();
                     Matcher emailMatcher = emailPattern.matcher(targetSentence);
 
-
-//                    sentence.get("highlight_indices")
                     // 제거 대상
-                    /*
-                     *  TODO 1. 여러가지 조건에 따라 동작하게 수정할 것
-                     *          - Matcher List 사용
-                     *
-                     */
                     for (String pattern : editPatterns) {
 //                        System.out.println("targetString : " + targetSentence);
                         targetSentence = editSentence(sentence, targetSentence, pattern).trim();
@@ -359,7 +400,7 @@ public class JsonFileEditor {
                         System.out.println("Drop email : " + targetSentence);
                         continue;
 
-                    } else if(!isEndingByDa(targetSentence) && (j < 2 || j == text.size() - 1)) { // '다'로 끝나는 문장
+                    } else if(!endsWithDa(targetSentence) && (j < 2 || j == text.size() - 1)) { // '다'로 끝나는 문장
 
                         System.out.println("Drop headline or explain text : " + targetSentence);
                         continue;
@@ -373,6 +414,7 @@ public class JsonFileEditor {
                 if(editParagraph.size() != 0) {
                     editText.add(editParagraph);
                 }
+
             }
 
             if(editText.size() == 0) {
@@ -434,16 +476,16 @@ public class JsonFileEditor {
         return targetSentence;
     }
 
-    private boolean isEndingByDa(String sentence) {
+    private boolean endsWithDa(String sentence) {
         if(sentence.charAt(sentence.length() - 1) == '.' && sentence.charAt(sentence.length() - 2) == '다') {
             return true;
         } else if(sentence.charAt(sentence.length() - 1) == '다') {
             return true;
         }
 
+
         return false;
     }
-
 
     private void createDir(String outputPath, String dirName) {
         dirName += "\\";
