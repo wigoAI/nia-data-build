@@ -63,7 +63,7 @@ import java.util.List;
  */
 public class DataPreprocessorImpl implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    private final ExcelGet excelGet = new ExcelGet();
+    private ExcelGet excelGet = new ExcelGet();
     private SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private XSSFRow row;
     private String [] outArray= {"M"};
@@ -117,18 +117,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         XSSFSheet sheet = getExcelSheet(file);
         int rowCount = excelGet.getRowCount(sheet);
 
-//        int testCount = 0;
         int dropDataCount = 0;
         int normalDataCount = 0;
-        int oldRandomIndex = 0;
         int countDecimal = 1000;
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
 
-//            int newRandomIndex = (int)(Math.random()*(rowCount/200))+ oldRandomIndex;
-//            if(newRandomIndex >= rowCount)
-//                break;
+
             JsonObject document = getDocument(sheet, rowIndex);
-//            JsonObject document = getDocument(sheet, newRandomIndex);
 
             if(document == null) {
                 dropDataCount++;
@@ -137,10 +132,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
             documents.add(document);
             normalDataCount++;
-//            if(testCount++ > 200)
-//                break;
-
-//            oldRandomIndex = newRandomIndex;
             if(normalDataCount > countDecimal) {
                 System.out.println(normalDataCount + " / " + rowCount);
                 countDecimal += 1000;
@@ -192,7 +183,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return document;
     }
 
-    private XSSFSheet getExcelSheet(File file) {
+    protected XSSFSheet getExcelSheet(File file) {
         XSSFWorkbook work = null;
         try {
             work = new XSSFWorkbook(new FileInputStream(file));
@@ -375,7 +366,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return value;
     }
 
-    private String getCellValue(int cellNum){
+    protected String getCellValue(int cellNum){
         String value = excelGet.getCellValue(row, cellNum);
 
         if(value != null){

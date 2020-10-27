@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.compare.BlindCompare;
 import org.moara.nia.data.build.compare.CompareJson;
+import org.moara.nia.data.build.preprocess.ExcelCounter;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
 
 import java.io.File;
@@ -37,18 +38,14 @@ public class CompareDataTest {
     public void changeFileTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-//        for(int i = 0 ; i < 6 ; i++) {
-//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\edit\\";
+        for(int i = 3 ; i < 6 ; i++) {
+            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\";
+
+            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+        }
+//        String afterPath = "D:\\moara\\data\\law\\json\\edit\\";
 //
-//            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
-//        }
-
-        String afterPath = "D:\\moara\\data\\law\\json\\edit\\";
-
-        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
-
-
-
+//        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
 
     }
 
@@ -56,27 +53,27 @@ public class CompareDataTest {
     public void countJsonTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
         int total = 0;
-//        for(int i = 0 ; i < 4 ; i++) {
-//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\new\\";
-//            System.out.println((i + 1) + "차");
-//            total += outputFile.jsonCounter(FileUtil.getFileList(afterPath,".json"));
-//        }
-
-
-//        for(int i = 4 ; i < 6 ; i++) {
-//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\new\\";
-//            System.out.println((i + 1) + "차");
-//            total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
-//        }
-            String afterPath = "D:\\moara\\data\\law\\json\\edit\\new\\";
-
+        for(int i = 3 ; i < 6 ; i++) {
+            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\new\\";
+            System.out.println((i + 1) + "차");
             total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
-//
-//
-//        String afterPath = "D:\\moara\\data\\law\\Data\\판례_2012\\json";
+        }
+
+//        String afterPath = "D:\\moara\\data\\law\\json\\edit\\new\\";
 //
 //        total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
 
+        System.out.println("All total : " + total);
+    }
+
+    @Test
+    public void countCategoryTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        int total = 0;
+
+        String afterPath = "D:\\moara\\data\\allData\\change\\";
+
+        total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
 
         System.out.println("All total : " + total);
     }
@@ -85,12 +82,10 @@ public class CompareDataTest {
     public void blindCompareTest() {
         BlindCompare blindCompare = new BlindCompare();
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
-//        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
-//        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
+
         String beforePath = "D:\\moara\\data\\law\\compare\\blind\\before\\";
         String afterPath = "D:\\moara\\data\\law\\compare\\blind\\after\\";
 
-//        List<File> beforeFileList =  FileUtil.getFileList(beforePath, ".json");
         List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
         for (File file : afterFileList) {
             System.out.println(file.getName());
@@ -99,6 +94,23 @@ public class CompareDataTest {
             blindCompare.compare(beforeJson, afterJson);
 
         }
+
+    }
+
+    @Test
+    public void countExcelDataTest() {
+        ExcelCounter excelCounter = new ExcelCounter();
+
+
+        for (int i = 4 ; i <= 6 ; i++) {
+            String path = "D:\\moara\\data\\allData\\NIA_" + i + "차_excel\\";
+            for (String id : excelCounter.countByPath(path)) {
+                System.out.println(id);
+            }
+        }
+
+
+
 
     }
 

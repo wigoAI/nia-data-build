@@ -6,6 +6,7 @@ import org.moara.nia.data.build.preprocess.*;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
 
 import java.io.File;
+import java.util.HashSet;
 
 public class CreateJsonTest {
 
@@ -63,7 +64,7 @@ public class CreateJsonTest {
 
         for(int i = 0 ; i < 6 ; i++) {
             String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
-            jsonFileEditor.editJsonFileByPath(path);
+            jsonFileEditor.editJsonFileByPath(path, new HashSet<>());
         }
 
 //
@@ -90,5 +91,18 @@ public class CreateJsonTest {
 
         String path = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\";
         jsonFileEditor.classifyJsonFileByPath(path);
+    }
+
+    @Test
+    public void dropDocumentsTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        ExcelCounter excelCounter = new ExcelCounter();
+
+        for(int i = 3 ; i < 6 ; i++) {
+            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\";
+            HashSet<String> dropData = excelCounter.countByPath(path);
+
+            jsonFileEditor.editJsonFileByPath(path, dropData);
+        }
     }
 }

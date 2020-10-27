@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,17 +135,44 @@ public class JsonFileEditor {
 
     /**
      *
+     * Json 파일에서 조건에 맞는 데이터의 갯수를 얻는다.
+     *
+     * @param fileList List<File>
+     * @return int
+     */
+    public int jsonCounter(List<File> fileList, String target, String value) {
+        int total = 0;
+        for(File file : fileList) {
+            JsonObject jsonObject = getJsonObjectByFile(file);
+            JsonArray documents = jsonObject.getAsJsonArray("documents");
+            int documentsSize = 0;
+            for(int i = 0 ; i < documents.size() ; i++) {
+                JsonObject document = documents.get(i).getAsJsonObject();
+                if(document.get(target).getAsString().equals(value)) {
+                    documentsSize++;
+                }
+            }
+            System.out.println(file.getName() + " : " + documentsSize);
+            total += documentsSize;
+        }
+        System.out.println("total : " + total);
+
+        return total;
+    }
+
+    /**
+     *
      * 파일 경로에 있는 json 수정
      *
      * @param path String
      */
-    public void editJsonFileByPath(String path) {
+    public void editJsonFileByPath(String path, HashSet<String> dropData) {
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
         int count = 0;
 
         for(File file : fileList) {
-            editJsonFile(file, path);
+            editJsonFile(file, path, dropData);
             count++;
             logger.debug("end length: " + count + "/" + fileList.size());
         }
@@ -191,9 +219,6 @@ public class JsonFileEditor {
                 logger.debug("end length: " + count + "/" + fileList.size());
             }
         }
-
-
-
     }
 
     /**
@@ -251,13 +276,13 @@ public class JsonFileEditor {
      * @param file File
      * @param outputPath String
      */
-    public void editJsonFile(File file, String outputPath) {
+    public void editJsonFile(File file, String outputPath, HashSet<String> dropData) {
         createDir(outputPath, "edit");
 
         JsonObject newsJson = getJsonObjectByFile(file);
         JsonObject editJson = copyJsonObjectInfo(newsJson);
         JsonArray documents = newsJson.getAsJsonArray("documents");
-        JsonArray editDocuments = getEditDocuments(documents);
+        JsonArray editDocuments = getEditDocuments(documents, dropData);
 
         System.out.println(newsJson.get("name").getAsString());
         editJson.add("documents", editDocuments);
@@ -323,8 +348,6 @@ public class JsonFileEditor {
                         break;
                     }
 
-
-
                     sentence.addProperty("sentence", targetSentence);
                     editSentence = copySentence(index++, sentence);
                     editParagraph.add(editSentence);
@@ -354,7 +377,7 @@ public class JsonFileEditor {
     }
 
 
-    private JsonArray getEditDocuments(JsonArray documents) {
+    private JsonArray getEditDocuments(JsonArray documents, HashSet<String> dropData) {
         JsonArray editDocuments = new JsonArray();
         Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
         String[] editPatterns = {"\\[사진.*\\]",
@@ -370,9 +393,14 @@ public class JsonFileEditor {
             JsonObject editDocument = copyDocumentInfo(document);
             JsonArray text = document.get("text").getAsJsonArray();
             JsonArray editText = new JsonArray();
+            String documentId = document.get("id").getAsString();
 
-            System.out.println("Edit " + document.get("id").getAsString());
-
+            System.out.println("Edit " + documentId);
+            if (dropData.contains(documentId)) {
+                System.out.println("Drop data by dropList : " + documentId);
+                dropCount++;
+                continue;
+            }
             // text 접근
             int index = 0;
             for(int j = 0 ; j < text.size() ; j++) {
@@ -414,11 +442,10 @@ public class JsonFileEditor {
                 if(editParagraph.size() != 0) {
                     editText.add(editParagraph);
                 }
-
             }
 
             if(editText.size() == 0) {
-                System.out.println("drop data : " + document.get("id").getAsString() );
+                System.out.println("Drop data : " + documentId );
                 dropCount++;
                 continue;
             }

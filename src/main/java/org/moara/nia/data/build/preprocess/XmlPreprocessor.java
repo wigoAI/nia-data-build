@@ -82,7 +82,7 @@ public class XmlPreprocessor implements DataPreprocessor {
         if(!outputDir.exists()) {
             outputDir.mkdir();
         }
-        jsonFileName += "_" + fileList.size() + "건";
+        jsonFileName += "_" + fileList.size() + "건_";
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
 
