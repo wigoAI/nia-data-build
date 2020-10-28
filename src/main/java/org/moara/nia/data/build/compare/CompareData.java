@@ -18,6 +18,8 @@ package org.moara.nia.data.build.compare;
 
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
+
 /**
  * JSON 데이터 비교
  * @author
@@ -32,7 +34,6 @@ public interface CompareData {
      *
      * @param beforeJson JsonObject
      * @param afterJson JsonObject
-     * @return String
      */
-    String compare();
+    void compare() throws IOException;
 }

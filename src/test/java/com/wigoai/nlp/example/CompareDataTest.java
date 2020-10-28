@@ -9,6 +9,7 @@ import org.moara.nia.data.build.preprocess.ExcelCounter;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class CompareDataTest {
@@ -19,17 +20,21 @@ public class CompareDataTest {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 //        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
 //        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
-        String beforePath = "D:\\moara\\data\\allData\\change\\edit\\before\\";
-        String afterPath = "D:\\moara\\data\\allData\\change\\edit\\after\\";
+        String basePath = "D:\\moara\\data\\allData\\NIA_6차_excel\\";
+        String beforePath = basePath + "json\\";
+        String afterPath =  basePath + "edit\\";
 
-//        List<File> beforeFileList =  FileUtil.getFileList(beforePath, ".json");
         List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
         for (File file : afterFileList) {
             System.out.println(file.getName());
             JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
             JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
-            CompareJson compareData = new CompareJson(beforeJson, afterJson);
-            compareData.compare();
+            CompareJson compareData = new CompareJson(beforeJson, afterJson, basePath);
+            try {
+                compareData.compare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -82,9 +87,9 @@ public class CompareDataTest {
     @Test
     public void blindCompareTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
-
-        String beforePath = "D:\\moara\\data\\law\\compare\\blind\\before\\";
-        String afterPath = "D:\\moara\\data\\law\\compare\\blind\\after\\";
+        String basePath = "D:\\moara\\data\\law\\compare\\blind\\";
+        String beforePath = basePath + "before\\";
+        String afterPath = basePath + "after\\";
 
         List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
         for (File file : afterFileList) {
@@ -92,8 +97,12 @@ public class CompareDataTest {
             JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
             JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
 
-            BlindCompare blindCompare = new BlindCompare(beforeJson, afterJson);
-            System.out.println(blindCompare.compare());
+            BlindCompare blindCompare = new BlindCompare(beforeJson, afterJson, basePath);
+            try {
+                blindCompare.compare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
         }

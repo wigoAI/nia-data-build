@@ -17,24 +17,20 @@
 package org.moara.nia.data.build.compare;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import org.apache.commons.io.FileUtils;
-import org.moara.common.data.file.FileUtil;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * CompareData 구현체
- *
  * Json 형태의 데이터를 비교한다.
  *
- * TODO 1. 급하게 만든 compare 메서드 작은 단위로 분해하기
- *      2. editEscapeChar 메서드 개선하기
+ * TODO 1. editEscapeChar 메서드 개선하기
  *          - preprocessor 에 있는 메서드와 기능이 같다.
  *
  * @author 조승현
@@ -49,36 +45,41 @@ public class CompareJson implements CompareData {
     protected List<String> beforeSentenceList = new ArrayList<>();
     protected List<String> afterSentenceList = new ArrayList<>();
 
-    public CompareJson(JsonObject beforeJson, JsonObject afterJson) {
+    protected String resultPath;
+    protected String fileName;
+
+    public CompareJson(JsonObject beforeJson, JsonObject afterJson, String resultPath) {
         this.afterJson = afterJson;
         this.beforeJson = beforeJson;
         this.beforeDocuments = beforeJson.getAsJsonArray("documents");
         this.afterDocuments = afterJson.getAsJsonArray("documents");
+        this.resultPath = resultPath;
+        this.fileName = beforeJson.get("name").getAsString();
+
         beforeTextHash = getHashMapByJsonObject(beforeDocuments);
     }
 
 
     @Override
-    public String compare() {
-        StringBuilder result = new StringBuilder();
+    public void compare() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + fileName + ".txt"));
 
         for(int i = 0 ; i < afterDocuments.size() ; i++) {
-            initCompare(result, i);
+            initCompare(bw, i);
 
             int afterSentenceIndex = 0;
             int notSplitStack = 0;
             for(String beforeSentence : beforeSentenceList) {
                 String editBeforeSentence = editEscapeChar(beforeSentence);
-                result.append("before\t: ").append(beforeSentence).append("\n");
+                bw.write("before\t: " + beforeSentence + "\n");
 
                 if(editBeforeSentence.equals(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
-                    result.append("after\t: ").append(afterSentenceList.get(afterSentenceIndex++)).append("\n");
+                    bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                 } else if(editEscapeChar(beforeSentence).contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
 
                     while(editBeforeSentence.contains(editEscapeChar(afterSentenceList.get(afterSentenceIndex)))) {
-                    result.append("after\t: ").append(afterSentenceList.get(afterSentenceIndex++)).append("\n");
-                        if(afterSentenceList.size() == afterSentenceIndex)
-                            break;
+                        bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
+                        if(afterSentenceList.size() == afterSentenceIndex) { break; }
                     }
                 } else if(editEscapeChar(afterSentenceList.get(afterSentenceIndex)).contains(editBeforeSentence)) {
                     notSplitStack++;
@@ -87,7 +88,7 @@ public class CompareJson implements CompareData {
                     for(int k = 0 ; k < notSplitStack ; k++) {
                         if(afterSentenceIndex == afterSentenceList.size())
                             break;
-                        result.append("after\t: ").append(afterSentenceList.get(afterSentenceIndex++)).append("\n");
+                        bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                     }
 
                     notSplitStack = 0;
@@ -95,35 +96,43 @@ public class CompareJson implements CompareData {
 
                 if(afterSentenceIndex == afterSentenceList.size()) { afterSentenceIndex--; }
 
-                result.append(" \n");
+                bw.write(" \n");
             }
 
             if(notSplitStack > 0) {
                 for(int k = 0 ; k < notSplitStack ; k++) {
                     if(afterSentenceIndex == afterSentenceList.size()) { break; }
-                    result.append("after\t: ").append(afterSentenceList.get(afterSentenceIndex++)).append("\n");
+                    bw.write("after\t: " + afterSentenceList.get(afterSentenceIndex++) + "\n");
                 }
             }
         }
 
-        result.append(" \n");
+        bw.write(" \n");
 
-        return result.toString();
     }
 
-    protected void initCompare(StringBuilder result, int index) {
+    protected void initCompare(BufferedWriter bw, int index) {
         JsonObject afterDocument = afterDocuments.get(index).getAsJsonObject();
 
-        result.append(afterDocument.get("id").toString()).append("\n")
-                .append(afterDocument.get("title").toString()).append("\n");
+        try {
+            bw.write("id : " + afterDocument.get("id").getAsString() + "\n");
+            bw.write("title  : " + afterDocument.get("title").getAsString() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        System.out.println("id : " + afterDocument.get("id").getAsString() + "\n");
+        System.out.println("title  : " + afterDocument.get("title").getAsString() + "\n");
         JsonArray beforeText = beforeTextHash.get(afterDocument.get("id").toString());
         JsonArray afterText = afterDocument.getAsJsonArray("text");
 
+        beforeSentenceList.clear();
         for(int j = 0 ; j < beforeText.size() ; j++) {
             JsonArray beforeParagraph = (JsonArray) beforeText.get(j);
             beforeSentenceList.addAll(getSentenceList(beforeParagraph));
         }
+
+        afterSentenceList.clear();
         for(int j = 0 ; j < afterText.size() ; j++) {
             JsonArray afterParagraph = (JsonArray) afterText.get(j);
             afterSentenceList.addAll(getSentenceList(afterParagraph));
@@ -146,7 +155,7 @@ public class CompareJson implements CompareData {
     protected HashMap<String, JsonArray> getHashMapByJsonObject(JsonArray beforeDocuments) {
         HashMap<String, JsonArray> beforeTextHash = new HashMap<>();
         for(int i = 0 ; i < beforeDocuments.size() ; i++) {
-            JsonObject document = (JsonObject) beforeDocuments.get(i);
+            JsonObject document = beforeDocuments.get(i).getAsJsonObject();
             beforeTextHash.put(document.get("id").toString(), document.getAsJsonArray("text"));
         }
 
@@ -168,7 +177,7 @@ public class CompareJson implements CompareData {
                 .replace("”", "")
                 .replace("\\\"", "")
                 .replace("\"", "").trim();
-//        System.out.println(value);
+//        bw.write(value);
         return value;
     }
 

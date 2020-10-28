@@ -4,6 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,18 +16,16 @@ public class BlindCompare extends CompareJson {
 
     private final Pattern blindPattern = Pattern.compile("\\*+");
 
-    public BlindCompare(JsonObject beforeJson, JsonObject afterJson) {
-        super(beforeJson, afterJson);
+    public BlindCompare(JsonObject beforeJson, JsonObject afterJson, String resultPath) {
+        super(beforeJson, afterJson, resultPath);
     }
 
     @Override
-    public String compare() {
+    public void compare() throws IOException {
 
-
-        StringBuilder result = new StringBuilder();
-
+        BufferedWriter bw = new BufferedWriter(new FileWriter(resultPath + fileName + ".txt"));
         for(int i = 0 ; i < afterDocuments.size() ; i++) {
-            initCompare(result, i);
+            initCompare(bw, i);
 
             int afterSentenceIndex = 0;
             for(String beforeStr : beforeSentenceList) {
@@ -32,23 +33,22 @@ public class BlindCompare extends CompareJson {
 
                 if(!beforeStr.equals(afterStr)) {
                     StringBuilder blindNames = new StringBuilder();
-                    result.append("before\t: ").append(beforeStr).append("\n");
-                    result.append("after\t: ").append(afterStr).append("\n");
+                    bw.write("before\t: " + beforeStr + "\n");
+                    bw.write("after\t: " + afterStr + "\n");
 
                     Matcher blindMatcher = blindPattern.matcher(afterStr);
                     while(blindMatcher.find()) {
                         blindNames.append(beforeStr, blindMatcher.start(), blindMatcher.end()).append(", ");
                     }
-                    result.append("names\t: ").append(blindNames).append("\n\n");
+                    bw.write("names\t: " + blindNames + "\n\n");
 
                 }
             }
-            result.append(" \n\n");
+            bw.write("\n\n");
         }
 
-        result.append(" \n");
+        bw.write("\n");
 
-        return result.toString();
     }
 
 }
