@@ -49,7 +49,6 @@ import java.util.List;
 
 /**
  * XML 형태의 데이터 전처리기
- * TODO 1. 판례내용이 아닌 참조조문으로 문장구분 실행할 것
  *
  * @author 조승현
  */
@@ -63,6 +62,9 @@ public class XmlPreprocessor implements DataPreprocessor {
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
 
+    /**
+     * Constructor
+     */
     public XmlPreprocessor() {
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();

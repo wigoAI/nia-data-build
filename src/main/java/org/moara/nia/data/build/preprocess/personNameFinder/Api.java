@@ -28,7 +28,8 @@ import java.net.URL;
 import java.rmi.ServerError;
 
 /**
- * 인명 데이터 API
+ * <p>인명 데이터 API </p>
+ * https://koreanname.me/api
  * @author 조승현
  */
 public class Api {
@@ -42,8 +43,6 @@ public class Api {
 
 
     public void getNames() {
-
-
         for(int i = 1 ; i < 350 ; i++) {
             System.out.println("get " + i);
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(dicFilePath, true))){
