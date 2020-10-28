@@ -62,12 +62,11 @@ import java.util.List;
  * @author 조승현
  */
 public class DataPreprocessorImpl implements DataPreprocessor {
+    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    private ExcelGet excelGet = new ExcelGet();
-    private SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
+    private final ExcelGet excelGet = new ExcelGet();
+    private final String [] outArray= {"M"};
     private XSSFRow row;
-    private String [] outArray= {"M"};
-
 
     @Override
     public void makeByPath(String path) {
@@ -79,7 +78,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             count++;
             logger.debug("end length: " + count + "/" + fileList.size());
         }
-
     }
 
     public void make(File file, String path) {
@@ -95,7 +93,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         logger.debug("start file name: " +file.getName());
 
         JsonObject jsonObject = initJsonObject(file);
-        addDocumentArray(file, jsonObject);
+        JsonArray documents = getDocuments(file);
+        jsonObject.add("documents", documents);
 
         FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + getFileNameWithoutFormat(file) + ".json",false);
         logger.debug("end file name: " +file.getName());
@@ -112,17 +111,15 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return jsonObject;
     }
 
-    protected void addDocumentArray(File file, JsonObject jsonObject) {
+    protected JsonArray getDocuments(File file) {
         JsonArray documents = new JsonArray();
         XSSFSheet sheet = getExcelSheet(file);
-        int rowCount = excelGet.getRowCount(sheet);
 
+        int rowCount = excelGet.getRowCount(sheet);
         int dropDataCount = 0;
         int normalDataCount = 0;
         int countDecimal = 1000;
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
-
-
             JsonObject document = getDocument(sheet, rowIndex);
 
             if(document == null) {
@@ -132,16 +129,19 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
             documents.add(document);
             normalDataCount++;
+
             if(normalDataCount > countDecimal) {
                 System.out.println(normalDataCount + " / " + rowCount);
                 countDecimal += 1000;
             }
         }
+
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.print("  Drop data : " + dropDataCount );
         System.out.println("  Normal data : " + (normalDataCount));
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        jsonObject.add("documents", documents);
+
+        return documents;
     }
 
     private JsonObject getDocument(XSSFSheet sheet, int rowIndex) {
@@ -153,11 +153,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             return null;
         }
 
-        JsonObject document = addDocumentInfo(cell);
+        JsonObject document = getDocumentInfo(cell);
         if(document == null) {
             return null;
         }
-
 
         String contents = getCellValue(9);
         if(contents == null){
@@ -179,12 +178,12 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             System.out.println("this data something is wrong : " + documentId);
         }
 
-
         return document;
     }
 
     protected XSSFSheet getExcelSheet(File file) {
         XSSFWorkbook work = null;
+
         try {
             work = new XSSFWorkbook(new FileInputStream(file));
         } catch (IOException e) {
@@ -197,11 +196,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return work.getSheetAt(0);
     }
 
-    private JsonObject addDocumentInfo(XSSFCell cell) {
-        JsonObject document = new JsonObject();
-        String id = null ;
+    private JsonObject getDocumentInfo(XSSFCell cell) {
         String sizeType = getCellValue(6);
 
+        String id = null ;
         try{
             id = Long.toString((long)cell.getNumericCellValue());
         }catch(Exception e) {
@@ -216,6 +214,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         sizeType = SizeTypeUtil.getSizeType(sizeType);
 
+        JsonObject document = new JsonObject();
         document.addProperty("id", id);
         document.addProperty("category", getCellValue(5));
         document.addProperty("media_type", "online");
@@ -230,10 +229,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
     protected List<String> getParagraphList(String contents) {
-        List<String> paragraphList = new ArrayList<>();
-        int lsatIndex = 0;
         contents = contents.replace("\\\\", "\\");
 
+        List<String> paragraphList = new ArrayList<>();
+        int lsatIndex = 0;
         while(true){
             int index = contents.indexOf("\\r\\n\\r\\n", lsatIndex);
             if(index == -1){ break; }
@@ -261,12 +260,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     protected JsonArray getText(List<String> paragraphList) throws OverlapDataException, QaDataException, LongDataException{
         JsonArray text = new JsonArray();
         String overlapCheck = "";
-        int index = 0;
 
-//        for(String paragraphValue  : paragraphList){
+        int index = 0;
         for(int i = 0 ; i < paragraphList.size() ; i++){
             String paragraphValue = paragraphList.get(i).trim();
-
 
             if(paragraphValue.length() == 0) { continue; }
 
@@ -275,18 +272,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             }
 
             boolean exceptionDataCheck = false;
-            if(i < 2) {
-                exceptionDataCheck = true;
-
-            }
-            else if(i > paragraphList.size() - 3) {
+            if(i < 2 || i > paragraphList.size() - 3) {
                 exceptionDataCheck = true;
             }
 
             JsonArray paragraph = getParagraph(index, paragraphValue, exceptionDataCheck);
 
-            if(paragraph.size() == 0)
-                continue;
+            if(paragraph.size() == 0) { continue; }
 
             text.add(paragraph);
             index += paragraph.size();
@@ -299,16 +291,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
     private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) throws QaDataException, LongDataException{
         JsonArray paragraph = new JsonArray();
-        /* if want recreate personalDataFinder
-        * check this commit
-        * https://github.com/wigoAI/nia-data-build/commit/a24d2ed9d0e8b17f97a6316f70883ae421dd8e48
-        * */
 
         // sentence split
         List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
         for(Sentence sentence : extractSentenceList ){
             String sentenceValue = sentence.getValue();
-            JsonObject senObj = new JsonObject();
 
             if(exceptionDataCheck) { sentenceValue = deleteExceptionData(sentenceValue, 50); }
             if(sentenceValue.length() == 0){
@@ -319,9 +306,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
                 throw new LongDataException("this data is too long : " + sentenceValue);
             }
 
-            senObj.addProperty("index", index++);
-            senObj.addProperty("sentence", sentenceValue.trim());
-            senObj.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
+            JsonObject senObj = getSentenceObject(index++, sentenceValue);
             paragraph.add(senObj);
 
         }
@@ -329,22 +314,28 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return paragraph;
     }
 
+    private JsonObject getSentenceObject(int index, String sentenceValue) {
+        JsonObject sentenceObject = new JsonObject();
+        sentenceObject.addProperty("index", index);
+        sentenceObject.addProperty("sentence", sentenceValue.trim());
+        sentenceObject.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
+        return sentenceObject;
+    }
+
     private String deleteExceptionData(String text, int limit) {
+
         // 정규 표현식에 적용하기 위한 공백 추가
         // 처리 후 제거된다.
         text += " ";
-        ExceptionDataFinder reporterFinder = ExceptionFinderFactory.getExceptionFinder("reporter2");
+        ExceptionDataFinder reporterFinder = ExceptionFinderFactory.getExceptionFinder("reporter");
         Area targetArea = reporterFinder.find(text);
 
         if(targetArea.getEnd() > 0 && targetArea.getEnd() < limit) {
-//            System.out.print("[" + text + "] -> ");
             text = text.substring(targetArea.getEnd());
-//            System.out.println("[" + text + "] del length : " + targetArea.getEnd());
         }
 
         return text.trim();
     }
-
 
 
     private String editEscapeChar(String value) {

@@ -44,7 +44,8 @@ public class TextPreprocessor extends DataPreprocessorImpl{
 
 
         JsonObject jsonObject = initJsonObject(file);
-        addDocumentArray(file, jsonObject);
+        JsonArray documents = getDocuments(file);
+        jsonObject.add("documents", documents);
 
         FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + getFileNameWithoutFormat(file) + ".json",false);
 
@@ -52,7 +53,7 @@ public class TextPreprocessor extends DataPreprocessorImpl{
     }
 
     @Override
-    protected void addDocumentArray(File file, JsonObject jsonObject) {
+    protected JsonArray getDocuments(File file) {
         JsonArray documents = new JsonArray();
 
 //        int testCount = 0;
@@ -73,21 +74,19 @@ public class TextPreprocessor extends DataPreprocessorImpl{
 
                 documents.add(document);
                 normalDataCount++;
-//            if(testCount++ > 200)
-//                break;
-
-
 
             }
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             System.out.print("  Drop data : " + dropDataCount);
             System.out.println("  Normal data : " + (normalDataCount));
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            jsonObject.add("documents", documents);
+
+            return documents;
         }catch(Exception e){
             e.printStackTrace();
         }
 
+        return documents;
     }
 
     private JsonObject getDocument(String line) {

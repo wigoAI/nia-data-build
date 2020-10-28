@@ -49,11 +49,6 @@ public class ExcelCounter {
                 break;
             }
 
-//            String category = getCellValue(5);
-//            if (!category.equals("종합")) {
-//                continue;
-//            }
-
             String id = null;
             try{
                 id = Long.toString((long)cell.getNumericCellValue());

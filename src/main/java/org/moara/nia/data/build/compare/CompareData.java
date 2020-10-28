@@ -32,6 +32,7 @@ public interface CompareData {
      *
      * @param beforeJson JsonObject
      * @param afterJson JsonObject
+     * @return String
      */
-    void compare(JsonObject beforeJson, JsonObject afterJson);
+    String compare();
 }

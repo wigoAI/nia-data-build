@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * 예외 데이터 탐색기 팩토리
  * 각 문서마다 적용 될 예외 데이터 탐색기를 제공
- * TODO 1. "reporter" 제거 해도 되는지 확인하고 제거하기
+ *
  * @author 조승현
  */
 public class ExceptionFinderFactory {
@@ -48,18 +48,6 @@ public class ExceptionFinderFactory {
     public static ExceptionDataFinder getExceptionFinder(String dataType) {
 
         if(dataType.equals("reporter")) {
-            return text -> {
-                Matcher matcher = reporterAndEmailFindPattern.matcher(text);
-                int start = 0;
-                int end = 0;
-                while(matcher.find()) {
-                    start = matcher.start();
-                    end = matcher.end();
-                }
-                return new Area(start, end);
-
-            };
-        } else if(dataType.equals("reporter2")) {
             return text -> {
                 Area area;
                 Matcher reporterMatcher = reporterFindPattern.matcher(text);

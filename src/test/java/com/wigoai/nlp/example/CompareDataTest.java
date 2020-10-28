@@ -15,7 +15,7 @@ public class CompareDataTest {
 
     @Test
     public void compareDataTest() {
-        CompareJson compareData = new CompareJson();
+
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 //        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
 //        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
@@ -28,7 +28,8 @@ public class CompareDataTest {
             System.out.println(file.getName());
             JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
             JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
-            compareData.compare(beforeJson, afterJson);
+            CompareJson compareData = new CompareJson(beforeJson, afterJson);
+            compareData.compare();
 
         }
 
@@ -41,7 +42,7 @@ public class CompareDataTest {
         for(int i = 3 ; i < 6 ; i++) {
             String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\";
 
-            jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+            jsonFileEditor.fileNameChangeByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
         }
 //        String afterPath = "D:\\moara\\data\\law\\json\\edit\\";
 //
@@ -56,7 +57,7 @@ public class CompareDataTest {
         for(int i = 3 ; i < 6 ; i++) {
             String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\new\\";
             System.out.println((i + 1) + "차");
-            total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
+            total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"));
         }
 
 //        String afterPath = "D:\\moara\\data\\law\\json\\edit\\new\\";
@@ -73,14 +74,13 @@ public class CompareDataTest {
 
         String afterPath = "D:\\moara\\data\\allData\\change\\";
 
-        total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
+        total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
 
         System.out.println("All total : " + total);
     }
 
     @Test
     public void blindCompareTest() {
-        BlindCompare blindCompare = new BlindCompare();
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
         String beforePath = "D:\\moara\\data\\law\\compare\\blind\\before\\";
@@ -91,7 +91,10 @@ public class CompareDataTest {
             System.out.println(file.getName());
             JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
             JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
-            blindCompare.compare(beforeJson, afterJson);
+
+            BlindCompare blindCompare = new BlindCompare(beforeJson, afterJson);
+            System.out.println(blindCompare.compare());
+
 
         }
 
@@ -101,17 +104,12 @@ public class CompareDataTest {
     public void countExcelDataTest() {
         ExcelCounter excelCounter = new ExcelCounter();
 
-
         for (int i = 4 ; i <= 6 ; i++) {
             String path = "D:\\moara\\data\\allData\\NIA_" + i + "차_excel\\";
             for (String id : excelCounter.countByPath(path)) {
                 System.out.println(id);
             }
         }
-
-
-
-
     }
 
 
