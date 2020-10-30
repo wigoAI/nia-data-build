@@ -1,0 +1,290 @@
+package org.moara.nia.data.build.preprocess.file;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.apache.commons.io.FileUtils;
+import org.moara.common.data.file.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+public class JsonFileClassifier extends JsonFileUtil{
+    private static final Logger logger = LoggerFactory.getLogger(JsonFileClassifier.class);
+    /**
+     *
+     * Json 파일에서 데이터의 갯수를 얻는다.
+     *
+     * @param fileList List<File>
+     * @return int
+     */
+    public int countJson(List<File> fileList) {
+        int total = 0;
+
+        int index = 0;
+        for(JsonArray documents : getDocumentsArrayByFileList(fileList)) {
+            int documentsSize = documents.size();
+            System.out.println(documents.get(index++).getAsJsonObject().get("id") + " : " + documentsSize);
+            total += documentsSize;
+        }
+        System.out.println("total : " + total);
+
+        return total;
+    }
+
+    /**
+     *
+     * Json 파일에서 조건에 맞는 데이터의 갯수를 얻는다.
+     *
+     * @param fileList List<File>
+     * @param target String
+     * @param value String
+     * @return int
+     */
+    public int countJson(List<File> fileList, String target, String value) {
+        int total = 0;
+        int index = 0;
+        for (JsonArray documents : getDocumentsArrayByFileList(fileList)) {
+            int documentsSize = 0;
+            for(int i = 0 ; i < documents.size() ; i++) {
+                JsonObject document = documents.get(i).getAsJsonObject();
+                if(document.get(target).getAsString().equals(value)) {
+                    documentsSize++;
+                }
+            }
+            System.out.println(documents.get(index++).getAsJsonObject().get("id") + " : " + documentsSize);
+            total += documentsSize;
+        }
+
+        System.out.println("total : " + total);
+
+        return total;
+    }
+
+    /**
+     * 문항 수 카운트 및 문자 평균
+     *
+     * @param fileList List
+     * @param from count from to last index
+     */
+    public int countJsonIndex(List<File> fileList, int from) {
+        int[] indexCount = new int[200];
+        float[] charCountAverage = new float[200];
+
+        for(JsonArray documents : getDocumentsArrayByFileList(fileList)) {
+            for(int i = 0 ; i < documents.size() ; i++) {
+                JsonObject document = documents.get(i).getAsJsonObject();
+                JsonArray text = document.get("text").getAsJsonArray();
+                int charCount = document.get("char_count").getAsInt();
+
+                int lastIndex = getLastIndex(text);
+
+                charCountAverage[lastIndex] += charCount;
+                indexCount[lastIndex]++;
+            }
+        }
+
+        int indexNumber = 0;
+        int totalFromIndex = 0;
+        for (int count : indexCount) {
+            if(count != 0) {
+                System.out.println("Index " + indexNumber + " : " + count);
+                System.out.println("average : " + charCountAverage[indexNumber] / count);
+                System.out.println();
+
+                if(indexNumber >= from) {
+                    totalFromIndex += count;
+                }
+            }
+            indexNumber++;
+        }
+
+        return totalFromIndex;
+    }
+
+    /**
+     * 파일 경로에 있는 json 분류
+     *
+     * @param path String
+     */
+    public void classifyJsonFileByPath(String path) {
+        List<File> fileList = FileUtil.getFileList(path, ".json");
+
+        int count = 0;
+        String[] sizeArray = {"small", "medium", "large"};
+        for (String size : sizeArray) {
+            for(File file : fileList) {
+                try {
+                    classifyJsonFileBySize(file, path, size);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                count++;
+                logger.debug("end length: " + count + "/" + fileList.size());
+            }
+        }
+    }
+
+    /**
+     * 문서 크기에 따른 파일 분류 메서드
+     * @param file File
+     * @param outputPath String
+     * @param size String
+     * @throws Exception If size data empty
+     */
+    public void classifyJsonFileBySize(File file, String outputPath, String size) throws Exception {
+
+
+        JsonObject newsJson = getJsonObjectByFile(file);
+        JsonObject classifyJson = copyJsonObjectInfo(newsJson);
+        JsonArray documents = newsJson.getAsJsonArray("documents");
+        JsonArray editDocuments = new JsonArray();
+
+        int documentCount = 0;
+        for (int i = 0 ; i < documents.size() ; i++) {
+            JsonObject document = documents.get(i).getAsJsonObject();
+
+            if(document.get("size").getAsString().equals(size)) {
+                documentCount++;
+                JsonObject editDocument = copyDocumentInfo(document);
+                editDocument.add("text", document.get("text"));
+                editDocuments.add(editDocument);
+            }
+
+
+        }
+
+        if(editDocuments.size() == 0) {
+            throw new Exception("No Data");
+        }
+
+        classifyJson.add("documents", editDocuments);
+        System.out.println("get " + documentCount +" data in " + newsJson.get("name").getAsString());
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+        String dirPath = createDir(outputPath, "classify");
+        FileUtil.fileOutput(gson.toJson(classifyJson), dirPath + size + "_" + file.getName() ,false);
+
+    }
+
+    /**
+     * Index 크기에 따른 파일 분류
+     * @param path 현재 파일 경로
+     * @param from 인덱스 크기 범위 시작
+     * @param to 인덱스 크기 범위 끝
+     */
+    public void classifyJsonFileByIndex(String path, int from, int to) {
+        List<File> fileList = FileUtil.getFileList(path, ".json");
+        JsonArray classifyDocuments = new JsonArray();
+        int size = 0;
+
+        for(File file : fileList) {
+            JsonObject targetJson = getJsonObjectByFile(file);
+            JsonArray documents = targetJson.getAsJsonArray("documents");
+
+            for(int i = 0 ; i < documents.size() ; i++) {
+                JsonObject document = documents.get(i).getAsJsonObject();
+                int lastIndex = getLastIndex(document.get("text").getAsJsonArray());
+
+                if(lastIndex >= from && lastIndex <= to) {
+                    classifyDocuments.add(document);
+                    size++;
+                }
+            }
+
+        }
+
+
+        String deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        String name = "sentence_";
+        if(from == to) {
+            name += (from + 1) + "_";
+        } else {
+            name += (from + 1) + "-" + (to + 1) + "_";
+        }
+        name += (size + "건_");
+
+        JsonObject classifyJson = new JsonObject();
+        classifyJson.addProperty("name", name);
+        classifyJson.addProperty("delivery_date", deliveryDate);
+        classifyJson.add("documents", classifyDocuments);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        String dirPath = createDir(path, "classify");
+        FileUtil.fileOutput(gson.toJson(classifyJson), dirPath + name + ".json" ,false);
+
+
+    }
+
+
+    /**
+     * Json 파일의 이름을 데이터 정제 이후 변경된 수에 따라서 변경
+     *
+     * @param fileList List<File>
+     * @param outputPath String
+     */
+    public void changeFileNameByJsonSize(List<File> fileList, String outputPath) {
+        for(File file : fileList) {
+            JsonObject jsonObject = getJsonObjectByFile(file);
+            JsonArray documents = jsonObject.getAsJsonArray("documents");
+
+            String fileName = file.getName();
+            fileName = fileName.substring(0,fileName.lastIndexOf('.'));
+
+            String newFileName = getNewNameByJsonSize(documents, fileName);
+
+            System.out.println("new : " + newFileName);
+
+            File newFile = new File(outputPath + "\\new\\" + newFileName + ".json");
+
+            try {
+                FileUtils.copyFile(file, newFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    private String getNewNameByJsonSize(JsonArray jsonArray, String oldName) {
+        System.out.println("original : " + oldName);
+        int jsonArraySize = jsonArray.size();
+        StringBuilder newFileName = new StringBuilder();
+
+        if(oldName.endsWith("_")) {
+            String[] splitFileName = oldName.split("_");
+
+            for(int i = 0 ; i < splitFileName.length - 1 ; i++) {
+                newFileName.append(splitFileName[i]).append("_");
+            }
+
+            newFileName.append(jsonArraySize).append("건_");
+        } else {
+            newFileName = new StringBuilder(oldName + "_" + jsonArraySize + "건_");
+        }
+
+        return newFileName.toString();
+    }
+    private int getLastIndex(JsonArray text) {
+        int lastIndex = 0;
+        for (int j = 0; j < text.size() ; j++) {
+            JsonArray sentences = text.get(j).getAsJsonArray();
+
+            for (int k = 0 ; k < sentences.size() ; k++) {
+                JsonObject sentence = sentences.get(k).getAsJsonObject();
+                lastIndex = sentence.get("index").getAsInt();
+
+            }
+        }
+        return lastIndex;
+    }
+
+
+
+}

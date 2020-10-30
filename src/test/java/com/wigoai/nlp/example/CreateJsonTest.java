@@ -1,11 +1,11 @@
 package com.wigoai.nlp.example;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.moara.nia.data.build.preprocess.*;
+import org.moara.nia.data.build.preprocess.file.JsonFileClassifier;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
+import org.moara.nia.data.build.preprocess.file.LawJsonFileEditor;
 
-import java.io.File;
 import java.util.HashSet;
 
 public class CreateJsonTest {
@@ -64,7 +64,7 @@ public class CreateJsonTest {
 
         for(int i = 0 ; i < 6 ; i++) {
             String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
-            jsonFileEditor.editJsonFileByPath(path, new HashSet<>());
+            jsonFileEditor.editJsonFileByPath(path);
         }
 
 //
@@ -76,33 +76,42 @@ public class CreateJsonTest {
 
     @Test
     public void editLawJsonTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        LawJsonFileEditor lawJsonFileEditor = new LawJsonFileEditor();
 
 
-        String path = "D:\\moara\\data\\law\\json\\";
-        jsonFileEditor.editLawJsonFileByPath(path);
+        String path = "D:\\moara\\data\\law\\json3\\";
+        lawJsonFileEditor.editJsonFileByPath(path);
 
 
     }
 
     @Test
     public void classifyJsonTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
 
         String path = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\";
-        jsonFileEditor.classifyJsonFileByPath(path);
+        jsonFileClassifier.classifyJsonFileByPath(path);
+
+    }
+
+    @Test
+    public void classifyJsonByIndexTest() {
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
+        String path = "D:\\moara\\data\\law\\json3\\edit\\";
+
+        jsonFileClassifier.classifyJsonFileByIndex(path, 11, 119);
     }
 
     @Test
     public void dropDocumentsTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
         ExcelCounter excelCounter = new ExcelCounter();
 
         for(int i = 3 ; i < 6 ; i++) {
             String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\";
             HashSet<String> dropData = excelCounter.countByPath(path);
-
-            jsonFileEditor.editJsonFileByPath(path, dropData);
+            JsonFileEditor jsonFileEditor = new JsonFileEditor(dropData);
+            jsonFileEditor.editJsonFileByPath(path);
         }
     }
 }

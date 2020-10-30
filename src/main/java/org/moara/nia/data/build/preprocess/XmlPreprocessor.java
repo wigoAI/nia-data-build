@@ -25,6 +25,7 @@ import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtrac
 import org.moara.ara.datamining.textmining.document.sentence.Sentence;
 import org.moara.common.code.LangCode;
 import org.moara.common.data.file.FileUtil;
+import org.moara.common.string.Check;
 import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
@@ -53,11 +54,9 @@ import java.util.List;
  * @author 조승현
  */
 public class XmlPreprocessor implements DataPreprocessor {
-    private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
-    private final String [] outArray= {
-//            "PERSON_NAME",
-            "M"};
+
 
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
@@ -76,7 +75,7 @@ public class XmlPreprocessor implements DataPreprocessor {
     @Override
     public void makeByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".xml");
-        String outputPath = "D:\\moara\\data\\law\\json";
+        String outputPath = "D:\\moara\\data\\law\\json4";
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
 
@@ -84,6 +83,7 @@ public class XmlPreprocessor implements DataPreprocessor {
         if(!outputDir.exists()) {
             outputDir.mkdir();
         }
+
         jsonFileName += "_" + fileList.size() + "건_";
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
@@ -208,30 +208,46 @@ public class XmlPreprocessor implements DataPreprocessor {
         // sentence split
         List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
         for(Sentence sentence : extractSentenceList ){
-            String sentenceValue = sentence.getValue();
-            JsonObject senObj = new JsonObject();
 
-            senObj.addProperty("index", index++);
-            String[] mecabResult = MecabWordClassHighlight.indexValue(sentenceValue, outArray).split(";");
-            StringBuilder highlightIndexBuilder = new StringBuilder();
-            List<Area> nameAreas = new ArrayList<>();
+            String[] splitSentences = sentence.getValue().split(",");
 
-            for(String str : mecabResult) {
-                if(str.startsWith("N")) {
-                    nameAreas.add(parseArea(str.substring(1)));
-                } else {
-                    highlightIndexBuilder.append(";").append(str);
-                }
+            List<String> editSentenceList = new ArrayList<>();
+            StringBuilder tmpSentence = new StringBuilder();
+
+
+            for (int i = 0 ; i < splitSentences.length - 1 ; i++) {
+                splitSentences[i] += ",";
             }
-            sentenceValue = blindArea(sentenceValue, nameAreas);
-            senObj.addProperty("sentence", sentenceValue.trim());
 
-            String highlightIndex = "";
-            if(highlightIndexBuilder.length() > 0)
-                highlightIndex = highlightIndexBuilder.substring(1);
-            senObj.addProperty("highlight_indices" , highlightIndex);
-            paragraph.add(senObj);
+            for (String splitSentence : splitSentences) {
+                tmpSentence.append(splitSentence);
 
+                if(splitSentence.length() < 8) {
+                    continue;
+                }
+                if(Check.isNumber(tmpSentence.toString().charAt(tmpSentence.length() - 2))) {
+                    continue;
+                }
+                if(tmpSentence.toString().contains("(") && !tmpSentence.toString().contains(")")) {
+                    continue;
+                }
+
+                editSentenceList.add(tmpSentence.toString());
+                tmpSentence = new StringBuilder();
+            }
+            if (tmpSentence.length() > 0) {
+                editSentenceList.add(tmpSentence.toString());
+            }
+
+            for (String sentenceValue : editSentenceList) {
+
+                JsonObject senObj = new JsonObject();
+
+                senObj.addProperty("index", index++);
+                senObj.addProperty("sentence", sentenceValue.trim());
+
+                paragraph.add(senObj);
+            }
         }
 
         return paragraph;

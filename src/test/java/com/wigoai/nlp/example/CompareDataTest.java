@@ -6,6 +6,7 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.compare.BlindCompare;
 import org.moara.nia.data.build.compare.CompareJson;
 import org.moara.nia.data.build.preprocess.ExcelCounter;
+import org.moara.nia.data.build.preprocess.file.JsonFileClassifier;
 import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
 
 import java.io.File;
@@ -42,44 +43,44 @@ public class CompareDataTest {
 
     @Test
     public void changeFileTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
 
-        for(int i = 3 ; i < 6 ; i++) {
-            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\";
-
-            jsonFileEditor.fileNameChangeByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
-        }
-//        String afterPath = "D:\\moara\\data\\law\\json\\edit\\";
+//        for(int i = 3 ; i < 6 ; i++) {
+//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\";
 //
-//        jsonFileEditor.fileNameChange(FileUtil.getFileList(afterPath,".json"), afterPath);
+//            jsonFileEditor.fileNameChangeByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
+//        }
+        String afterPath = "D:\\moara\\data\\law\\json2\\edit\\";
+
+        jsonFileClassifier.changeFileNameByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
 
     }
 
     @Test
     public void countJsonTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
         int total = 0;
-        for(int i = 3 ; i < 6 ; i++) {
-            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\new\\";
-            System.out.println((i + 1) + "차");
-            total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"));
-        }
+//        for(int i = 3 ; i < 6 ; i++) {
+//            String afterPath = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\edit\\new\\";
+//            System.out.println((i + 1) + "차");
+//            total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"));
+//        }
 
-//        String afterPath = "D:\\moara\\data\\law\\json\\edit\\new\\";
-//
-//        total += jsonFileEditor.jsonCounter(FileUtil.getFileList(afterPath,".json"));
+        String afterPath = "D:\\moara\\data\\law\\json3\\edit\\";
+
+        total += jsonFileClassifier.countJson(FileUtil.getFileList(afterPath,".json"));
 
         System.out.println("All total : " + total);
     }
 
     @Test
     public void countCategoryTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
         int total = 0;
 
         String afterPath = "D:\\moara\\data\\allData\\change\\";
 
-        total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
+        total += jsonFileClassifier.countJson(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
 
         System.out.println("All total : " + total);
     }
@@ -121,5 +122,17 @@ public class CompareDataTest {
         }
     }
 
+    @Test
+    public void statisticJsonTest() {
+        JsonFileClassifier jsonFileEditor = new JsonFileClassifier();
+        String path = "D:\\moara\\data\\law\\json3\\edit\\";
+
+        int from = 3;
+        int totalFrom = jsonFileEditor.countJsonIndex(FileUtil.getFileList(path,".json"), from);
+        System.out.println("total from " + from + " : " + totalFrom);
+
+
+
+    }
 
 }
