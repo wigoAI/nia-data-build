@@ -6,12 +6,14 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.compare.BlindCompare;
 import org.moara.nia.data.build.compare.CompareJson;
 import org.moara.nia.data.build.preprocess.ExcelCounter;
-import org.moara.nia.data.build.preprocess.file.JsonFileClassifier;
-import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class CompareDataTest {
 
@@ -125,14 +127,14 @@ public class CompareDataTest {
     @Test
     public void statisticJsonTest() {
         JsonFileClassifier jsonFileEditor = new JsonFileClassifier();
-        String path = "D:\\moara\\data\\law\\json3\\edit\\";
+        String path = "D:\\moara\\data\\law\\json5\\edit\\";
 
         int from = 3;
         int totalFrom = jsonFileEditor.countJsonIndex(FileUtil.getFileList(path,".json"), from);
         System.out.println("total from " + from + " : " + totalFrom);
 
-
-
     }
+
+
 
 }

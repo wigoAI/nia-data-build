@@ -1,12 +1,15 @@
 package com.wigoai.nlp.example;
 
 import org.junit.Test;
+import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.preprocess.*;
-import org.moara.nia.data.build.preprocess.file.JsonFileClassifier;
-import org.moara.nia.data.build.preprocess.file.JsonFileEditor;
-import org.moara.nia.data.build.preprocess.file.LawJsonFileEditor;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
+import org.moara.nia.data.build.preprocess.fileUtils.json.LawJsonFileEditor;
 
+import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 
 public class CreateJsonTest {
 
@@ -56,6 +59,12 @@ public class CreateJsonTest {
 
             xmlPreprocessor.makeByPath(path);
         }
+
+        for (String str : xmlPreprocessor.getSplitStrSet()) {
+            System.out.println(str);
+        }
+
+
     }
 
     @Test
@@ -66,22 +75,29 @@ public class CreateJsonTest {
             String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
             jsonFileEditor.editJsonFileByPath(path);
         }
-
-//
 //        String path = "D:\\moara\\data\\allData\\test\\jsonDelTest\\";
 //        jsonFileEditor.editJsonFileByPath(path);
 
+    }
 
+    @Test
+    public void highlightJsonTest() {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+        String path = "D:\\moara\\data\\law\\json4\\edit\\";
+        List<File> fileList = FileUtil.getFileList(path, ".json");
+
+        for(File file : fileList) {
+            jsonFileEditor.highlightJsonFile(file, path);
+        }
     }
 
     @Test
     public void editLawJsonTest() {
         LawJsonFileEditor lawJsonFileEditor = new LawJsonFileEditor();
 
-
-        String path = "D:\\moara\\data\\law\\json3\\";
+        String path = "D:\\moara\\data\\law\\json5\\";
         lawJsonFileEditor.editJsonFileByPath(path);
-
 
     }
 
@@ -97,9 +113,9 @@ public class CreateJsonTest {
     @Test
     public void classifyJsonByIndexTest() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
-        String path = "D:\\moara\\data\\law\\json3\\edit\\";
+        String path = "D:\\moara\\data\\law\\json4\\edit\\highlight\\";
 
-        jsonFileClassifier.classifyJsonFileByIndex(path, 11, 119);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 11, 200);
     }
 
     @Test

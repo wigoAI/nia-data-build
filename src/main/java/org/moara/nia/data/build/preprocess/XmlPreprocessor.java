@@ -26,9 +26,6 @@ import org.moara.ara.datamining.textmining.document.sentence.Sentence;
 import org.moara.common.code.LangCode;
 import org.moara.common.data.file.FileUtil;
 import org.moara.common.string.Check;
-import org.moara.nia.data.build.Area;
-import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
-
 
 
 import org.slf4j.Logger;
@@ -44,9 +41,9 @@ import java.io.File;
 
 import java.text.SimpleDateFormat;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * XML 형태의 데이터 전처리기
@@ -56,7 +53,7 @@ import java.util.List;
 public class XmlPreprocessor implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
-
+    private HashSet<String> splitStrSet = new HashSet<>();
 
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
@@ -72,10 +69,14 @@ public class XmlPreprocessor implements DataPreprocessor {
         }
     }
 
+    public HashSet<String> getSplitStrSet() {
+        return splitStrSet;
+    }
+
     @Override
     public void makeByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".xml");
-        String outputPath = "D:\\moara\\data\\law\\json4";
+        String outputPath = "D:\\moara\\data\\law\\json5";
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
 
@@ -209,35 +210,8 @@ public class XmlPreprocessor implements DataPreprocessor {
         List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
         for(Sentence sentence : extractSentenceList ){
 
-            String[] splitSentences = sentence.getValue().split(",");
-
-            List<String> editSentenceList = new ArrayList<>();
-            StringBuilder tmpSentence = new StringBuilder();
-
-
-            for (int i = 0 ; i < splitSentences.length - 1 ; i++) {
-                splitSentences[i] += ",";
-            }
-
-            for (String splitSentence : splitSentences) {
-                tmpSentence.append(splitSentence);
-
-                if(splitSentence.length() < 8) {
-                    continue;
-                }
-                if(Check.isNumber(tmpSentence.toString().charAt(tmpSentence.length() - 2))) {
-                    continue;
-                }
-                if(tmpSentence.toString().contains("(") && !tmpSentence.toString().contains(")")) {
-                    continue;
-                }
-
-                editSentenceList.add(tmpSentence.toString());
-                tmpSentence = new StringBuilder();
-            }
-            if (tmpSentence.length() > 0) {
-                editSentenceList.add(tmpSentence.toString());
-            }
+            List<String> editSentenceList = splitWithComma(sentence.getValue());
+            editSentenceList = splitWithRegx(editSentenceList);
 
             for (String sentenceValue : editSentenceList) {
 
@@ -253,32 +227,102 @@ public class XmlPreprocessor implements DataPreprocessor {
         return paragraph;
     }
 
-    private Area parseArea(String str) {
-        int start = Integer.parseInt(str.split(",")[0]);
-        int end = Integer.parseInt(str.split(",")[1]);
+    private List<String> splitWithComma(String sentence) {
+        String[] splitSentences = sentence.split(",");
+        List<String> editSentenceList = new ArrayList<>();
+        StringBuilder tmpSentence = new StringBuilder();
 
-        return new Area(start, end);
+
+        for (int i = 0; i < splitSentences.length - 1 ; i++) {
+            splitSentences[i] += ",";
+        }
+
+        for (String splitSentence : splitSentences) {
+            tmpSentence.append(splitSentence);
+
+            if(splitSentence.length() < 8) {
+                continue;
+            }
+            if(Check.isNumber(tmpSentence.toString().charAt(tmpSentence.length() - 2))) {
+                continue;
+            }
+            if(tmpSentence.toString().contains("(") && !tmpSentence.toString().contains(")")) {
+                continue;
+            }
+
+            editSentenceList.add(tmpSentence.toString());
+            tmpSentence = new StringBuilder();
+        }
+        if (tmpSentence.length() > 0) {
+            editSentenceList.add(tmpSentence.toString());
+        }
+        return editSentenceList;
     }
 
-    private String blindArea(String text, List<Area> targetAreas) {
-        if (targetAreas.size() == 0)
-            return text;
-        System.out.println("target data : " + text.replace("\n", " "));
-        StringBuilder builder = new StringBuilder(text);
-        for(Area area : targetAreas) {
-            int index = area.getStart();
 
-            while(index <= area.getEnd() - 1) {
-                builder.setCharAt(index++, '*');
+    private List<String> splitWithRegx(List<String> sentenceList) {
+        List<String> editSentence = new ArrayList<>();
+
+        // 것이므로, 것으로서 등등
+        // 것이라고, 것이라고는 등등 제외
+        Pattern[] patterns = {
+                Pattern.compile("\\s것([가-힣]{2,3})+[면서써로만나지]\\s"),
+                Pattern.compile("\\s[가-힣]*[하이]고\\s"),
+                Pattern.compile("\\s[가-힣]*으나\\s"),
+                Pattern.compile("\\s[가-힣]*면\\s")};
+
+        // 구분점 찾기
+        for (String sentence : sentenceList) {
+            TreeSet<Integer> splitPointSet = new TreeSet<>();
+
+            for (Pattern pattern : patterns) {
+                Matcher matcher = pattern.matcher(sentence);
+
+                // 문장 구분 최소 길이
+                while (matcher.find()) {
+                    splitStrSet.add(matcher.group().trim());
+
+                    if(sentence.length() - matcher.end() > 8) {
+                        splitPointSet.add(matcher.end());
+                    }
+                }
             }
+
+            List<Integer> removeItems = new ArrayList<>();
+
+            int tmpSplitPoint = 0;
+            for (int splitPoint : splitPointSet) {
+                if (splitPoint - 8 <= tmpSplitPoint) {
+                    if(tmpSplitPoint == 0) {
+                        removeItems.add(splitPoint);
+                    } else  {
+                        removeItems.add(tmpSplitPoint);
+                    }
+                }
+                tmpSplitPoint = splitPoint;
+            }
+
+            for (int s : removeItems) {
+                splitPointSet.remove(s);
+            }
+
+            // 문장구분
+            int startIndex = 0;
+            for (int splitPoint : splitPointSet) {
+                editSentence.add(sentence.substring(startIndex, splitPoint).trim());
+                startIndex = splitPoint;
+            }
+            editSentence.add(sentence.substring(startIndex).trim());
 
         }
 
-        return builder.toString();
+        return editSentence;
+
     }
 
-    private String editEscapeChar(String value) {
 
+
+    private String editEscapeChar(String value) {
         value = value.replace("\\r","\n")
                 .replace("\\n","\n")
                 .replace("\\t","\t")

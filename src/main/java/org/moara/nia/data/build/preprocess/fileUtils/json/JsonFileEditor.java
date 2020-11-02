@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.moara.nia.data.build.preprocess.file;
+package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.*;
-import org.apache.commons.io.FileUtils;
 import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
@@ -197,7 +196,47 @@ public class JsonFileEditor extends JsonFileUtil{
         return editText;
     }
 
-    private JsonArray getHighlightText(JsonArray text, String [] outArray) {
+    /**
+     * Json mecab highlighting
+     *
+     * @param file JSON File
+     * @param outputPath result file path
+     */
+    public void highlightJsonFile(File file, String outputPath) {
+        JsonObject newsJson = getJsonObjectByFile(file);
+        JsonObject highlightJson = copyJsonObjectInfo(newsJson);
+        JsonArray documents = newsJson.getAsJsonArray("documents");
+        JsonArray highlightDocuments = getHighlightDocuments(documents);
+
+        System.out.println(newsJson.get("name").getAsString());
+        highlightJson.add("documents", highlightDocuments);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        String dirPath = createDir(outputPath, "highlight");
+        FileUtil.fileOutput(gson.toJson(highlightJson), dirPath + file.getName() ,false);
+
+    }
+
+    private JsonArray getHighlightDocuments(JsonArray documents) {
+        JsonArray highlightDocuments = new JsonArray();
+
+        for (int i = 0; i < documents.size() ; i++) {
+            JsonObject document = documents.get(i).getAsJsonObject();
+            JsonObject highlightDocument = copyDocumentInfo(document);
+            JsonArray text = document.get("text").getAsJsonArray();
+
+            String[] outArray = {"M"};
+            JsonArray highlightText = getHighlightText(text, outArray);
+
+
+            highlightDocument.add("text", highlightText);
+            highlightDocuments.add(highlightDocument);
+        }
+
+        return highlightDocuments;
+    }
+
+    private JsonArray getHighlightText(JsonArray text, String[] outArray) {
         JsonArray editText = new JsonArray();
 
         // text 접근

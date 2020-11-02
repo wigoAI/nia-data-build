@@ -30,7 +30,7 @@ public interface PersonNameFinder {
      * 문자열을 받으면 해당 문자열에서 사람 이름의 위치를 찾아 Area 형태로 인덱스 위치를 알려준다.
      *
      * @param text String
-     * @return Area[]
+     * @return 인명이 있는 영역 반환
      */
-    public List<Area> findPersonNAme(String text);
+    List<Area> findPersonName(String text);
 }
