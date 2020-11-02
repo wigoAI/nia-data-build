@@ -84,7 +84,7 @@ public class CreateJsonTest {
     public void highlightJsonTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        String path = "D:\\moara\\data\\law\\json4\\edit\\";
+        String path = "D:\\moara\\data\\law\\json5\\";
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
         for(File file : fileList) {

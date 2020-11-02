@@ -260,6 +260,19 @@ public class XmlPreprocessor implements DataPreprocessor {
     }
 
 
+    /**
+     * TODO 1. ~하고 있~ 에 대한 처리
+     * ex)     {
+     *             "index": 6,
+     *             "sentence": "나. 피고가 아무런 권원 없이 계쟁건물을 점유하고"
+     *           },
+     *           {
+     *             "index": 7,
+     *             "sentence": "있는 이상 전소유자이고"
+ *               }
+     * @param sentenceList
+     * @return
+     */
     private List<String> splitWithRegx(List<String> sentenceList) {
         List<String> editSentence = new ArrayList<>();
 
@@ -281,6 +294,11 @@ public class XmlPreprocessor implements DataPreprocessor {
                 // 문장 구분 최소 길이
                 while (matcher.find()) {
                     splitStrSet.add(matcher.group().trim());
+
+                    if(sentence.substring(matcher.end()).startsWith("있")) {
+                        // 점유하고 있는는
+                       continue;
+                    }
 
                     if(sentence.length() - matcher.end() > 8) {
                         splitPointSet.add(matcher.end());
