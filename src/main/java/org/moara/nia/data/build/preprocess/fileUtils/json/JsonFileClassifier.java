@@ -32,7 +32,9 @@ import java.util.List;
 
 
 /**
+ * JSON 파일 분류기
  *
+ * @author 조승현
  */
 public class JsonFileClassifier extends JsonFileUtil{
     private static final Logger logger = LoggerFactory.getLogger(JsonFileClassifier.class);
@@ -236,7 +238,7 @@ public class JsonFileClassifier extends JsonFileUtil{
         classifyJson.add("documents", classifyDocuments);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        String dirPath = createDir(path, "classify");
+        String dirPath = createDir("D:\\moara\\data\\law\\classify_by_index\\", "classify");
         FileUtil.fileOutput(gson.toJson(classifyJson), dirPath + name + ".json" ,false);
 
 

@@ -127,7 +127,7 @@ public class CompareDataTest {
     @Test
     public void statisticJsonTest() {
         JsonFileClassifier jsonFileEditor = new JsonFileClassifier();
-        String path = "D:\\moara\\data\\law\\json5\\edit\\";
+        String path = "D:\\moara\\data\\law\\json5\\edit\\highlight\\";
 
         int from = 3;
         int totalFrom = jsonFileEditor.countJsonIndex(FileUtil.getFileList(path,".json"), from);

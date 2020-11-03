@@ -84,7 +84,7 @@ public class CreateJsonTest {
     public void highlightJsonTest() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        String path = "D:\\moara\\data\\law\\json5\\";
+        String path = "D:\\moara\\data\\law\\json5\\edit\\";
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
         for(File file : fileList) {
@@ -113,9 +113,14 @@ public class CreateJsonTest {
     @Test
     public void classifyJsonByIndexTest() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
-        String path = "D:\\moara\\data\\law\\json4\\edit\\highlight\\";
+        String path = "D:\\moara\\data\\law\\json5\\edit\\highlight\\";
 
-        jsonFileClassifier.classifyJsonFileByIndex(path, 11, 200);
+//        for(int i = 0 ; i < 7 ; i++) {
+//            jsonFileClassifier.classifyJsonFileByIndex(path, i, i);
+//        }
+        jsonFileClassifier.classifyJsonFileByIndex(path, 8,9);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 10, 12);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 13, 249);
     }
 
     @Test

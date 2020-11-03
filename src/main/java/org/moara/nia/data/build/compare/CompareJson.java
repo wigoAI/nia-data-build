@@ -30,9 +30,6 @@ import java.util.List;
  * CompareData 구현체
  * Json 형태의 데이터를 비교한다.
  *
- * TODO 1. editEscapeChar 메서드 개선하기
- *          - preprocessor 에 있는 메서드와 기능이 같다.
- *
  * @author 조승현
  */
 public class CompareJson implements CompareData {

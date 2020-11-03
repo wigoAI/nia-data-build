@@ -76,7 +76,7 @@ public class XmlPreprocessor implements DataPreprocessor {
     @Override
     public void makeByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".xml");
-        String outputPath = "D:\\moara\\data\\law\\json5";
+        String outputPath = "D:\\moara\\data\\law\\test";
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
 
@@ -261,17 +261,10 @@ public class XmlPreprocessor implements DataPreprocessor {
 
 
     /**
-     * TODO 1. ~하고 있~ 에 대한 처리
-     * ex)     {
-     *             "index": 6,
-     *             "sentence": "나. 피고가 아무런 권원 없이 계쟁건물을 점유하고"
-     *           },
-     *           {
-     *             "index": 7,
-     *             "sentence": "있는 이상 전소유자이고"
- *               }
-     * @param sentenceList
-     * @return
+     *
+     * @param sentenceList 문장 구분이 추가적으로 필요한 문장 리스트
+     *
+     * @return 문장 구분이 처리된 문장 리스트
      */
     private List<String> splitWithRegx(List<String> sentenceList) {
         List<String> editSentence = new ArrayList<>();
@@ -293,16 +286,11 @@ public class XmlPreprocessor implements DataPreprocessor {
 
                 // 문장 구분 최소 길이
                 while (matcher.find()) {
+
+                    // ex) 점유하고 있는
+                    if(sentence.substring(matcher.end()).startsWith("있")) { continue; }
+                    if(sentence.length() - matcher.end() > 8) { splitPointSet.add(matcher.end()); }
                     splitStrSet.add(matcher.group().trim());
-
-                    if(sentence.substring(matcher.end()).startsWith("있")) {
-                        // 점유하고 있는는
-                       continue;
-                    }
-
-                    if(sentence.length() - matcher.end() > 8) {
-                        splitPointSet.add(matcher.end());
-                    }
                 }
             }
 
@@ -313,16 +301,14 @@ public class XmlPreprocessor implements DataPreprocessor {
                 if (splitPoint - 8 <= tmpSplitPoint) {
                     if(tmpSplitPoint == 0) {
                         removeItems.add(splitPoint);
-                    } else  {
+                    } else {
                         removeItems.add(tmpSplitPoint);
                     }
                 }
                 tmpSplitPoint = splitPoint;
             }
 
-            for (int s : removeItems) {
-                splitPointSet.remove(s);
-            }
+            for (int s : removeItems) { splitPointSet.remove(s); }
 
             // 문장구분
             int startIndex = 0;
