@@ -96,9 +96,14 @@ public class JsonFileEditor extends JsonFileUtil{
     }
 
 
-
+    /**
+     * TODO 1. Need to refactoring with LawJsonFileEditor getEditDocuments
+     *
+     */
     protected JsonArray getEditDocuments(JsonArray documents) {
         JsonArray editDocuments = new JsonArray();
+
+        ///// getEditText에 삽입할 것
         Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
         String[] editPatterns = {"\\[사진.*\\]",
                 "/[^a-zA-Z0-9]*기자.*",
@@ -112,7 +117,7 @@ public class JsonFileEditor extends JsonFileUtil{
 
         List<Predicate<String>> frontDropCondition = new ArrayList<>();
         frontDropCondition.add(t -> !endsWithDa(t));
-
+        //////
 
         int dropCount = 0;
         // Document 복사 & text 접근

@@ -74,7 +74,7 @@ public class MagazineExample {
     public void TextPreprocessorTest() {
         TextPreprocessor textPreprocessor = new TextPreprocessor();
 
-        String dirPath ="D:\\moara\\data\\allData\\잡지\\";
+        String dirPath ="D:\\moara\\data\\잡지\\";
 
         textPreprocessor.makeByPath(dirPath);
 

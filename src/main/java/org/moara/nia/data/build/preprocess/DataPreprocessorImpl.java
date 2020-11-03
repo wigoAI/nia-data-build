@@ -67,10 +67,17 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private final ExcelGet excelGet = new ExcelGet();
     private final String [] outArray= {"M"};
     private XSSFRow row;
+    protected String fileExtension;
+
+
+    public DataPreprocessorImpl() {
+        this.fileExtension = ".xlsx";
+
+    }
 
     @Override
     public void makeByPath(String path) {
-        List<File> fileList = FileUtil.getFileList(path, ".xlsx");
+        List<File> fileList = FileUtil.getFileList(path, this.fileExtension);
         int count = 0;
 
         for(File file : fileList) {
@@ -92,7 +99,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         logger.debug("start file name: " +file.getName());
 
-        JsonObject jsonObject = initJsonObject(file);
+        JsonObject jsonObject = initJsonObject(getFileNameWithoutFormat(file));
         JsonArray documents = getDocuments(file);
         jsonObject.add("documents", documents);
 
@@ -101,11 +108,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
     }
 
-    protected JsonObject initJsonObject(File file) {
+    protected JsonObject initJsonObject(String name) {
         JsonObject jsonObject = new JsonObject();
         String delivery_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-        jsonObject.addProperty("name", getFileNameWithoutFormat(file));
+        jsonObject.addProperty("name", name);
         jsonObject.addProperty("delivery_date", delivery_date);
 
         return jsonObject;
@@ -167,18 +174,22 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         // 문단 리스트
         List<String> paragraphList = getParagraphList(contents);
+        addTextToDocument(documentId, document, paragraphList);
+
+        return document;
+    }
+
+    protected void addTextToDocument(String documentId, JsonObject document, List<String> paragraphList) {
         try {
             JsonArray text = getText(paragraphList);
             document.add("text", text);
         } catch (OverlapDataException | QaDataException | LongDataException e) {
             System.out.println("drop data in id : " + documentId);
             System.out.println(e.toString());
-            return null;
+
         } catch (Exception e) {
             System.out.println("this data something is wrong : " + documentId);
         }
-
-        return document;
     }
 
     protected XSSFSheet getExcelSheet(File file) {
@@ -338,7 +349,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
 
-    private String editEscapeChar(String value) {
+    protected String editEscapeChar(String value) {
         value = value.replace("\\r\\n", " ")
                 .replace("  ", " ")
                 .replace("[", "")

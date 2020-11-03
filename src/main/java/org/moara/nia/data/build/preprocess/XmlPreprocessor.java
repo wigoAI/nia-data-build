@@ -16,8 +16,6 @@
 
 package org.moara.nia.data.build.preprocess;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;
@@ -27,12 +25,11 @@ import org.moara.common.code.LangCode;
 import org.moara.common.data.file.FileUtil;
 import org.moara.common.string.Check;
 
-
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,11 +47,11 @@ import java.util.regex.Pattern;
  *
  * @author 조승현
  */
-public class XmlPreprocessor implements DataPreprocessor {
+public class XmlPreprocessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
     private HashSet<String> splitStrSet = new HashSet<>();
-
+    private JsonFileUtil jsonFileUtil;
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder documentBuilder;
 
@@ -62,6 +59,7 @@ public class XmlPreprocessor implements DataPreprocessor {
      * Constructor
      */
     public XmlPreprocessor() {
+        this.jsonFileUtil = new JsonFileUtil();
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -69,32 +67,27 @@ public class XmlPreprocessor implements DataPreprocessor {
         }
     }
 
-    public HashSet<String> getSplitStrSet() {
-        return splitStrSet;
-    }
+    /**
+     * 문장 구분이 적용된 단어 Set 을 얻는다.
+     * @return  HashSet
+     */
+    public HashSet<String> getSplitStrSet() { return splitStrSet; }
 
     @Override
     public void makeByPath(String path) {
         List<File> fileList = FileUtil.getFileList(path, ".xml");
-        String outputPath = "D:\\moara\\data\\law\\test";
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
-
-        File outputDir = new File(outputPath);
-        if(!outputDir.exists()) {
-            outputDir.mkdir();
-        }
 
         jsonFileName += "_" + fileList.size() + "건_";
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + jsonFileName + ".json",false);
+        String outputPath = "D:\\moara\\data\\law\\test";
+        jsonFileUtil.createJsonFile(outputPath, jsonFileName, jsonObject);
+
         logger.debug("end file name : " +jsonFileName);
-
     }
-
 
     private JsonArray getDocuments(List<File> fileList) {
         JsonArray documents = new JsonArray();
@@ -112,22 +105,12 @@ public class XmlPreprocessor implements DataPreprocessor {
         return documents;
     }
 
-    private JsonObject initJsonObject(String name) {
-        System.out.println("init json");
-        JsonObject jsonObject = new JsonObject() ;
-        String delivery_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-
-        jsonObject.addProperty("name", name);
-        jsonObject.addProperty("delivery_date", delivery_date);
-
-        return jsonObject;
-    }
-
     private JsonObject getDocument(File file) {
 
         Element dom = getDomElement(file);
-        JsonObject document = initJsonObject(dom);
         JsonArray text = getText(dom);
+        JsonObject document = initJsonObject(dom);
+
         document.add("text", text);
 
         return document;
@@ -168,9 +151,6 @@ public class XmlPreprocessor implements DataPreprocessor {
         return dom.getElementsByTagName(tagName).item(index).getTextContent().trim();
     }
 
-
-
-
     private Element getDomElement(File file) {
         Element root = null;
         try {
@@ -191,8 +171,7 @@ public class XmlPreprocessor implements DataPreprocessor {
         int index = 0;
         for(String str : text.trim().split("\\n")) {
             str = str.trim();
-            if(str.length() == 0)
-                continue;
+            if(str.length() == 0) { continue; }
 
             JsonArray paragraph = getParagraph(str, index);
             index += paragraph.size();
@@ -206,6 +185,7 @@ public class XmlPreprocessor implements DataPreprocessor {
     private JsonArray getParagraph(String paragraphValue, int index) {
         JsonArray paragraph = new JsonArray();
         paragraphValue = editEscapeChar(paragraphValue);
+
         // sentence split
         List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
         for(Sentence sentence : extractSentenceList ){
@@ -253,18 +233,19 @@ public class XmlPreprocessor implements DataPreprocessor {
             editSentenceList.add(tmpSentence.toString());
             tmpSentence = new StringBuilder();
         }
+
         if (tmpSentence.length() > 0) {
             editSentenceList.add(tmpSentence.toString());
         }
+
+
         return editSentenceList;
     }
 
-
     /**
-     *
-     * @param sentenceList 문장 구분이 추가적으로 필요한 문장 리스트
-     *
-     * @return 문장 구분이 처리된 문장 리스트
+     * 실제 문장 구분이 동작하기 전 간단한 규칙으로 미리 구분을 수행한다. Preprocessing
+     * @param sentenceList 문장 리스트
+     * @return 전처리가 된 문장 리스트
      */
     private List<String> splitWithRegx(List<String> sentenceList) {
         List<String> editSentence = new ArrayList<>();
@@ -279,36 +260,7 @@ public class XmlPreprocessor implements DataPreprocessor {
 
         // 구분점 찾기
         for (String sentence : sentenceList) {
-            TreeSet<Integer> splitPointSet = new TreeSet<>();
-
-            for (Pattern pattern : patterns) {
-                Matcher matcher = pattern.matcher(sentence);
-
-                // 문장 구분 최소 길이
-                while (matcher.find()) {
-
-                    // ex) 점유하고 있는
-                    if(sentence.substring(matcher.end()).startsWith("있")) { continue; }
-                    if(sentence.length() - matcher.end() > 8) { splitPointSet.add(matcher.end()); }
-                    splitStrSet.add(matcher.group().trim());
-                }
-            }
-
-            List<Integer> removeItems = new ArrayList<>();
-
-            int tmpSplitPoint = 0;
-            for (int splitPoint : splitPointSet) {
-                if (splitPoint - 8 <= tmpSplitPoint) {
-                    if(tmpSplitPoint == 0) {
-                        removeItems.add(splitPoint);
-                    } else {
-                        removeItems.add(tmpSplitPoint);
-                    }
-                }
-                tmpSplitPoint = splitPoint;
-            }
-
-            for (int s : removeItems) { splitPointSet.remove(s); }
+            TreeSet<Integer> splitPointSet = getSplitPoint(patterns, sentence);
 
             // 문장구분
             int startIndex = 0;
@@ -324,19 +276,43 @@ public class XmlPreprocessor implements DataPreprocessor {
 
     }
 
+    private TreeSet<Integer> getSplitPoint(Pattern[] patterns, String sentence ) {
+        TreeSet<Integer> splitPointSet = new TreeSet<>();
+        for (Pattern pattern : patterns) {
+            Matcher matcher = pattern.matcher(sentence);
 
+            // 문장 구분 최소 길이
+            while (matcher.find()) {
 
-    private String editEscapeChar(String value) {
-        value = value.replace("\\r","\n")
-                .replace("\\n","\n")
-                .replace("\\t","\t")
-                .replace("　"," ")
-                .replace("`", "'")
-                .replace("‘", "'")
-                .replace("’", "'")
-                .replace("“", "\"")
-                .replace("”", "\"");
+                // ex) 점유하고 있는
+                if(sentence.substring(matcher.end()).startsWith("있")) { continue; }
+                if(sentence.length() - matcher.end() > 8) { splitPointSet.add(matcher.end()); }
+                splitStrSet.add(matcher.group().trim());
+            }
+        }
 
-        return value;
+        removeInvalidSplitPoint(splitPointSet);
+
+        return splitPointSet;
     }
+
+    private void removeInvalidSplitPoint(TreeSet<Integer> splitPointSet) {
+        List<Integer> removeItems = new ArrayList<>();
+
+        int tmpSplitPoint = 0;
+        for (int splitPoint : splitPointSet) {
+            if (splitPoint - 8 <= tmpSplitPoint) {
+                if(tmpSplitPoint == 0) {
+                    removeItems.add(splitPoint);
+                } else {
+                    removeItems.add(tmpSplitPoint);
+                }
+            }
+            tmpSplitPoint = splitPoint;
+        }
+
+        for (int s : removeItems) { splitPointSet.remove(s); }
+    }
+
+
 }

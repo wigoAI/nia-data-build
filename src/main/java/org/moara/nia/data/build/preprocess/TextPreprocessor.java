@@ -15,14 +15,8 @@
  */
 package org.moara.nia.data.build.preprocess;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.preprocess.exception.LongDataException;
-import org.moara.nia.data.build.preprocess.exception.OverlapDataException;
-import org.moara.nia.data.build.preprocess.exception.QaDataException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,38 +33,8 @@ import java.util.List;
  */
 public class TextPreprocessor extends DataPreprocessorImpl{
 
-    @Override
-    public void makeByPath(String path) {
-        List<File> fileList = FileUtil.getFileList(path, ".txt");
-        int count = 0;
-
-        for(File file : fileList) {
-            make(file, path);
-            count++;
-        }
-
-    }
-
-    @Override
-    public void make(File file, String path) {
-        String outputPath = path + "json";
-        File outputDir = new File(outputPath);
-
-        if(!outputDir.exists()) {
-            outputDir.mkdir();
-            System.out.println("create dir : " + outputPath);
-        }
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
-
-        JsonObject jsonObject = initJsonObject(file);
-        JsonArray documents = getDocuments(file);
-        jsonObject.add("documents", documents);
-
-        FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + getFileNameWithoutFormat(file) + ".json",false);
-
-
+    public TextPreprocessor() {
+        this.fileExtension = ".txt";
     }
 
     @Override
@@ -114,20 +78,10 @@ public class TextPreprocessor extends DataPreprocessorImpl{
         if(contents == null || contents.length() < 2){
             return null;
         }
-//        System.out.println(contents);
-        List<String> paragraphList = getParagraphList(contents);
 
+        List<String> paragraphList = getParagraphList(contents);
         String documentId = columns[0];
-        try {
-            JsonArray text = getText(paragraphList);
-            document.add("text", text);
-        } catch (OverlapDataException | QaDataException | LongDataException e) {
-            System.out.println("drop data in id : " + documentId);
-            System.out.println(e.toString());
-            return null;
-        } catch (Exception e) {
-            System.out.println("this data something is wrong : " + documentId);
-        }
+        addTextToDocument(documentId, document, paragraphList);
 
         return document;
     }

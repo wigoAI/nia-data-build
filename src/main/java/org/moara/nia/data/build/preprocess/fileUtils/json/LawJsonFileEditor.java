@@ -38,8 +38,8 @@ public class LawJsonFileEditor extends JsonFileEditor {
 
     @Override
     protected JsonArray getEditDocuments(JsonArray documents) {
-        Pattern dropDataPattern = Pattern.compile(".*[^\\\\.\\]다\\)례예면서써로만나지고,]$");
         JsonArray editDocuments = new JsonArray();
+        Pattern dropDataPattern = Pattern.compile(".*[^\\\\.\\]다\\)례예면서써로만나지고,]$");
 
         int dropCount = 0;
         // Document 복사 & text 접근
@@ -48,6 +48,8 @@ public class LawJsonFileEditor extends JsonFileEditor {
             JsonObject editDocument = copyDocumentInfo(document);
             boolean dropDocumentFlag = false;
             JsonArray text = document.get("text").getAsJsonArray();
+
+
             JsonArray editText = new JsonArray();
 
             // text 접근
@@ -90,6 +92,8 @@ public class LawJsonFileEditor extends JsonFileEditor {
             editDocuments.add(editDocument);
 
         }
+
+
         System.out.print("drop " + dropCount +" data in ");
 
         return editDocuments;

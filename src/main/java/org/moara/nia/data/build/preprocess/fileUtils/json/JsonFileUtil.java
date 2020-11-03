@@ -15,10 +15,8 @@
  */
 package org.moara.nia.data.build.preprocess.fileUtils.json;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import org.moara.common.data.file.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,6 +43,15 @@ public class JsonFileUtil {
 
         return element.getAsJsonObject();
     }
+
+    public void createJsonFile(String outputPath, String jsonFileName, JsonObject jsonObject) {
+        createDir(outputPath);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + jsonFileName + ".json",false);
+
+    }
+
     protected String createDir(String dirPath) {
         File outputDir = new File(dirPath);
 
@@ -55,6 +62,7 @@ public class JsonFileUtil {
 
         return dirPath;
     }
+
     protected String createDir(String outputPath, String dirName) {
         String dirPath = outputPath + dirName + "\\";
         return createDir(dirPath);
@@ -103,6 +111,7 @@ public class JsonFileUtil {
         return documentsArray;
 
     }
+
     protected Pattern getPattern(String regxStr) {
         return Pattern.compile(regxStr);
     }

@@ -237,13 +237,10 @@ public class JsonFileClassifier extends JsonFileUtil{
         classifyJson.addProperty("delivery_date", deliveryDate);
         classifyJson.add("documents", classifyDocuments);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        String dirPath = createDir("D:\\moara\\data\\law\\classify_by_index\\", "classify");
-        FileUtil.fileOutput(gson.toJson(classifyJson), dirPath + name + ".json" ,false);
 
+        createJsonFile("D:\\moara\\data\\law\\classify_by_index", "classify", classifyJson);
 
     }
-
 
     /**
      * Json 파일의 이름을 데이터 정제 이후 변경된 수에 따라서 변경
@@ -273,6 +270,7 @@ public class JsonFileClassifier extends JsonFileUtil{
 
         }
     }
+
     private String getNewNameByJsonSize(JsonArray jsonArray, String oldName) {
         System.out.println("original : " + oldName);
         int jsonArraySize = jsonArray.size();
@@ -292,6 +290,7 @@ public class JsonFileClassifier extends JsonFileUtil{
 
         return newFileName.toString();
     }
+
     private int getLastIndex(JsonArray text) {
         int lastIndex = 0;
         for (int j = 0; j < text.size() ; j++) {
