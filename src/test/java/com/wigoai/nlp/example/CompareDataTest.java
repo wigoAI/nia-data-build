@@ -3,7 +3,6 @@ package com.wigoai.nlp.example;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.compare.BlindCompare;
 import org.moara.nia.data.build.compare.CompareJson;
 import org.moara.nia.data.build.preprocess.ExcelCounter;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
@@ -11,9 +10,7 @@ import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 public class CompareDataTest {
 
@@ -85,31 +82,6 @@ public class CompareDataTest {
         total += jsonFileClassifier.countJson(FileUtil.getFileList(afterPath,".json"), "category", "스포츠");
 
         System.out.println("All total : " + total);
-    }
-
-    @Test
-    public void blindCompareTest() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
-        String basePath = "D:\\moara\\data\\law\\compare\\blind\\";
-        String beforePath = basePath + "before\\";
-        String afterPath = basePath + "after\\";
-
-        List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
-        for (File file : afterFileList) {
-            System.out.println(file.getName());
-            JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
-            JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
-
-            BlindCompare blindCompare = new BlindCompare(beforeJson, afterJson, basePath);
-            try {
-                blindCompare.compare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-
     }
 
     @Test
