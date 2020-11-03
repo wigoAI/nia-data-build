@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class JsonFileEditor extends JsonFileUtil{
     private static final Logger logger = LoggerFactory.getLogger(JsonFileEditor.class);
-    private final HashSet<String> dropData = new HashSet<>();
+    protected final HashSet<String> dropData = new HashSet<>();
 
     /**
      * Constructor without dropData
@@ -103,21 +103,7 @@ public class JsonFileEditor extends JsonFileUtil{
     protected JsonArray getEditDocuments(JsonArray documents) {
         JsonArray editDocuments = new JsonArray();
 
-        ///// getEditText에 삽입할 것
-        Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
-        String[] editPatterns = {"\\[사진.*\\]",
-                "/[^a-zA-Z0-9]*기자.*",
-                "<[^>]*[>.]",
-                "^/[^a-zA-Z0-9]+/$",
-                "\\([^\\(\\)]*[^포자전]기자[^차\\(\\)]*\\)"};
 
-        List<Predicate<String>> dropCondition = new ArrayList<>();
-        dropCondition.add(t -> t.length() < 6);
-        dropCondition.add(t -> t.length() < 40 && emailPattern.matcher(t).find());
-
-        List<Predicate<String>> frontDropCondition = new ArrayList<>();
-        frontDropCondition.add(t -> !endsWithDa(t));
-        //////
 
         int dropCount = 0;
         // Document 복사 & text 접근
@@ -127,7 +113,6 @@ public class JsonFileEditor extends JsonFileUtil{
             JsonArray text = document.get("text").getAsJsonArray();
 
             String documentId = document.get("id").getAsString();
-
             System.out.println("Edit " + documentId);
             if (dropData.contains(documentId)) {
                 System.out.println("Drop data by dropList : " + documentId);
@@ -135,7 +120,7 @@ public class JsonFileEditor extends JsonFileUtil{
                 continue;
             }
 
-            JsonArray editText = getEditText(text, editPatterns, dropCondition, frontDropCondition);
+            JsonArray editText = getEditText(text);
             if(editText.size() == 0) {
                 System.out.println("Drop data : " + documentId );
                 dropCount++;
@@ -150,9 +135,22 @@ public class JsonFileEditor extends JsonFileUtil{
         return editDocuments;
     }
 
-    private JsonArray getEditText(JsonArray text, String[] editPatterns,
-                                  List<Predicate<String>> dropCondition, List<Predicate<String>> frontDropCondition) {
+    protected JsonArray getEditText(JsonArray text) {
+        ///// getEditText 에 삽입할 것
+        Pattern emailPattern = getPattern("[a-zA-Z0-9]@");
+        String[] editPatterns = {"\\[사진.*\\]",
+                "/[^a-zA-Z0-9]*기자.*",
+                "<[^>]*[>.]",
+                "^/[^a-zA-Z0-9]+/$",
+                "\\([^\\(\\)]*[^포자전]기자[^차\\(\\)]*\\)"};
 
+        List<Predicate<String>> dropCondition = new ArrayList<>();
+        dropCondition.add(t -> t.length() < 6);
+        dropCondition.add(t -> t.length() < 40 && emailPattern.matcher(t).find());
+
+        List<Predicate<String>> frontDropCondition = new ArrayList<>();
+        frontDropCondition.add(t -> !endsWithDa(t));
+        //////
         JsonArray editText = new JsonArray();
 
         // text 접근
