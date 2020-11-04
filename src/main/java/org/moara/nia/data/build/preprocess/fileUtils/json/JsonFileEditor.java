@@ -35,6 +35,12 @@ import java.util.regex.Pattern;
  * JSON 파일 편집기
  * 데이터 정제 결과로 도출된 JSON 파일의 관리를 한다.
  *
+ * TODO 1. 각 함수의 중복이 많이 발생한다.
+ *          - 상속받아서 Override 할 때 중복이 많이 체감 됨
+ *          - 이러한 코드들을 모두 잘게 쪼게서 관리할 것
+ *          - 메서드를 잘게 쪼갤수록 상속 받아서 Override 할 때
+ *          - 추가적으로 작성해야 할 모드가 줄어든다.
+ *
  * @author 조승현
  */
 public class JsonFileEditor extends JsonFileUtil{
@@ -101,9 +107,18 @@ public class JsonFileEditor extends JsonFileUtil{
         int dropCount = 0;
         // Document 복사 & text 접근
         for (int i = 0; i < documents.size() ; i++) {
-            JsonObject document = documents.get(i).getAsJsonObject();
-            JsonObject editDocument = copyDocumentInfo(document);
-            JsonArray text = document.get("text").getAsJsonArray();
+            JsonObject document = new JsonObject();
+            JsonObject editDocument;
+            JsonArray text;
+            try {
+                document = documents.get(i).getAsJsonObject();
+                editDocument = copyDocumentInfo(document);
+                text = document.get("text").getAsJsonArray();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("no Data in document : " +  document.get("id").getAsString());
+                continue;
+            }
 
             String documentId = document.get("id").getAsString();
             System.out.println("Edit " + documentId);
@@ -135,7 +150,8 @@ public class JsonFileEditor extends JsonFileUtil{
                 "/[^a-zA-Z0-9]*기자.*",
                 "<[^>]*[>.]",
                 "^/[^a-zA-Z0-9]+/$",
-                "\\([^\\(\\)]*[^포자전]기자[^차\\(\\)]*\\)"};
+                "\\([^\\(\\)]*[^포자전]기자[^차\\(\\)]*\\)",
+                ".*[0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}"};
 
         List<Predicate<String>> dropCondition = new ArrayList<>();
         dropCondition.add(t -> t.length() < 6);
@@ -168,6 +184,11 @@ public class JsonFileEditor extends JsonFileUtil{
                     if (condition.test(targetSentence)){ dropFlag = true; }
                 }
 
+                if (dropFlag) {
+                    System.out.println("Drop data : " + targetSentence);
+                    continue;
+                }
+
                 // 처음과 끝 문단 dropCondition check
                 if ((j < 2 || j == text.size() - 1)) {
                     for (Predicate<String> condition : frontDropCondition) {
@@ -195,6 +216,8 @@ public class JsonFileEditor extends JsonFileUtil{
     /**
      * Json mecab highlighting
      *
+     * TODO 1. JsonFileEditor를 상속받아 외부로 분리시키기
+     *
      * @param file JSON File
      * @param outputPath result file path
      */
@@ -216,7 +239,12 @@ public class JsonFileEditor extends JsonFileUtil{
     private JsonArray getHighlightDocuments(JsonArray documents) {
         JsonArray highlightDocuments = new JsonArray();
 
+        int count = 0;
         for (int i = 0; i < documents.size() ; i++) {
+            if(i > count ) {
+                System.out.println("processing : " + i + " / " + documents.size());
+                count += 1000;
+            }
             JsonObject document = documents.get(i).getAsJsonObject();
             JsonObject highlightDocument = copyDocumentInfo(document);
             JsonArray text = document.get("text").getAsJsonArray();

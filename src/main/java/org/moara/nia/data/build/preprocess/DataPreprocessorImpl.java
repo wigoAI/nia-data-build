@@ -22,10 +22,7 @@ import com.github.wjrmffldrhrl.Area;
 import com.google.gson.*;
 
 import com.seomse.poi.excel.ExcelGet;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;
 import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtract;
@@ -62,7 +59,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
     private final ExcelGet excelGet = new ExcelGet();
-    private final String [] outArray= {"M"};
+//    private final String [] outArray= {"M"};
     private XSSFRow row;
     protected String fileExtension;
 
@@ -223,6 +220,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         sizeType = SizeTypeUtil.getSizeType(sizeType);
 
+//        if(!sizeType.equals("small")) {
+//            return null;
+//        }
+
         JsonObject document = new JsonObject();
         document.addProperty("id", id);
         document.addProperty("category", getCellValue(5));
@@ -325,7 +326,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         JsonObject sentenceObject = new JsonObject();
         sentenceObject.addProperty("index", index);
         sentenceObject.addProperty("sentence", sentenceValue.trim());
-        sentenceObject.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
+        sentenceObject.addProperty("highlight_indices" , "");
+//        sentenceObject.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
         return sentenceObject;
     }
 

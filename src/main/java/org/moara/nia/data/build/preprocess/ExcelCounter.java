@@ -75,9 +75,7 @@ public class ExcelCounter {
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
             row = sheet.getRow(rowIndex);
             XSSFCell cell = row.getCell(0);
-            if(cell == null) {
-                break;
-            }
+            if(cell == null) { break; }
 
             String id = null;
             try{
@@ -89,9 +87,7 @@ public class ExcelCounter {
             }
 
             String contents = getCellValue(9);
-            if(contents == null){
-                continue;
-            }
+            if(contents == null){ continue; }
 
             if ((!contents.contains("기자 ") && !contents.contains("기자") &&  !contents.contains("리포터"))
             || (contents.contains(" 내가 ") || contents.contains(" 나는 ") || contents.contains(" 나의 "))) {

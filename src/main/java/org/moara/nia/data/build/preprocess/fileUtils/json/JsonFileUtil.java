@@ -98,6 +98,7 @@ public class JsonFileUtil {
 
         return copiedJsonObject;
     }
+
     protected JsonArray[] getDocumentsArrayByFileList(List<File> fileList) {
         JsonArray[] documentsArray = new JsonArray[fileList.size()];
 

@@ -18,8 +18,6 @@ package com.wigoai.nlp.example;
 
 import com.google.gson.JsonObject;
 import org.junit.Test;
-import org.moara.nia.data.build.preprocess.DataPreprocessor;
-import org.moara.nia.data.build.preprocess.DataPreprocessorImpl;
 import org.moara.nia.data.build.preprocess.SizeTypeUtil;
 import org.moara.nia.data.build.preprocess.TextPreprocessor;
 
@@ -71,7 +69,7 @@ public class MagazineExample {
     }
 
     @Test
-    public void TextPreprocessorTest() {
+    public void testTextPreprocessor() {
         TextPreprocessor textPreprocessor = new TextPreprocessor();
 
         String dirPath ="D:\\moara\\data\\잡지\\";

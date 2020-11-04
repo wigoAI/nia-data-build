@@ -15,7 +15,7 @@ import java.util.List;
 public class CompareDataTest {
 
     @Test
-    public void compareDataTest() {
+    public void testCompareData() {
 
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 //        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
@@ -41,7 +41,7 @@ public class CompareDataTest {
     }
 
     @Test
-    public void changeFileTest() {
+    public void testChangeFile() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
 
 //        for(int i = 3 ; i < 6 ; i++) {
@@ -49,14 +49,14 @@ public class CompareDataTest {
 //
 //            jsonFileEditor.fileNameChangeByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
 //        }
-        String afterPath = "D:\\moara\\data\\law\\json2\\edit\\";
+        String afterPath = "D:\\moara\\data\\기고문_2차\\json\\edit\\";
 
         jsonFileClassifier.changeFileNameByJsonSize(FileUtil.getFileList(afterPath,".json"), afterPath);
 
     }
 
     @Test
-    public void countJsonTest() {
+    public void testCountJson() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
         int total = 0;
 //        for(int i = 3 ; i < 6 ; i++) {
@@ -65,7 +65,7 @@ public class CompareDataTest {
 //            total += jsonFileEditor.countJson(FileUtil.getFileList(afterPath,".json"));
 //        }
 
-        String afterPath = "D:\\moara\\data\\law\\json3\\edit\\";
+        String afterPath = "D:\\moara\\data\\기고문_2차\\json\\edit\\";
 
         total += jsonFileClassifier.countJson(FileUtil.getFileList(afterPath,".json"));
 
@@ -73,7 +73,7 @@ public class CompareDataTest {
     }
 
     @Test
-    public void countCategoryTest() {
+    public void testCountCategory() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
         int total = 0;
 
@@ -85,7 +85,7 @@ public class CompareDataTest {
     }
 
     @Test
-    public void countExcelDataTest() {
+    public void testCountExcelData() {
         ExcelCounter excelCounter = new ExcelCounter();
 
         for (int i = 4 ; i <= 6 ; i++) {
@@ -97,7 +97,7 @@ public class CompareDataTest {
     }
 
     @Test
-    public void statisticJsonTest() {
+    public void testStatisticJson() {
         JsonFileClassifier jsonFileEditor = new JsonFileClassifier();
         String path = "D:\\moara\\data\\law\\json5\\edit\\highlight\\";
 

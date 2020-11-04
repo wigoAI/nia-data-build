@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.preprocess.*;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileCutter;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 import org.moara.nia.data.build.preprocess.fileUtils.json.LawJsonFileEditor;
 
@@ -16,33 +17,21 @@ public class CreateJsonTest {
 //    『』
 
     @Test
-    public void createJsonTestByTestWorks() {
+    public void testCreateJson() {
 //        String dirPath ="D:\\moara\\data\\allData\\";
 //        DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
 //        for(int i = 4; i < 6 ; i++) {
 //            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
 //        }
-
-        String dirPath ="D:\\moara\\data\\allData\\기고문\\";
+        String dirPath ="D:\\moara\\data\\기고문_2차\\";
         DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
 
         dataPreprocessor.makeByPath(dirPath);
 
-
-
     }
 
     @Test
-    public void createTestJsonTest() {
-        String dirPath ="D:\\moara\\data\\allData\\test\\기고test\\";
-
-        DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
-
-        dataPreprocessor.makeByPath(dirPath);
-    }
-
-    @Test
-    public void createXmlJsonTest() {
+    public void testCreateXmlJson() {
         String dirPath = "D:\\moara\\data\\law\\Data\\2019\\";
         XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
         xmlPreprocessor.makeByPath(dirPath);
@@ -50,7 +39,7 @@ public class CreateJsonTest {
     }
 
     @Test
-    public void creatXmlJsonByFileListTest() {
+    public void testCreatXmlJsonByFileList() {
         String dirPath = "D:\\moara\\data\\law\\data_1947-2020\\";
         XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
 
@@ -68,23 +57,23 @@ public class CreateJsonTest {
     }
 
     @Test
-    public void editJsonTest() {
+    public void testJsonEdit() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        for(int i = 0 ; i < 6 ; i++) {
-            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
-            jsonFileEditor.editJsonFileByPath(path);
-        }
-//        String path = "D:\\moara\\data\\allData\\test\\jsonDelTest\\";
-//        jsonFileEditor.editJsonFileByPath(path);
+//        for(int i = 0 ; i < 6 ; i++) {
+//            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
+//            jsonFileEditor.editJsonFileByPath(path);
+//        }
+        String path = "D:\\moara\\data\\기고문_2차\\json\\";
+        jsonFileEditor.editJsonFileByPath(path);
 
     }
 
     @Test
-    public void highlightJsonTest() {
+    public void testJsonHighlight() {
         JsonFileEditor jsonFileEditor = new JsonFileEditor();
 
-        String path = "D:\\moara\\data\\law\\json5\\edit\\";
+        String path = "D:\\moara\\data\\기고문_2차\\json\\edit\\new\\";
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
         for(File file : fileList) {
@@ -93,7 +82,7 @@ public class CreateJsonTest {
     }
 
     @Test
-    public void editLawJsonTest() {
+    public void testLawJsonEdit() {
         LawJsonFileEditor lawJsonFileEditor = new LawJsonFileEditor();
 
         String path = "D:\\moara\\data\\law\\json5\\";
@@ -102,7 +91,7 @@ public class CreateJsonTest {
     }
 
     @Test
-    public void classifyJsonTest() {
+    public void testJsonClassify() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
 
         String path = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\";
@@ -111,20 +100,26 @@ public class CreateJsonTest {
     }
 
     @Test
-    public void classifyJsonByIndexTest() {
+    public void testJsonByIndexClassify() {
         JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
         String path = "D:\\moara\\data\\law\\json5\\edit\\highlight\\";
 
 //        for(int i = 0 ; i < 7 ; i++) {
 //            jsonFileClassifier.classifyJsonFileByIndex(path, i, i);
 //        }
-        jsonFileClassifier.classifyJsonFileByIndex(path, 8,9);
-        jsonFileClassifier.classifyJsonFileByIndex(path, 10, 12);
-        jsonFileClassifier.classifyJsonFileByIndex(path, 13, 249);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 13, 15);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 16, 19);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 20, 25);
+        jsonFileClassifier.classifyJsonFileByIndex(path, 26, 29);
+        for (int i = 30 ; i < 230 ; i += 10) {
+            jsonFileClassifier.classifyJsonFileByIndex(path, i, i + 9);
+
+        }
+
     }
 
     @Test
-    public void dropDocumentsTest() {
+    public void testDocumentsDrop() {
 
         ExcelCounter excelCounter = new ExcelCounter();
 
@@ -134,5 +129,15 @@ public class CreateJsonTest {
             JsonFileEditor jsonFileEditor = new JsonFileEditor(dropData);
             jsonFileEditor.editJsonFileByPath(path);
         }
+    }
+
+    @Test
+    public void testDocumentCut() {
+        JsonFileEditor jsonFileEditor = new JsonFileCutter();
+        String path = "D:\\moara\\data\\잡지\\json\\";
+
+        jsonFileEditor.editJsonFileByPath(path);
+
+
     }
 }

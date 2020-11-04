@@ -51,7 +51,7 @@ public class JsonFileClassifier extends JsonFileUtil{
         int index = 0;
         for(JsonArray documents : getDocumentsArrayByFileList(fileList)) {
             int documentsSize = documents.size();
-            System.out.println(documents.get(index++).getAsJsonObject().get("id") + " : " + documentsSize);
+            System.out.println(fileList.get(index++).getName() + " : " + documentsSize);
             total += documentsSize;
         }
         System.out.println("total : " + total);
@@ -222,6 +222,7 @@ public class JsonFileClassifier extends JsonFileUtil{
 
         }
 
+        if (size == 0) { return; }
 
         String deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String name = "sentence_";
@@ -237,7 +238,7 @@ public class JsonFileClassifier extends JsonFileUtil{
         classifyJson.addProperty("delivery_date", deliveryDate);
         classifyJson.add("documents", classifyDocuments);
 
-        createJsonFile("D:\\moara\\data\\law\\classify_by_index", "classify", classifyJson);
+        createJsonFile("D:\\moara\\data\\law\\classify_by_index", name, classifyJson);
 
     }
 

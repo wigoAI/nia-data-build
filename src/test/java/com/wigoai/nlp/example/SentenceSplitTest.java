@@ -9,7 +9,7 @@ import org.moara.common.code.LangCode;
 
 public class SentenceSplitTest {
     @Test
-    public void sentenceSplitTest() {
+    public void testSentenceSplit() {
         SenExtract senExtract =  SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
         String[] answer = {"한세화 기자 최병찬/사진 = V LIVE 빅톤 최병찬이 '프로듀스X101'에서 하차하게 된 소식에 실시간 검색어에 오른 가운데 과거 최병찬이 인성 논란에 휩싸였던 사건이 재점화 되고 있다.\n",
                 "과거 최병찬은 팬들과 함께 개인 방송 v-live를 진행 중 최병찬은 \"내가 얼마나 보고 싶었는지 알아?\"라는 팬의 질문에 \"어 미안 모르겠어\"라고 차갑게 대꾸했다.\n",

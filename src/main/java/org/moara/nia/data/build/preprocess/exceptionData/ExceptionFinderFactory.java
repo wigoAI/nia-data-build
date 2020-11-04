@@ -48,6 +48,7 @@ public class ExceptionFinderFactory {
             return text -> {
                 Area area;
                 Matcher reporterMatcher = reporterFindPattern.matcher(text);
+
                 if(reporterMatcher.find()) {
 
                     Matcher emailMatcher = emailFindPattern.matcher(text);
@@ -56,16 +57,15 @@ public class ExceptionFinderFactory {
                     int end = reporterMatcher.end();
 
                     while(emailMatcher.find()) {
-                        if(emailMatcher.start() < start)
-                            start = emailMatcher.start();
+                        if(emailMatcher.start() < start) { start = emailMatcher.start(); }
                         end = emailMatcher.end();
                     }
 
                   area = new Area(start, end);
 
                 } else {
-                  area = new Area(0);
-                }
+                    area = new Area(0); }
+
 
                 return area;
             };
