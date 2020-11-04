@@ -36,8 +36,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 
-import java.text.SimpleDateFormat;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

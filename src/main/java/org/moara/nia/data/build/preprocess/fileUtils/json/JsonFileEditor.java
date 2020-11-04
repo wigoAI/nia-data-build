@@ -16,9 +16,9 @@
 
 package org.moara.nia.data.build.preprocess.fileUtils.json;
 
+import com.github.wjrmffldrhrl.Area;
 import com.google.gson.*;
 import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.Area;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,15 +95,8 @@ public class JsonFileEditor extends JsonFileUtil{
 
     }
 
-
-    /**
-     * TODO 1. Need to refactoring with LawJsonFileEditor getEditDocuments
-     *
-     */
     protected JsonArray getEditDocuments(JsonArray documents) {
         JsonArray editDocuments = new JsonArray();
-
-
 
         int dropCount = 0;
         // Document 복사 & text 접근

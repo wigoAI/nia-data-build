@@ -48,5 +48,8 @@ dependencies {
     //connection pool
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
 
+// https://mvnrepository.com/artifact/com.github.wjrmffldrhrl/Area
+    compile group: 'com.github.wjrmffldrhrl', name: 'Area', version: '0.0.8'
+
 
 }

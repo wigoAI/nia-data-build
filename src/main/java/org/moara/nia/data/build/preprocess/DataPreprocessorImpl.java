@@ -17,10 +17,9 @@
 package org.moara.nia.data.build.preprocess;
 
 import java.io.File;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+
+import com.github.wjrmffldrhrl.Area;
+import com.google.gson.*;
 
 import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -38,12 +37,10 @@ import org.moara.common.data.file.FileUtil;
 import org.moara.common.util.ExceptionUtil;
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
-import org.moara.nia.data.build.preprocess.exception.LongDataException;
-import org.moara.nia.data.build.preprocess.exception.OverlapDataException;
-import org.moara.nia.data.build.Area;
-import org.moara.nia.data.build.preprocess.exception.QaDataException;
+import org.moara.nia.data.build.preprocess.exception.*;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,10 +67,11 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     protected String fileExtension;
 
 
-    public DataPreprocessorImpl() {
-        this.fileExtension = ".xlsx";
-
-    }
+    /**
+     * Constructor
+     * 해당 전처리기의 타겟 파일 확장자명을 지정한다.
+     */
+    public DataPreprocessorImpl() { this.fileExtension = ".xlsx"; }
 
     @Override
     public void makeByPath(String path) {
@@ -283,9 +281,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             }
 
             boolean exceptionDataCheck = false;
-            if(i < 2 || i > paragraphList.size() - 3) {
-                exceptionDataCheck = true;
-            }
+            if(i < 2 || i > paragraphList.size() - 3) { exceptionDataCheck = true; }
 
             JsonArray paragraph = getParagraph(index, paragraphValue, exceptionDataCheck);
 
@@ -368,16 +364,15 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return value;
     }
 
-    protected String getCellValue(int cellNum){
+    private String getCellValue(int cellNum){
         String value = excelGet.getCellValue(row, cellNum);
 
-        if(value != null){
-            value = value.trim();
-        }
+        if(value != null){ value = value.trim(); }
 
         return value;
     }
-    protected String getFileNameWithoutFormat(File file) {
+
+    private String getFileNameWithoutFormat(File file) {
         String fileName = file.getName();
         return fileName.substring(0, fileName.lastIndexOf("."));
     }

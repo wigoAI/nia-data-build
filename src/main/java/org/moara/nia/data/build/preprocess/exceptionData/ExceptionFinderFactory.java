@@ -17,7 +17,7 @@
 
 package org.moara.nia.data.build.preprocess.exceptionData;
 
-import org.moara.nia.data.build.Area;
+import com.github.wjrmffldrhrl.Area;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,13 +29,10 @@ import java.util.regex.Pattern;
  * @author 조승현
  */
 public class ExceptionFinderFactory {
-    private static final String reporterAndEmailFindRegx = "(기자[^가-힣a-zA-Z0-9]{1,10})([0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10}))?";
     private static final String reporterRegx = "기자[^가-힣]";
     private static final String emailFindRegx = "[0-9a-zA-Z][0-9a-zA-Z\\_\\-\\.]+[0-9a-zA-Z]@[0-9a-zA-Z][0-9a-zA-Z\\_\\-]*[0-9a-zA-Z](\\.[a-zA-Z]{2,6}){1,2}([^가-힣a-zA-Z0-9]{0,10})";
-    private static final Pattern reporterAndEmailFindPattern = Pattern.compile(reporterAndEmailFindRegx);
     private static final Pattern reporterFindPattern = Pattern.compile(reporterRegx);
     private static final Pattern emailFindPattern = Pattern.compile(emailFindRegx);
-
 
     /**
      *
@@ -67,13 +64,13 @@ public class ExceptionFinderFactory {
                   area = new Area(start, end);
 
                 } else {
-                  area = new Area(0,0);
+                  area = new Area(0);
                 }
 
                 return area;
             };
         } else {
-            return text -> new Area(0, 0);
+            return text -> new Area(0);
         }
 
 

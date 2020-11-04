@@ -237,7 +237,6 @@ public class JsonFileClassifier extends JsonFileUtil{
         classifyJson.addProperty("delivery_date", deliveryDate);
         classifyJson.add("documents", classifyDocuments);
 
-
         createJsonFile("D:\\moara\\data\\law\\classify_by_index", "classify", classifyJson);
 
     }

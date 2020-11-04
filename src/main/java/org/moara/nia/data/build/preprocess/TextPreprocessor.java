@@ -33,6 +33,12 @@ import java.util.List;
  */
 public class TextPreprocessor extends DataPreprocessorImpl{
 
+
+    /**
+     * Constructor
+     * DataPreprocessorImpl 에서 정의한 fileExtension 을 상속받아 초기화 한다.
+     * 해당 변수는 파일 리스트를 가져올 때 사용된다.
+     */
     public TextPreprocessor() {
         this.fileExtension = ".txt";
     }
