@@ -3,10 +3,7 @@ package com.wigoai.nlp.example;
 import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.preprocess.*;
-import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
-import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileCutter;
-import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
-import org.moara.nia.data.build.preprocess.fileUtils.json.LawJsonFileEditor;
+import org.moara.nia.data.build.preprocess.fileUtils.json.*;
 
 import java.io.File;
 import java.util.HashSet;
@@ -71,13 +68,13 @@ public class CreateJsonTest {
 
     @Test
     public void testJsonHighlight() {
-        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+        JsonFileEditor jsonFileEditor = new JsonFileHighlighter();
 
         String path = "D:\\moara\\data\\기고문_2차\\json\\edit\\new\\";
         List<File> fileList = FileUtil.getFileList(path, ".json");
 
         for(File file : fileList) {
-            jsonFileEditor.highlightJsonFile(file, path);
+            jsonFileEditor.editJsonFile(file, path);
         }
     }
 

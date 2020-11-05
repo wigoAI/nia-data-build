@@ -49,8 +49,7 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
     private HashSet<String> splitStrSet = new HashSet<>();
-    private JsonFileUtil jsonFileUtil;
-    private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
     private DocumentBuilder documentBuilder;
 
     /**
@@ -59,6 +58,7 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
     public XmlPreprocessor() {
         this.jsonFileUtil = new JsonFileUtil();
         try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -78,6 +78,8 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
         String jsonFileName = splitPath[splitPath.length - 1];
 
         jsonFileName += "_" + fileList.size() + "건_";
+
+
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
 

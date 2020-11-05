@@ -19,14 +19,11 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 import com.github.wjrmffldrhrl.Area;
 import com.google.gson.*;
 import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,12 +31,6 @@ import java.util.regex.Pattern;
 /**
  * JSON 파일 편집기
  * 데이터 정제 결과로 도출된 JSON 파일의 관리를 한다.
- *
- * TODO 1. 각 함수의 중복이 많이 발생한다.
- *          - 상속받아서 Override 할 때 중복이 많이 체감 됨
- *          - 이러한 코드들을 모두 잘게 쪼게서 관리할 것
- *          - 메서드를 잘게 쪼갤수록 상속 받아서 Override 할 때
- *          - 추가적으로 작성해야 할 모드가 줄어든다.
  *
  * @author 조승현
  */
@@ -103,20 +94,18 @@ public class JsonFileEditor extends JsonFileUtil{
 
     protected JsonArray getEditDocuments(JsonArray documents) {
         JsonArray editDocuments = new JsonArray();
-
         int dropCount = 0;
         // Document 복사 & text 접근
         for (int i = 0; i < documents.size() ; i++) {
-            JsonObject document = new JsonObject();
+            JsonObject document = documents.get(i).getAsJsonObject();
             JsonObject editDocument;
             JsonArray text;
             try {
-                document = documents.get(i).getAsJsonObject();
                 editDocument = copyDocumentInfo(document);
                 text = document.get("text").getAsJsonArray();
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("no Data in document : " +  document.get("id").getAsString());
+                System.out.println("Wrong Data : " +  document.get("id").getAsString());
                 continue;
             }
 
@@ -127,6 +116,7 @@ public class JsonFileEditor extends JsonFileUtil{
                 dropCount++;
                 continue;
             }
+
 
             JsonArray editText = getEditText(text);
             if(editText.size() == 0) {
@@ -213,79 +203,7 @@ public class JsonFileEditor extends JsonFileUtil{
         return editText;
     }
 
-    /**
-     * Json mecab highlighting
-     *
-     * TODO 1. JsonFileEditor를 상속받아 외부로 분리시키기
-     *
-     * @param file JSON File
-     * @param outputPath result file path
-     */
-    public void highlightJsonFile(File file, String outputPath) {
-        JsonObject newsJson = getJsonObjectByFile(file);
-        JsonObject highlightJson = copyJsonObjectInfo(newsJson);
-        JsonArray documents = newsJson.getAsJsonArray("documents");
-        JsonArray highlightDocuments = getHighlightDocuments(documents);
 
-        System.out.println(newsJson.get("name").getAsString());
-        highlightJson.add("documents", highlightDocuments);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        String dirPath = createDir(outputPath, "highlight");
-        FileUtil.fileOutput(gson.toJson(highlightJson), dirPath + file.getName() ,false);
-
-    }
-
-    private JsonArray getHighlightDocuments(JsonArray documents) {
-        JsonArray highlightDocuments = new JsonArray();
-
-        int count = 0;
-        for (int i = 0; i < documents.size() ; i++) {
-            if(i > count ) {
-                System.out.println("processing : " + i + " / " + documents.size());
-                count += 1000;
-            }
-            JsonObject document = documents.get(i).getAsJsonObject();
-            JsonObject highlightDocument = copyDocumentInfo(document);
-            JsonArray text = document.get("text").getAsJsonArray();
-
-            String[] outArray = {"M"};
-            JsonArray highlightText = getHighlightText(text, outArray);
-
-
-            highlightDocument.add("text", highlightText);
-            highlightDocuments.add(highlightDocument);
-        }
-
-        return highlightDocuments;
-    }
-
-    private JsonArray getHighlightText(JsonArray text, String[] outArray) {
-        JsonArray editText = new JsonArray();
-
-        // text 접근
-        int index = 0;
-        for(int j = 0; j < text.size() ; j++) {
-            JsonArray paragraph = text.get(j).getAsJsonArray();
-            JsonArray editParagraph = new JsonArray();
-
-            // 문단 수정
-            for (int k = 0 ; k < paragraph.size() ; k++) {
-                JsonObject sentence = paragraph.get(k).getAsJsonObject();
-                String targetSentence = sentence.get("sentence").getAsString();
-                String mecabResult = MecabWordClassHighlight.indexValue(targetSentence, outArray);
-                sentence.addProperty("highlight_indices", mecabResult);
-
-                editParagraph.add(copySentence(index++, sentence));
-            }
-
-            if(editParagraph.size() != 0) {
-                editText.add(editParagraph);
-            }
-        }
-
-        return editText;
-    }
 
     private String editSentenceByPattern(JsonObject sentence, String targetSentence, String pattern) {
         Matcher matcher = Pattern.compile(pattern).matcher(targetSentence);

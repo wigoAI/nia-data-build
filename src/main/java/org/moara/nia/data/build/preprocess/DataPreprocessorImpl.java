@@ -38,6 +38,7 @@ import org.moara.nia.data.build.preprocess.exception.*;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 //    private final String [] outArray= {"M"};
     private XSSFRow row;
     protected String fileExtension;
-
+    protected JsonFileUtil jsonFileUtil;
 
     /**
      * Constructor
@@ -84,21 +85,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
     public void make(File file, String path) {
         String outputPath = path + "json";
-        File outputDir = new File(outputPath);
-
-        if(!outputDir.exists()) {
-            outputDir.mkdir();
-            System.out.println("create dir : " + outputPath);
-        }
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         logger.debug("start file name: " +file.getName());
 
         JsonObject jsonObject = initJsonObject(getFileNameWithoutFormat(file));
         JsonArray documents = getDocuments(file);
         jsonObject.add("documents", documents);
 
-        FileUtil.fileOutput(gson.toJson(jsonObject), outputPath + "\\" + getFileNameWithoutFormat(file) + ".json",false);
+        jsonFileUtil.createJsonFile(outputPath, getFileNameWithoutFormat(file), jsonObject);
         logger.debug("end file name: " +file.getName());
 
     }
@@ -327,7 +320,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         sentenceObject.addProperty("index", index);
         sentenceObject.addProperty("sentence", sentenceValue.trim());
         sentenceObject.addProperty("highlight_indices" , "");
-//        sentenceObject.addProperty("highlight_indices" , MecabWordClassHighlight.indexValue(sentenceValue, outArray));
         return sentenceObject;
     }
 

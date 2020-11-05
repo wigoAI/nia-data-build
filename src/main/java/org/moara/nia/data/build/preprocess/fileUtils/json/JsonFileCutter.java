@@ -5,8 +5,7 @@ import com.google.gson.JsonObject;
 
 
 public class JsonFileCutter extends JsonFileEditor {
-    public JsonFileCutter() {
-    }
+    public JsonFileCutter() { }
 
     @Override
     protected JsonArray getEditDocuments(JsonArray documents) {
