@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.moara.nia.data.build.preprocess;
-
-import java.io.File;
 
 /**
  * 데이터 전처리기 추상체
  * 데이터 전처리기를 해당 추상체를 구현하여 제작
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public interface DataPreprocessor {
 
@@ -33,7 +29,7 @@ public interface DataPreprocessor {
      * 경로에 있는 정제 데이터 확인
      * 데이터 정제시 많은 양의 데이터를 처리하기 때문에
      * File 리스트를 생성하는 메서드 필요
-     * @param path
+     * @param path 정제할 파일이 있는 경로
      */
     void makeByPath(String path);
 

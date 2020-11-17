@@ -18,7 +18,7 @@ package org.moara.nia.data.build.preprocess.exception;
 
 /**
  * 긴 데이터 예외처리
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class LongDataException extends RuntimeException{
     public LongDataException(String msg) {

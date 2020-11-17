@@ -32,7 +32,6 @@ import org.moara.common.code.LangCode;
 
 import org.moara.common.data.file.FileUtil;
 import org.moara.common.util.ExceptionUtil;
-import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 
 import org.moara.nia.data.build.preprocess.exception.*;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
@@ -52,15 +51,15 @@ import java.util.List;
 
 /**
  * 데이터 전처리기
- * DataPreprocessor의 구현체로 실제 데이터 전처리 과정을 수행
+ * DataPreprocessor 의 구현체로 실제 데이터 전처리 과정을 수행
  *
- * @author 조승현
+ * @author wjrmffldrhrl
+ *
  */
 public class DataPreprocessorImpl implements DataPreprocessor {
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
     private final ExcelGet excelGet = new ExcelGet();
-//    private final String [] outArray= {"M"};
     private XSSFRow row;
     protected String fileExtension;
     protected JsonFileUtil jsonFileUtil;
@@ -70,6 +69,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
      * 해당 전처리기의 타겟 파일 확장자명을 지정한다.
      */
     public DataPreprocessorImpl() { this.fileExtension = ".xlsx"; }
+
 
     @Override
     public void makeByPath(String path) {
@@ -83,7 +83,15 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         }
     }
 
+    /**
+     * TODO 1. path를 File.getAbsolutePath() 로 제거해보기
+     *
+     * 입력되는 File 처리
+     * @param file 전처리 할 file
+     * @param path 전처리 할 file 이 있는 경로
+     */
     public void make(File file, String path) {
+
         String outputPath = path + "json";
         logger.debug("start file name: " +file.getName());
 
@@ -180,7 +188,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         }
     }
 
-    protected XSSFSheet getExcelSheet(File file) {
+    private XSSFSheet getExcelSheet(File file) {
         XSSFWorkbook work = null;
 
         try {
@@ -212,10 +220,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         if(!getCellValue(2).trim().equals("온라인")){ return null; }
 
         sizeType = SizeTypeUtil.getSizeType(sizeType);
-
-//        if(!sizeType.equals("small")) {
-//            return null;
-//        }
 
         JsonObject document = new JsonObject();
         document.addProperty("id", id);

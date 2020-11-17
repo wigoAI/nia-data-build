@@ -22,7 +22,7 @@ import com.github.wjrmffldrhrl.Area;
  * 예외 데이터 탐색기 추상체
  * ExceptionFinderFactory 에서 구현하여 반환한다.
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 @FunctionalInterface
 public interface ExceptionDataFinder {

@@ -18,7 +18,7 @@ package org.moara.nia.data.build.preprocess.exception;
 
 /**
  * Q&A 데이터 예외처리
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class QaDataException extends RuntimeException{
     public QaDataException(String msg) {

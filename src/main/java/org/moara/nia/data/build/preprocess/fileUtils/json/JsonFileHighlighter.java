@@ -41,7 +41,7 @@ public class JsonFileHighlighter extends JsonFileEditor {
             }
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println("Error in highlighting");
+            logger.debug("Error in highlighting");
             editText = new JsonArray();
         }
 

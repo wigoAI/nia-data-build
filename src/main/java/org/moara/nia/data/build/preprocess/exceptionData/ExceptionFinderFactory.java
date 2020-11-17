@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * 예외 데이터 탐색기 팩토리
  * 각 문서마다 적용 될 예외 데이터 탐색기를 제공
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class ExceptionFinderFactory {
     private static final String reporterRegx = "기자[^가-힣]";

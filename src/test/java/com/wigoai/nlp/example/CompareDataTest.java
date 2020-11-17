@@ -3,8 +3,8 @@ package com.wigoai.nlp.example;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.compare.CompareJson;
-import org.moara.nia.data.build.preprocess.ExcelCounter;
+import org.moara.nia.data.build.preprocess.fileUtils.json.CompareJson;
+import org.moara.nia.data.build.preprocess.fileUtils.excel.ExcelCounter;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileClassifier;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 

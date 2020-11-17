@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moara.nia.data.build.preprocess;
+package org.moara.nia.data.build.preprocess.fileUtils.excel;
 
 import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -33,7 +33,7 @@ import java.util.List;
  *
  * excel 특정 자료 카운터
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class ExcelCounter {
     private ExcelGet excelGet = new ExcelGet();

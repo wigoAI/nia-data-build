@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moara.nia.data.build.compare;
+package org.moara.nia.data.build.preprocess.fileUtils;
 
 import com.google.gson.JsonObject;
 
@@ -31,9 +31,6 @@ public interface CompareData {
      * 개선 전 데이터와 개선 후 데이터를 입력값으로 전달해 비교한다.
      *
      * 데이터 유형에 따라 알맞은 메서드를 구현
-     *
-     * @param beforeJson JsonObject
-     * @param afterJson JsonObject
      */
     void compare() throws IOException;
 }

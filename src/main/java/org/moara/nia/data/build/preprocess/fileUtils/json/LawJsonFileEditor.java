@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 /**
  * JSON editor 법률 데이터 JSON 편집기
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class LawJsonFileEditor extends JsonFileEditor {
 

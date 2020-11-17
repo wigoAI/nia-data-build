@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * JSON 파일 분류기
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class JsonFileClassifier extends JsonFileUtil{
     private static final Logger logger = LoggerFactory.getLogger(JsonFileClassifier.class);

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.moara.nia.data.build.compare;
+package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.moara.nia.data.build.preprocess.fileUtils.CompareData;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -30,7 +31,7 @@ import java.util.List;
  * CompareData 구현체
  * Json 형태의 데이터를 비교한다.
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class CompareJson implements CompareData {
     protected JsonObject afterJson;

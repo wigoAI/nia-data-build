@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * JSON 파일 편집기
  * 데이터 정제 결과로 도출된 JSON 파일의 관리를 한다.
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class JsonFileEditor extends JsonFileUtil{
     private static final Logger logger = LoggerFactory.getLogger(JsonFileEditor.class);
@@ -95,6 +95,7 @@ public class JsonFileEditor extends JsonFileUtil{
     protected JsonArray getEditDocuments(JsonArray documents) {
         JsonArray editDocuments = new JsonArray();
         int dropCount = 0;
+
         // Document 복사 & text 접근
         for (int i = 0; i < documents.size() ; i++) {
             JsonObject document = documents.get(i).getAsJsonObject();

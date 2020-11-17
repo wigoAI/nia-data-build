@@ -18,7 +18,7 @@ package org.moara.nia.data.build.preprocess.exception;
 
 /**
  * 중복 데이터 예외
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class OverlapDataException extends RuntimeException{
 

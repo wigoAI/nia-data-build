@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 /**
  * XML 형태의 데이터 전처리기
  *
- * @author 조승현
+ * @author wjrmffldrhrl
  */
 public class XmlPreprocessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
