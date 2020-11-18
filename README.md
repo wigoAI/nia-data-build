@@ -76,161 +76,7 @@ Bflysoft에서 제공되는 데이터를 json형태의 전처리 파일로 정�
             "highlight_indices": "29,30"
           }
         ],
-        [
-          {
-            "index": 3,
-            "sentence": "해맞이 명소로 손꼽히는 강릉 정동진, 울산 간절곶, 포항 호미곶, 부산 해운대 등에는 해맞이객이 해안선을 따라 길게 늘어섰다.",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 4,
-            "sentence": "황금돼지해의 첫 태양이 수평선 위로 모습을 드러내자 해맞이객들은 탄성을 터뜨리며 가족·연인과 함께 저마다 간직한 새해 소망을 빌었다.",
-            "highlight_indices": "7,8;52,54;55,58"
-          }
-        ],
-        [
-          {
-            "index": 5,
-            "sentence": "해맞이객들은 첫 태양을 카메라에 담으며 다사다난했던 2018년을 훌훌 털어버리고 행복한 2019년이 되기를 기원했다.",
-            "highlight_indices": "7,8;36,38"
-          }
-        ],
-        [
-          {
-            "index": 6,
-            "sentence": "영하 10도 안팎을 맴도는 강추위에도 전국 해맞이 명소에는 많은 인파가 찾아 새해 소원을 빌고 각오를 다졌다.",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 7,
-            "sentence": "▲ 2019년 기해년 첫해가 떠올랐다.",
-            "highlight_indices": ""
-          },
-          {
-            "index": 8,
-            "sentence": "1일 '황금돼지해' 조형물이 설치된 부산 해운대해수욕장에서 시민이 일출을 바라보고 있다.",
-            "highlight_indices": ""
-          },
-          {
-            "index": 9,
-            "sentence": "2019.1.1",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 10,
-            "sentence": "한반도에서 가장 먼저 해가 뜬 울산시 울주군 간절곶에는 이날 19만명이 몰렸다.",
-            "highlight_indices": "6,8;9,11"
-          }
-        ],
-        [
-          {
-            "index": 11,
-            "sentence": "간절곶 해안을 뒤덮은 해맞이객들은 영하권의 추위에 아랑곳없이 수평선에 고정한 시선을 거두지 않은 채 자리를 지켰다.",
-            "highlight_indices": "28,33"
-          }
-        ],
-        [
-          {
-            "index": 12,
-            "sentence": "7시 33분 구름 위로 노랗고 붉은빛을 띤 머리를 드러냈고, 불과 3∼4분 만에 완벽하게 동그란 모양의 자태를 드러냈다.",
-            "highlight_indices": "34,36"
-          }
-        ],
-        [
-          {
-            "index": 13,
-            "sentence": "숨죽인 채 수평선을 응시하던 해맞이객들은 스마트폰으로 해를 촬영하거나, 두 손을 모으고 조용히 새해 소원을 빌면서 성공적인 일출을 맞았다.",
-            "highlight_indices": "40,41;49,52"
-          }
-        ],
-        [
-          {
-            "index": 14,
-            "sentence": "경남 김해에서 남편, 친구와 함께 간절곶을 찾은 이경미(37·여)씨는 \"바다 위로 떠 오르는 해의 압도적인 모습과 그것을 맞이하려 모여든 인파가 인상적이다\"라며 \"2019년에도 가족 모두 건강하길 기원하고, 특히 올해는 예쁜 아기를 갖고 싶다\"고 밝혔다.",
-            "highlight_indices": "16,18;102,104;116,118"
-          }
-        ],
-        [
-          {
-            "index": 15,
-            "sentence": "포항 호미곶 앞바다에 설치된 조형물 '상생의 손' 주변에는 일출을 보며 조금 더 의미 있게 새해를 맞으려는 인파 5만명이 몰려 일출을 지켜봤다.",
-            "highlight_indices": "40,42;43,44"
-          }
-        ],
-        [
-          {
-            "index": 16,
-            "sentence": "해운대해수욕장 등 부산 해맞이 명소에도 27만명이 몰려 백사장을 가득 채웠다.",
-            "highlight_indices": "36,38"
-          }
-        ],
-        [
-          {
-            "index": 17,
-            "sentence": "광안리해수욕장을 찾은 해맞이객은 돼지띠해 빛 조형물과 광안대교를 배경으로 힘차게 떠오르는 해를 감상했다.",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 18,
-            "sentence": "강원 동해안에도 70만여명이 찾아 새해 첫 일출의 광경을 지켜보며 희망찬 새해를 맞았다.",
-            "highlight_indices": "22,23"
-          }
-        ],
-        [
-          {
-            "index": 19,
-            "sentence": "바다뿐만 아니라 산에도 능선을 따라 첫 태양의 기운을 받으려는 시민들로 북적였다.",
-            "highlight_indices": "20,21"
-          }
-        ],
-        [
-          {
-            "index": 20,
-            "sentence": "오전 6시 30분부터 해맞이 행사가 열린 경기 수원시 팔달산 서장대에는 영하의 날씨 속에서도 천여 명의 시민들이 몰려 떠오르는 태양을 지켜봤다.",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 21,
-            "sentence": "해가 산등성이로 모습을 드러내는 순간 시민들은 풍물패의 흥겨운 가락을 들으며 함께 외치는 함성으로 황금돼지해를 맞이했다.",
-            "highlight_indices": "43,45"
-          }
-        ],
-        [
-          {
-            "index": 22,
-            "sentence": "▲ 1일 경북 포항시 남구 호미곶면 호미곶 해맞이광장에 설치된 상생의 손 조형물 위로 2019년 첫 해가 떠오르고 있다.",
-            "highlight_indices": "54,55"
-          },
-          {
-            "index": 23,
-            "sentence": "2019.1.1",
-            "highlight_indices": ""
-          }
-        ],
-        [
-          {
-            "index": 24,
-            "sentence": "충북 속리산 말티재 정상에도 300여명이 운집해 새해 첫 태양을 맞았다.",
-            "highlight_indices": "30,31"
-          }
-        ],
-        [
-          {
-            "index": 25,
-            "sentence": "어둠이 걷히기 전 고갯마루에 오른 시민들은 새해 소망을 담은 촛불을 밝히고, '하늘 소리 난타 공연단'의 대북 연주와 풍물 공연을 감상하면서 새해 각오를 다졌다.",
-            "highlight_indices": "8,9"
-          }
-        ],
+        [...중략...],
         [
           {
             "index": 26,
@@ -248,5 +94,68 @@ Bflysoft에서 제공되는 데이터를 json형태의 전처리 파일로 정�
       ]
     }
    ]
-  }
+}
+```
+전처리가 적용된 파일의 형태는 원본 문서의 정보와 문서의 내용을 문단 및 문장 단위로 구분한 정보이다.  
+
+전처리시 이후에 데이터가 사용되는 인공지능 학습에 필요가 없는 기자정보, 헤드라인, 이미지 정보 등등 필요 없는 정보들이 제거된다.
+
+## 정제 과정
+
+### 1. 1차 전처리
+원본 데이터의 타입에 맞는 전처리기의 객체를 생성하여 전처리를 수행한다. 파일이 존재하는 경로를 통해 다수의 파일을 동시에 처리 가능하다.  
+
+처리가 끝난 뒤에는 입력한 경로 내부에 `json`이라는 디렉터리를 생성하고 해당 디렉터리에 결과물을 생성한다.
+
+```java
+// XML 형태의 데이터 전처리
+// XML 데이터같은 경우 원본에서 한 파일당 한개의 데이터만 포함하는 경우가 많았기 때문에 출력 경로를 별도로 지정해줌
+// String outputPath = "D:\\moara\\data\\law\\test"; 
+// DataPreprocessor dataPreprocessor = new XmlPreprocessor(outputPath);
+
+// txt 형태의 데이터 전처리
+// DataPreprocessor dataPreprocessor = new TextPreprocessor();
+
+// exel 형태의 데이터 
+DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
+
+String dirPath ="D:\\moara\\data\\기고문_2차\\";
+dataPreprocessor.makeByPath(dirPath);
+```
+
+
+### 2. 2차 전처리
+1차 전처리가 끝난 파일에 대해서 해당 데이터에 추가적이 정제가 필요한 경우 2차 전처리를 수행한다.  
+
+2차 전처리에는 추가 정제, 문서 분류, 하이라이팅 등이 있다.
+
+#### 추가 정제
+
+```java
+String path = "D:\\moara\\data\\기고문_2차\\json\\";
+JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+jsonFileEditor.editJsonFileByPath(path);
+```
+
+#### 문서 분류
+```java
+String path = "D:\\moara\\data\\기고문_2차\\json\\";
+
+JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
+
+jsonFileClassifier.classifyJsonFileByPath(path);
+```
+
+#### 하이라이팅
+```java
+JsonFileEditor jsonFileEditor = new JsonFileHighlighter();
+
+String path = "D:\\moara\\data\\기고문_2차\\json\\edit\\new\\";
+List<File> fileList = FileUtil.getFileList(path, ".json");
+
+for(File file : fileList) {
+    jsonFileEditor.editJsonFile(file, path);
+}
+
 ```
