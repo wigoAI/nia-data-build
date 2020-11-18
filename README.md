@@ -1,10 +1,22 @@
 # 개발환경
 -   open jdk 1.8
--   spring boot 2.2.1 ( rest api 용)
+-   spring boot 2.3.5 ( rest api 용)
 -   mecab
     -   mecab-0.996-ko-0.9.2
     -   mecab-ko-dic-2.1.1-20180720
     -   mecab-java-0.996  
+- 의존성 정의는 build.gradle 파일 참조
+
+
+# 개요
+### 원천 데이터 관련
+- 데이터 정제 원천데이트는 비플라이소프트에서 제공하는 데이터를 활용합니다. 이프로젝트는 데이터 요약에 사용할 수 있는 데이터 정제 프로젝트 입니다
+    - 원천 데이터 문의: http://www.bflysoft.co.kr/
+
+### 오픈소스 관리 관련
+- moara-core 프로젝트의 문장 구분기를 사용하였는데 이부분은 오픈소스화가 되어있지 않아서 mavenCentral 에 올리지는 않았습니다. 
+- 한국어 자연어 처리 yido 프로젝트가 오픈소스로 진행되고 있는데 관련 부분이 완성되면 mavenCentral 에 올릴 수 있는 빌트환경이 구성 됩니다.
+    - https://github.com/wigoAI/yido
     
 # REST API
 ## Request
