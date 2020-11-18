@@ -33,7 +33,6 @@ import org.moara.common.code.LangCode;
 import org.moara.common.data.file.FileUtil;
 import org.moara.common.util.ExceptionUtil;
 
-import org.moara.nia.data.build.preprocess.exception.*;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 
@@ -84,7 +83,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
     /**
-     * TODO 1. path를 File.getAbsolutePath() 로 제거해보기
      *
      * 입력되는 File 처리
      * @param file 전처리 할 file
@@ -179,7 +177,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         try {
             JsonArray text = getText(paragraphList);
             document.add("text", text);
-        } catch (OverlapDataException | QaDataException | LongDataException e) {
+        } catch (RuntimeException e) {
             System.out.println("drop data in id : " + documentId);
             System.out.println(e.toString());
 
@@ -264,7 +262,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return paragraphList;
     }
 
-    protected JsonArray getText(List<String> paragraphList) throws OverlapDataException, QaDataException, LongDataException{
+    protected JsonArray getText(List<String> paragraphList) throws RuntimeException{
         JsonArray text = new JsonArray();
         String overlapCheck = "";
 
@@ -275,7 +273,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             if(paragraphValue.length() == 0) { continue; }
 
             if(overlapCheck.equals(paragraphValue)) {
-                throw new OverlapDataException("data overlap : [" + paragraphValue + "]");
+                throw new RuntimeException("data overlap : [" + paragraphValue + "]");
             }
 
             boolean exceptionDataCheck = false;
@@ -294,7 +292,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return text;
     }
 
-    private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) throws QaDataException, LongDataException{
+    private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) throws RuntimeException{
         JsonArray paragraph = new JsonArray();
 
         // sentence split
@@ -306,9 +304,9 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             if(sentenceValue.length() == 0){
                 continue;
             } else if(sentenceValue.contains("Q : ") || sentenceValue.contains("A : ")){
-                throw new QaDataException("this data is Q&A type : " + sentenceValue);
+                throw new RuntimeException("this data is Q&A type : " + sentenceValue);
             }else if(sentenceValue.length() > 300) {
-                throw new LongDataException("this data is too long : " + sentenceValue);
+                throw new RuntimeException("this data is too long : " + sentenceValue);
             }
 
             JsonObject senObj = getSentenceObject(index++, sentenceValue);

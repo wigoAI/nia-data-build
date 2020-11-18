@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moara.nia.data.build;
+package org.moara.nia.data.build.mecab;
 
-import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

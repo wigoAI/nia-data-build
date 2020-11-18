@@ -34,9 +34,6 @@ public class StopwordHighlightRestExample {
                     +  "\n"
                     +"한국인터넷자율정책기구(KISO)는 9일 오후 서울 종로구 새문안로 S타워에서 '온라인상 혐오표현 그 해법은 무엇인가'라는 주제로 포럼을 열었다. KISO 이사회 의장은 여민수 카카오 공동대표가 맡고 있다");
 
-
-
-//            URL url = new URL("http://localhost:8080/stopword/wordclass/highlight/");
             URL url = new URL("http://moara.org:7100/stopword/wordclass/highlight/");
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

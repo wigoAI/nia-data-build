@@ -24,6 +24,9 @@ import java.io.FileReader;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * json file 관련 유틸
+ */
 public class JsonFileUtil {
 
     /**

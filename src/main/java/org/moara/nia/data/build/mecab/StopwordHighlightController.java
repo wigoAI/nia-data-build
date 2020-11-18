@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moara.nia.data.build;
+package org.moara.nia.data.build.mecab;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;

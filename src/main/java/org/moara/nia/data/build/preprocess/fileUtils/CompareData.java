@@ -16,13 +16,11 @@
 
 package org.moara.nia.data.build.preprocess.fileUtils;
 
-import com.google.gson.JsonObject;
-
 import java.io.IOException;
 
 /**
  * JSON 데이터 비교
- * @author
+ * @author wjrmffldrhrl
  */
 public interface CompareData {
 
