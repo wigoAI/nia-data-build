@@ -1,4 +1,4 @@
-package com.wigoai.nlp.example;
+package com.wigoai.nlp.test;
 
 import org.json.JSONObject;
 

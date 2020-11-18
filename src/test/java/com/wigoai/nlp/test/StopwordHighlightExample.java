@@ -1,4 +1,4 @@
-package com.wigoai.nlp.example;
+package com.wigoai.nlp.test;
 
 import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
 

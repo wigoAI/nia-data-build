@@ -83,7 +83,7 @@ public class JsonFileEditor extends JsonFileUtil{
         JsonArray documents = newsJson.getAsJsonArray("documents");
         JsonArray editDocuments = getEditDocuments(documents);
 
-        System.out.println(newsJson.get("name").getAsString());
+        logger.debug(newsJson.get("name").getAsString());
         editJson.add("documents", editDocuments);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -106,14 +106,14 @@ public class JsonFileEditor extends JsonFileUtil{
                 text = document.get("text").getAsJsonArray();
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("Wrong Data : " +  document.get("id").getAsString());
+                logger.error("Wrong Data : " +  document.get("id").getAsString());
                 continue;
             }
 
             String documentId = document.get("id").getAsString();
-            System.out.println("Edit " + documentId);
+            logger.debug("Edit " + documentId);
             if (dropData.contains(documentId)) {
-                System.out.println("Drop data by dropList : " + documentId);
+                logger.debug("Drop data by dropList : " + documentId);
                 dropCount++;
                 continue;
             }
@@ -121,7 +121,7 @@ public class JsonFileEditor extends JsonFileUtil{
 
             JsonArray editText = getEditText(text);
             if(editText.size() == 0) {
-                System.out.println("Drop data : " + documentId );
+                logger.debug("Drop data : " + documentId );
                 dropCount++;
                 continue;
             }
@@ -129,7 +129,7 @@ public class JsonFileEditor extends JsonFileUtil{
             editDocument.add("text", editText);
             editDocuments.add(editDocument);
         }
-        System.out.print("drop " + dropCount +" data in ");
+        logger.debug("drop " + dropCount +" data in ");
 
         return editDocuments;
     }
@@ -176,7 +176,7 @@ public class JsonFileEditor extends JsonFileUtil{
                 }
 
                 if (dropFlag) {
-                    System.out.println("Drop data : " + targetSentence);
+                    logger.debug("Drop data : " + targetSentence);
                     continue;
                 }
 
@@ -188,7 +188,7 @@ public class JsonFileEditor extends JsonFileUtil{
                 }
 
                 if (dropFlag) {
-                    System.out.println("Drop data : " + targetSentence);
+                    logger.debug("Drop data : " + targetSentence);
                     continue;
                 }
 

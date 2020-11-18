@@ -1,4 +1,4 @@
-package com.wigoai.nlp.example;
+package com.wigoai.nlp.test;
 
 import com.google.gson.JsonObject;
 import org.junit.Test;

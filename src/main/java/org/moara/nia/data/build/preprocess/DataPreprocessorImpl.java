@@ -56,8 +56,8 @@ import java.util.List;
  *
  */
 public class DataPreprocessorImpl implements DataPreprocessor {
-    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
+    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
     private final ExcelGet excelGet = new ExcelGet();
     private XSSFRow row;
     protected String fileExtension;
@@ -132,15 +132,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             normalDataCount++;
 
             if(normalDataCount > countDecimal) {
-                System.out.println(normalDataCount + " / " + rowCount);
+                logger.debug(normalDataCount + " / " + rowCount);
                 countDecimal += 1000;
             }
         }
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.print("  Drop data : " + dropDataCount );
-        System.out.println("  Normal data : " + (normalDataCount));
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        logger.debug("  Drop data : " + dropDataCount );
+        logger.debug("  Normal data : " + (normalDataCount));
 
         return documents;
     }
@@ -178,11 +176,10 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             JsonArray text = getText(paragraphList);
             document.add("text", text);
         } catch (RuntimeException e) {
-            System.out.println("drop data in id : " + documentId);
-            System.out.println(e.toString());
+            logger.error("drop data in id : " + documentId);
 
         } catch (Exception e) {
-            System.out.println("this data something is wrong : " + documentId);
+            logger.error("this data something is wrong : " + documentId);
         }
     }
 

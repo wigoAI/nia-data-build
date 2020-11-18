@@ -18,7 +18,10 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.moara.nia.data.build.preprocess.DataPreprocessorImpl;
 import org.moara.nia.data.build.preprocess.fileUtils.CompareData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -34,6 +37,7 @@ import java.util.List;
  * @author wjrmffldrhrl
  */
 public class CompareJson implements CompareData {
+    private static final Logger logger = LoggerFactory.getLogger(CompareJson.class);
     protected JsonObject afterJson;
     protected JsonObject beforeJson;
     protected JsonArray beforeDocuments;
@@ -119,8 +123,8 @@ public class CompareJson implements CompareData {
             e.printStackTrace();
         }
 
-        System.out.println("id : " + afterDocument.get("id").getAsString() + "\n");
-        System.out.println("title  : " + afterDocument.get("title").getAsString() + "\n");
+        logger.debug("id : " + afterDocument.get("id").getAsString() + "\n");
+        logger.debug("title  : " + afterDocument.get("title").getAsString() + "\n");
         JsonArray beforeText = beforeTextHash.get(afterDocument.get("id").toString());
         JsonArray afterText = afterDocument.getAsJsonArray("text");
 

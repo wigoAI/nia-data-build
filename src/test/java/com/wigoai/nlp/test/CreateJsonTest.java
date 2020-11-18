@@ -1,4 +1,4 @@
-package com.wigoai.nlp.example;
+package com.wigoai.nlp.test;
 
 import org.junit.Test;
 import org.moara.common.data.file.FileUtil;
@@ -31,7 +31,9 @@ public class CreateJsonTest {
     @Test
     public void testCreateXmlJson() {
         String dirPath = "D:\\moara\\data\\law\\Data\\2019\\";
-        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
+        String outputPath = "D:\\moara\\data\\law\\test";
+
+        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor(outputPath);
         xmlPreprocessor.makeByPath(dirPath);
 
     }
@@ -39,7 +41,8 @@ public class CreateJsonTest {
     @Test
     public void testCreatXmlJsonByFileList() {
         String dirPath = "D:\\moara\\data\\law\\data_1947-2020\\";
-        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor();
+        String outputPath = "D:\\moara\\data\\law\\test";
+        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor(outputPath);
 
         for(int i = 1947 ; i <= 2020 ; i++) {
             String path = dirPath + i + "\\";

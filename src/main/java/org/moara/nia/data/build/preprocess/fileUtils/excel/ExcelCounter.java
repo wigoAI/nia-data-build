@@ -21,6 +21,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.moara.common.data.file.FileUtil;
+import org.moara.nia.data.build.mecab.StopwordHighlight;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +39,7 @@ import java.util.List;
  * @author wjrmffldrhrl
  */
 public class ExcelCounter {
+    private static final Logger logger = LoggerFactory.getLogger(ExcelCounter.class);
     private ExcelGet excelGet = new ExcelGet();
     private XSSFRow row;
 
@@ -56,7 +60,7 @@ public class ExcelCounter {
             idHash.addAll(idList);
         }
 
-        System.out.println("total : " + totalCount);
+        logger.debug("total : " + totalCount);
 
         return idHash;
     }
@@ -98,7 +102,7 @@ public class ExcelCounter {
 
         }
 
-        System.out.println(count);
+        logger.debug("count : " + count);
 
         return idList;
     }

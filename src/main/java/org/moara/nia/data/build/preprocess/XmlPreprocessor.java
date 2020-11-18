@@ -49,14 +49,15 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
     private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
     private HashSet<String> splitStrSet = new HashSet<>();
-
     private DocumentBuilder documentBuilder;
+    private final String outputPath;
 
     /**
      * Constructor
      */
-    public XmlPreprocessor() {
+    public XmlPreprocessor(String outputPath) {
         this.jsonFileUtil = new JsonFileUtil();
+        this.outputPath = outputPath;
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -77,13 +78,13 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
         String[] splitPath = path.split("\\\\");
         String jsonFileName = splitPath[splitPath.length - 1];
 
+
         jsonFileName += "_" + fileList.size() + "건_";
 
 
         JsonObject jsonObject = initJsonObject(jsonFileName);
         jsonObject.add("documents", getDocuments(fileList));
 
-        String outputPath = "D:\\moara\\data\\law\\test";
         jsonFileUtil.createJsonFile(outputPath, jsonFileName, jsonObject);
 
         logger.debug("end file name : " +jsonFileName);

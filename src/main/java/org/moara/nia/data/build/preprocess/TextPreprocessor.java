@@ -17,6 +17,8 @@ package org.moara.nia.data.build.preprocess;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +34,7 @@ import java.util.List;
  * @author wjrmffldrhrl
  */
 public class TextPreprocessor extends DataPreprocessorImpl{
-
+    private static final Logger logger = LoggerFactory.getLogger(TextPreprocessor.class);
 
     /**
      * Constructor
@@ -63,10 +65,8 @@ public class TextPreprocessor extends DataPreprocessorImpl{
 
             }
 
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            System.out.print("  Drop data : " + dropDataCount);
-            System.out.println("  Normal data : " + (normalDataCount));
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            logger.debug("  Drop data : " + dropDataCount);
+            logger.debug("  Normal data : " + (normalDataCount));
 
             return documents;
 

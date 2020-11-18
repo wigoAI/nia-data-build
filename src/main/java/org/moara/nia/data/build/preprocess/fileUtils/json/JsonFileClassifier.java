@@ -51,10 +51,10 @@ public class JsonFileClassifier extends JsonFileUtil{
         int index = 0;
         for(JsonArray documents : getDocumentsArrayByFileList(fileList)) {
             int documentsSize = documents.size();
-            System.out.println(fileList.get(index++).getName() + " : " + documentsSize);
+            logger.debug(fileList.get(index++).getName() + " : " + documentsSize);
             total += documentsSize;
         }
-        System.out.println("total : " + total);
+        logger.debug("total : " + total);
 
         return total;
     }
@@ -79,11 +79,11 @@ public class JsonFileClassifier extends JsonFileUtil{
                     documentsSize++;
                 }
             }
-            System.out.println(documents.get(index++).getAsJsonObject().get("id") + " : " + documentsSize);
+            logger.debug(documents.get(index++).getAsJsonObject().get("id") + " : " + documentsSize);
             total += documentsSize;
         }
 
-        System.out.println("total : " + total);
+        logger.debug("total : " + total);
 
         return total;
     }
@@ -115,9 +115,9 @@ public class JsonFileClassifier extends JsonFileUtil{
         int totalFromIndex = 0;
         for (int count : indexCount) {
             if(count != 0) {
-                System.out.println("Index " + indexNumber + " : " + count);
-                System.out.println("average : " + charCountAverage[indexNumber] / count);
-                System.out.println();
+                logger.debug("Index " + indexNumber + " : " + count);
+                logger.debug("average : " + charCountAverage[indexNumber] / count);
+
 
                 if(indexNumber >= from) {
                     totalFromIndex += count;
@@ -186,7 +186,7 @@ public class JsonFileClassifier extends JsonFileUtil{
         }
 
         classifyJson.add("documents", editDocuments);
-        System.out.println("get " + documentCount +" data in " + newsJson.get("name").getAsString());
+        logger.debug("get " + documentCount +" data in " + newsJson.get("name").getAsString());
 
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -238,7 +238,7 @@ public class JsonFileClassifier extends JsonFileUtil{
         classifyJson.addProperty("delivery_date", deliveryDate);
         classifyJson.add("documents", classifyDocuments);
 
-        createJsonFile("D:\\moara\\data\\law\\classify_by_index", name, classifyJson);
+        createJsonFile(path + "classify_by_index", name, classifyJson);
 
     }
 
@@ -258,7 +258,7 @@ public class JsonFileClassifier extends JsonFileUtil{
 
             String newFileName = getNewNameByJsonSize(documents, fileName);
 
-            System.out.println("new : " + newFileName);
+            logger.debug("new : " + newFileName);
 
             File newFile = new File(outputPath + "\\new\\" + newFileName + ".json");
 
@@ -272,7 +272,7 @@ public class JsonFileClassifier extends JsonFileUtil{
     }
 
     private String getNewNameByJsonSize(JsonArray jsonArray, String oldName) {
-        System.out.println("original : " + oldName);
+        logger.debug("original : " + oldName);
         int jsonArraySize = jsonArray.size();
         StringBuilder newFileName = new StringBuilder();
 

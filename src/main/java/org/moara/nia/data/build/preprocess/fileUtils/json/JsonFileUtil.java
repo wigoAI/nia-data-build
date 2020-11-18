@@ -17,6 +17,9 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.*;
 import org.moara.common.data.file.FileUtil;
+import org.moara.nia.data.build.preprocess.TextPreprocessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +31,7 @@ import java.util.regex.Pattern;
  * json file 관련 유틸
  */
 public class JsonFileUtil {
+    private static final Logger logger = LoggerFactory.getLogger(JsonFileUtil.class);
 
     /**
      * File 객체로부터 JsonObject 를 생성한다.
@@ -60,7 +64,7 @@ public class JsonFileUtil {
 
         if (!outputDir.exists()) {
             outputDir.mkdir();
-            System.out.println("create dir : " + dirPath);
+            logger.debug("create dir : " + dirPath);
         }
 
         return dirPath;

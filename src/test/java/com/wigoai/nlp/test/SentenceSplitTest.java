@@ -1,4 +1,4 @@
-package com.wigoai.nlp.example;
+package com.wigoai.nlp.test;
 
 import org.junit.Test;
 import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;

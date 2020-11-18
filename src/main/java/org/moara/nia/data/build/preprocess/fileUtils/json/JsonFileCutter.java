@@ -17,6 +17,8 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * json file 길이 편집기
@@ -24,6 +26,7 @@ import com.google.gson.JsonObject;
  * @author wjrmffldrhrl
  */
 public class JsonFileCutter extends JsonFileEditor {
+    private static final Logger logger = LoggerFactory.getLogger(JsonFileCutter.class);
     public JsonFileCutter() { }
 
     @Override
@@ -41,7 +44,7 @@ public class JsonFileCutter extends JsonFileEditor {
                 text = document.get("text").getAsJsonArray();
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("no Data in document : " +  document.get("id").getAsString());
+                logger.debug("no Data in document : " +  document.get("id").getAsString());
                 continue;
             }
 
@@ -84,7 +87,7 @@ public class JsonFileCutter extends JsonFileEditor {
         int beforeCharCount = editDocument.get("char_count").getAsInt();
         String documentId = editDocument.get("id").getAsString();
 
-        System.out.println("Document " + documentId + " drop " + (beforeCharCount - charCount) + " char");
+        logger.debug("Document " + documentId + " drop " + (beforeCharCount - charCount) + " char");
         editDocument.addProperty("drop_char_count",(beforeCharCount - charCount));
         editDocument.addProperty("char_count", charCount);
 
