@@ -15,7 +15,7 @@
 
 ### 오픈소스 관리 관련
 - moara-core 프로젝트의 문장 구분기를 사용하였는데 이부분은 오픈소스화가 되어있지 않아서 mavenCentral 에 올리지는 않았습니다. 
-- 한국어 자연어 처리 yido 프로젝트가 오픈소스로 진행되고 있는데 관련 부분이 완성되면 mavenCentral 에 올릴 수 있는 빌트환경이 구성 됩니다.
+- 한국어 자연어 처리 yido 프로젝트가 오픈소스로 진행되고 있는데 관련 부분이 완성되면 mavenCentral 에 올릴 수 있는 빌드환경이 구성 됩니다.
     - https://github.com/wigoAI/yido
     
 # REST API
