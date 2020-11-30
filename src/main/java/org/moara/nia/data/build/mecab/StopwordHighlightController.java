@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StopwordHighlightController {
 
-
     @RequestMapping(value = "/stopword/wordclass/highlight" , method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE)
     public String highlightWordClass(@RequestBody final String jsonValue) {
         return StopwordHighlight.getInstance().highlightWordClassJson(jsonValue);

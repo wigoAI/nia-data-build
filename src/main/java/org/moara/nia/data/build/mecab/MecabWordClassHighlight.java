@@ -15,13 +15,9 @@
  */
 package org.moara.nia.data.build.mecab;
 
-import org.chasen.mecab.Tagger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
+import org.moara.yido.tokenizer.Token;
+import org.moara.yido.tokenizer.TokenizerManager;
+import org.moara.yido.tokenizer.word.WordToken;
 
 /**
  * mecab을 활용한 단어 품사별 하이라이트
@@ -30,65 +26,36 @@ import java.util.HashSet;
  */
 public class MecabWordClassHighlight {
 
-    private static final Logger logger = LoggerFactory.getLogger(MecabWordClassHighlight.class);
-    private static final HashSet<String> KOREAN_LAST_NAME_HASH = new HashSet<>();
-    static {
-        try {
-            System.loadLibrary("MeCab");
-
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(MecabWordClassHighlight.class.getResourceAsStream("/dic/korean_first_name.dic"), StandardCharsets.UTF_8));
-            while(true) {
-                String line = br.readLine();
-                KOREAN_LAST_NAME_HASH.add(line);
-                if(line == null)
-                    break;
-            }
-
-        } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            logger.error(sw.toString());
-            logger.error("Cannot load the example native code.\nMake sure your LD_LIBRARY_PATH contains '.'\n" + e);
-            System.exit(1);
-        }
-
-    }
-
-
-    public static String change(String str, String [] outArray, String startTag, String endTag){
+    /**
+     * 불용어 하이라이트 처리
+     * @param text text
+     * @param outArray 불용어로 지정할 품사 배열
+     * @param startTag 풀용어 시작 테그
+     * @param endTag 불영어 끌 테크
+     * @return 하이라이트가 붙은 값
+     */
+    public static String change(String text, String [] outArray, String startTag, String endTag){
 
         if(outArray == null || outArray.length ==0){
-            logger.error("out array set error");
-            return str;
+            throw new RuntimeException("out array set error");
         }
 
-        StringBuilder changeBuilder = new StringBuilder();
 
-        Tagger tagger = new Tagger();
-        String parse = tagger.parse(str);
-        String [] words =  parse.split("\n");
+        StringBuilder changeBuilder = new StringBuilder();
+        StringBuilder tagBuilder = new StringBuilder();
 
         int lastEnd = 0;
 
-        StringBuilder tagBuilder = new StringBuilder();
+        Token [] tokens = TokenizerManager.getInstance().getTokenizer().getTokens(text);
 
         outer:
-        for (int k = 0; k <words.length -1 ; k++) {
-            int index = words[k].indexOf('\t');
-            String syllable = words[k].substring(0,index).trim();
-
-            int last = words[k].indexOf(',',index);
-            if(last == -1){
-                last =words[k].length();
-            }
-            String wordClassValue = words[k].substring(index +1 ,last).trim();
+        for(Token token : tokens){
+            WordToken wordToken = (WordToken)token;
+            String partOfSpeech = wordToken.getPartOfSpeech();
 
 
-
-
-            int startIndex = str.indexOf(syllable, lastEnd);
-            int end = startIndex + syllable.length();
+            int startIndex = token.getBegin();
+            int end = token.getEnd();
 
             if(lastEnd < startIndex){
                 if(tagBuilder.length() > 0){
@@ -96,15 +63,15 @@ public class MecabWordClassHighlight {
                     changeBuilder.append(startTag).append(tagBuilder).append(endTag);
                     tagBuilder.setLength(0);
                 }
-                changeBuilder.append(str, lastEnd, startIndex);
+                changeBuilder.append(text, lastEnd, startIndex);
 
             }
 
             lastEnd = end;
 
             for(String out : outArray){
-                if(wordClassValue.startsWith(out)){
-                    tagBuilder.append(syllable);
+                if(partOfSpeech.startsWith(out)){
+                    tagBuilder.append(token.getText());
                     continue outer;
                 }
             }
@@ -114,7 +81,7 @@ public class MecabWordClassHighlight {
                 changeBuilder.append(startTag).append(tagBuilder).append(endTag);
                 tagBuilder.setLength(0);
             }
-            changeBuilder.append(syllable);
+            changeBuilder.append(token.getText());
 
         }
 
@@ -122,54 +89,37 @@ public class MecabWordClassHighlight {
             changeBuilder.append(startTag).append(tagBuilder).append(endTag);
             tagBuilder.setLength(0);
         }
+
         return changeBuilder.toString();
     }
 
-
-    public static String indexValue(String str, String [] outArray){
+    /**
+     * 불용어 위치정보
+     * @param text text
+     * @param outArray 불용어로 지정할 품사 배열
+     * @return 불용어 위치정보 ; 과,로 구분된 n개의 정보
+     */
+    public static String indexValue(String text, String [] outArray){
 
         if(outArray == null || outArray.length ==0){
-            logger.error("out array set error");
-            return str;
+            throw new RuntimeException("out array set error");
         }
 
-        Tagger tagger = new Tagger();
-        String parse = tagger.parse(str);
-        String [] words =  parse.split("\n");
         StringBuilder indexBuilder = new StringBuilder();
 
-        int lastEnd = 0;
-        for (int k = 0; k <words.length -1 ; k++) {
-            int index = words[k].indexOf('\t');
-            int last = words[k].indexOf(',',index);
+        Token [] tokens = TokenizerManager.getInstance().getTokenizer().getTokens(text);
 
-            if(last == -1){
-                last = words[k].length();
-            }
+        outer:
+        for(Token token : tokens){
+            WordToken wordToken = (WordToken)token;
+            String partOfSpeech = wordToken.getPartOfSpeech();
 
-//            System.out.println(words[k] + " : " +index + ", " + last + ", " + second);
-
-            // SY, NNG 등등
-            String wordClassValue = words[k].substring(index + 1 ,last).trim();
-
-
-            boolean isOut = false;
             for(String out : outArray){
-                if(wordClassValue.startsWith(out)){
-                    isOut = true;
-                    break;
+                if(partOfSpeech.startsWith(out)){
+                    indexBuilder.append(";").append(wordToken.getBegin()).append(",").append(wordToken.getEnd());
+                    continue outer;
                 }
             }
-
-
-
-            String syllable = words[k].substring(0,index).trim();
-            int startIndex = str.indexOf(syllable, lastEnd);
-            lastEnd = startIndex + syllable.length();
-            if(isOut){
-                indexBuilder.append(";").append(startIndex).append(",").append(lastEnd);
-            }
-
         }
 
         if(indexBuilder.length() == 0){

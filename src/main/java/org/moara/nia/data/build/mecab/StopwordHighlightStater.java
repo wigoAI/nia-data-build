@@ -41,10 +41,13 @@ import java.util.Map;
  *
  * @author macle
  */
-@SpringBootApplication(scanBasePackages = {"com.wigoai"})
+@SpringBootApplication(scanBasePackages = {"org.moara"})
 public class StopwordHighlightStater {
 
 
+    /**
+     * @return BeanFactoryPostProcessor
+     */
     @Bean
     public static BeanFactoryPostProcessor beanFactoryPostProcessor() {
         //noinspection Convert2Lambda

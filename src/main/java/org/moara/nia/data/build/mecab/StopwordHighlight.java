@@ -62,11 +62,17 @@ public class StopwordHighlight {
 
     private String configPath = "config/app.yml";
 
-
+    /**
+     * 정설파일 경로설정
+     * @param configPath 설정파일 경로
+     */
     public void setConfigPath(String configPath) {
         this.configPath = configPath;
     }
 
+    /**
+     * 설정파일 리로딩
+     */
     public void readConfigFile(){
 
         try {
@@ -101,8 +107,13 @@ public class StopwordHighlight {
     }
 
 
-    public String highlightWordClass(String value){
-       return MecabWordClassHighlight.change(value, outArray, startTag, endTag);
+    /**
+     * 불용어 하이라이트 처리
+     * @param text text
+     * @return 하이라이트가 붙은 값
+     */
+    public String highlightWordClass(String text){
+       return MecabWordClassHighlight.change(text, outArray, startTag, endTag);
     }
 
     /**
