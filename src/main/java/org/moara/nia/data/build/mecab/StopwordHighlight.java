@@ -15,6 +15,7 @@
  */
 package org.moara.nia.data.build.mecab;
 
+import com.seomse.commons.utils.ExceptionUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -98,14 +99,11 @@ public class StopwordHighlight {
             logger.error(sw.toString());
 
         }
-
     }
-
 
     private StopwordHighlight(){
 
     }
-
 
     /**
      * 불용어 하이라이트 처리
@@ -122,7 +120,6 @@ public class StopwordHighlight {
      */
     public String highlightWordClassJson(String jsonValue){
         //json 형태로 전달 받았을 경우
-
 
         JSONObject jsonObject = new JSONObject(jsonValue);
 
@@ -163,9 +160,7 @@ public class StopwordHighlight {
 
             return resultObject.toString();
         }catch(Exception e){
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            logger.error(sw.toString());
+            logger.error(ExceptionUtil.getStackTrace(e));
             jsonObject.put("message", "error");
             return jsonObject.toString();
         }
