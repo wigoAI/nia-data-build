@@ -53,5 +53,5 @@ dependencies {
 // https://mvnrepository.com/artifact/com.github.wjrmffldrhrl/Area
     compile group: 'com.github.wjrmffldrhrl', name: 'Area', version: '0.0.8'
 
-
+    implementation project(path: ':text-mining')
 }
