@@ -21,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.mecab.StopwordHighlight;
+import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,5 +128,17 @@ public class ExcelCounter {
         }
 
         return value;
+    }
+
+
+    public static void main(String[] args) {
+        ExcelCounter excelCounter = new ExcelCounter();
+
+        for(int i = 3 ; i < 6 ; i++) {
+            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\";
+            HashSet<String> dropData = excelCounter.countByPath(path);
+            JsonFileEditor jsonFileEditor = new JsonFileEditor(dropData);
+            jsonFileEditor.editJsonFileByPath(path);
+        }
     }
 }

@@ -1,0 +1,7 @@
+{
+  "id": "paragraph",
+  "name": "문단구분기",
+  "minimum_split_length": 5,
+  "conditions": ["paragraph"],
+  "exceptions": []
+}

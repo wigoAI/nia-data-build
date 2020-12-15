@@ -1,0 +1,29 @@
+{
+  "id": "bracket_exception",
+  "value": [
+    {
+      "front": "[",
+      "back": "]"
+    },
+    {
+      "front": "‘",
+      "back": "’"
+    },
+    {
+      "front": "“",
+      "back": "”"
+    },
+    {
+      "front": "{",
+      "back": "}"
+    },
+    {
+      "front": "<",
+      "back": ">"
+    },
+    {
+      "front": "(",
+      "back": ")"
+    }
+  ]
+}

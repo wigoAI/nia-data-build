@@ -17,7 +17,8 @@
 
 package org.moara.nia.data.build.preprocess.exceptionData;
 
-import com.github.wjrmffldrhrl.Area;
+
+import org.moara.splitter.utils.Area;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

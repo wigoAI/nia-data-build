@@ -1,0 +1,7 @@
+{
+  "id": "news",
+  "name": "뉴스구분기",
+  "minimum_split_length": 5,
+  "conditions": ["terminator"],
+  "exceptions": ["bracket_exception"]
+}

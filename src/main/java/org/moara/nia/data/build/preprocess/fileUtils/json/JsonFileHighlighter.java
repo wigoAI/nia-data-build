@@ -17,9 +17,14 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.moara.nia.data.build.mecab.MecabWordClassHighlight;
+import org.moara.common.data.file.FileUtil;
+import org.moara.yido.tokenizer.TokenizerManager;
+import org.moara.yido.tokenizer.word.WordToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -45,7 +50,29 @@ public class JsonFileHighlighter extends JsonFileEditor {
                 for (int k = 0 ; k < paragraph.size() ; k++) {
                     JsonObject sentence = paragraph.get(k).getAsJsonObject();
                     String targetSentence = sentence.get("sentence").getAsString();
-                    String mecabResult = MecabWordClassHighlight.indexValue(targetSentence, outArray);
+
+                    WordToken [] wordTokens = (WordToken [])TokenizerManager.getInstance().getTokenizer().getTokens(targetSentence);
+
+                    StringBuilder indexBuilder = new StringBuilder();
+
+                    outer:
+                    for(WordToken wordToken: wordTokens){
+
+                        String partOfSpeech = wordToken.getPartOfSpeech();
+
+                        for(String out : outArray){
+                            if(partOfSpeech.startsWith(out)){
+                                indexBuilder.append(";").append(wordToken.getBegin()).append(",").append(wordToken.getEnd());
+                                continue outer;
+                            }
+                        }
+                    }
+
+                    String mecabResult = "";
+                    if (indexBuilder.length() > 0) {
+                        mecabResult = indexBuilder.substring(1);
+                    }
+
                     sentence.addProperty("highlight_indices", mecabResult);
 
                     editParagraph.add(copySentence(index++, sentence));
@@ -63,5 +90,16 @@ public class JsonFileHighlighter extends JsonFileEditor {
 
 
         return editText;
+    }
+
+    public static void main(String[] args) {
+        JsonFileEditor jsonFileEditor = new JsonFileHighlighter();
+
+        String path = "D:\\moara\\data\\기고문_3차\\json\\";
+        List<File> fileList = FileUtil.getFileList(path, ".json");
+
+        for(File file : fileList) {
+            jsonFileEditor.editJsonFile(file, path);
+        }
     }
 }

@@ -18,25 +18,22 @@ package org.moara.nia.data.build.preprocess;
 
 import java.io.File;
 
-import com.github.wjrmffldrhrl.Area;
 import com.google.gson.*;
 
+import com.seomse.commons.data.BeginEnd;
+import com.seomse.commons.utils.ExceptionUtil;
+import com.seomse.commons.utils.FileUtil;
 import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.xssf.usermodel.*;
 
-import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;
-import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtract;
-import org.moara.ara.datamining.textmining.document.Document;
-import org.moara.ara.datamining.textmining.document.sentence.Sentence;
-import org.moara.common.code.LangCode;
-
-import org.moara.common.data.file.FileUtil;
-import org.moara.common.util.ExceptionUtil;
 
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileUtil;
+import org.moara.splitter.Splitter;
+import org.moara.splitter.SplitterManager;
+import org.moara.splitter.utils.Area;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,11 +54,13 @@ import java.util.List;
  */
 public class DataPreprocessorImpl implements DataPreprocessor {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, Document.NEWS);
-    private final ExcelGet excelGet = new ExcelGet();
-    private XSSFRow row;
+    private Splitter splitter = SplitterManager.getInstance().getSplitter("news");
+
+    protected XSSFRow row;
     protected String fileExtension;
-    protected JsonFileUtil jsonFileUtil;
+    protected JsonFileUtil jsonFileUtil = new JsonFileUtil();
+    protected final ExcelGet excelGet = new ExcelGet();
+
 
     /**
      * Constructor
@@ -76,7 +75,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         int count = 0;
 
         for(File file : fileList) {
-            make(file, path);
+            make(file);
             count++;
             logger.debug("end length: " + count + "/" + fileList.size());
         }
@@ -86,10 +85,9 @@ public class DataPreprocessorImpl implements DataPreprocessor {
      *
      * 입력되는 File 처리
      * @param file 전처리 할 file
-     * @param path 전처리 할 file 이 있는 경로
      */
-    public void make(File file, String path) {
-
+    public void make(File file) {
+        String path = file.getParentFile().getPath();
         String outputPath = path + "json";
         logger.debug("start file name: " +file.getName());
 
@@ -121,6 +119,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         int normalDataCount = 0;
         int countDecimal = 1000;
         for(int rowIndex = 1; rowIndex < rowCount ; rowIndex++){
+
             JsonObject document = getDocument(sheet, rowIndex);
 
             if(document == null) {
@@ -154,11 +153,13 @@ public class DataPreprocessorImpl implements DataPreprocessor {
 
         JsonObject document = getDocumentInfo(cell);
         if(document == null) {
+            logger.debug("document null ");
             return null;
         }
 
         String contents = getCellValue(9);
         if(contents == null){
+            logger.debug("contents null");
             return null;
         }
 
@@ -183,7 +184,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         }
     }
 
-    private XSSFSheet getExcelSheet(File file) {
+    protected XSSFSheet getExcelSheet(File file) {
         XSSFWorkbook work = null;
 
         try {
@@ -199,7 +200,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     }
 
     private JsonObject getDocumentInfo(XSSFCell cell) {
-        String sizeType = getCellValue(6);
 
         String id = null ;
         try{
@@ -212,8 +212,9 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             }
         }
 
-        if(!getCellValue(2).trim().equals("온라인")){ return null; }
+//        if(!getCellValue(2).trim().equals("온라인")){ return null; }
 
+        String sizeType = getCellValue(6);
         sizeType = SizeTypeUtil.getSizeType(sizeType);
 
         JsonObject document = new JsonObject();
@@ -292,10 +293,9 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     private JsonArray getParagraph(int index, String paragraphValue, boolean exceptionDataCheck) throws RuntimeException{
         JsonArray paragraph = new JsonArray();
 
-        // sentence split
-        List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
-        for(Sentence sentence : extractSentenceList ){
-            String sentenceValue = sentence.getValue();
+        BeginEnd[] extractSentenceList = splitter.split(paragraphValue);
+        for(BeginEnd sentence : extractSentenceList ){
+            String sentenceValue = paragraphValue.substring(sentence.getBegin(), sentence.getEnd());
 
             if(exceptionDataCheck) { sentenceValue = deleteExceptionData(sentenceValue, 50); }
             if(sentenceValue.length() == 0){
@@ -357,7 +357,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return value;
     }
 
-    private String getCellValue(int cellNum){
+    protected String getCellValue(int cellNum){
         String value = excelGet.getCellValue(row, cellNum);
 
         if(value != null){ value = value.trim(); }
@@ -365,9 +365,17 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return value;
     }
 
-    private String getFileNameWithoutFormat(File file) {
+    protected String getFileNameWithoutFormat(File file) {
         String fileName = file.getName();
         return fileName.substring(0, fileName.lastIndexOf("."));
+    }
+
+    public static void main(String[] args) {
+        String dirPath ="D:\\moara\\data\\allData\\";
+        DataPreprocessor dataPreprocessor = new DataPreprocessorImpl();
+        for(int i = 0; i < 1 ; i++) {
+            dataPreprocessor.makeByPath(dirPath + "NIA_" + (i + 1) + "차_excel\\");
+        }
     }
 
 }

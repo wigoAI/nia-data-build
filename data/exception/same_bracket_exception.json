@@ -1,0 +1,11 @@
+{
+  "id": "bracket_exception",
+  "value": [
+    {
+      "bracket": "\""
+    },
+    {
+      "bracket": "'"
+    }
+  ]
+}

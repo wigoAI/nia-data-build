@@ -93,4 +93,12 @@ public class JsonFileCutter extends JsonFileEditor {
 
         return editText;
     }
+
+    public static void main(String[] args) {
+        JsonFileEditor jsonFileEditor = new JsonFileCutter();
+        String path = "D:\\moara\\data\\잡지\\json\\";
+
+        jsonFileEditor.editJsonFileByPath(path);
+
+    }
 }

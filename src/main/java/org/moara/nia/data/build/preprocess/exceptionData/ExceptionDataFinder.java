@@ -16,7 +16,8 @@
 
 package org.moara.nia.data.build.preprocess.exceptionData;
 
-import com.github.wjrmffldrhrl.Area;
+
+import org.moara.splitter.utils.Area;
 
 /**
  * 예외 데이터 탐색기 추상체

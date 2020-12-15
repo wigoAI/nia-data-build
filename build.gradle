@@ -12,12 +12,11 @@ repositories {
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 
+    implementation project(path: ':splitter')
+    implementation project(path: ':text-mining')
+    implementation project(path: ':evaluation')
+    implementation 'com.seomse.commons:seomse-commons:1.2.3'
     implementation 'org.moara.yido:tokenizer:0.1.1'
-
-    //spring
-//    implementation group: 'org.springframework.boot', name: 'spring-boot-dependencies', version: '2.3.5.RELEASE', ext: 'pom'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'
-//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.5.RELEASE'
 
     //log
     implementation 'ch.qos.logback:logback-core:1.2.3'
@@ -33,25 +32,5 @@ dependencies {
 
     // excel read
     implementation group: 'com.seomse.poi', name: 'seomse-poi', version: '0.1.2'
-
-    // moara-core
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
-    implementation 'commons-beanutils:commons-beanutils:1.9.3'
-    implementation 'commons-dbcp:commons-dbcp:1.4'
-    implementation 'commons-io:commons-io:1.4'
-    implementation 'commons-pool:commons-pool:1.4'
-    implementation 'org.apache.commons:commons-lang3:3.8'
-    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-    implementation 'org.xerial:sqlite-jdbc:3.8.7'
-    implementation fileTree (dir: 'dependencies', include: ['/**/*.jar'])
-
-    //jdbc (moara core db접속이 필요함)
-    implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
-    //connection pool
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
-
-// https://mvnrepository.com/artifact/com.github.wjrmffldrhrl/Area
-    compile group: 'com.github.wjrmffldrhrl', name: 'Area', version: '0.0.8'
-
-    implementation project(path: ':text-mining')
+    
 }

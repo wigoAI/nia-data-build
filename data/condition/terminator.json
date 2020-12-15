@@ -1,0 +1,8 @@
+{
+  "id": "terminator",
+  "use_public_validation": "N",
+  "split_position": "B",
+  "value": "terminator",
+  "validations": ["NBSG_connective"]
+}
+

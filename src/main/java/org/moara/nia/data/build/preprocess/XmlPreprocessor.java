@@ -316,4 +316,22 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
     }
 
 
+    public static void main(String[] args) {
+        String dirPath = "D:\\moara\\data\\law\\Data\\2019\\";
+        String outputPath = "D:\\moara\\data\\law\\test";
+
+        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor(outputPath);
+        xmlPreprocessor.makeByPath(dirPath);
+
+
+//        String dirPath = "D:\\moara\\data\\law\\data_1947-2020\\";
+//        String outputPath = "D:\\moara\\data\\law\\test";
+//        XmlPreprocessor xmlPreprocessor = new XmlPreprocessor(outputPath);
+//
+//        for(int i = 1947 ; i <= 2020 ; i++) {
+//            String path = dirPath + i + "\\";
+//
+//            xmlPreprocessor.makeByPath(path);
+//        }
+    }
 }

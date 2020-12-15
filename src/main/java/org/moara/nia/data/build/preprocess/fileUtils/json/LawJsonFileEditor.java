@@ -69,4 +69,12 @@ public class LawJsonFileEditor extends JsonFileEditor {
 
         return text;
     }
+
+    public static void main(String[] args) {
+        LawJsonFileEditor lawJsonFileEditor = new LawJsonFileEditor();
+
+        String path = "D:\\moara\\data\\law\\json5\\";
+        lawJsonFileEditor.editJsonFileByPath(path);
+
+    }
 }

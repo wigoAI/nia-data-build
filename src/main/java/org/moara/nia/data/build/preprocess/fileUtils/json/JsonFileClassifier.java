@@ -306,5 +306,29 @@ public class JsonFileClassifier extends JsonFileUtil{
     }
 
 
+    public static void main(String[] args) {
+        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
+
+        String path = "D:\\moara\\data\\allData\\기고문\\json\\new\\edit\\new\\";
+        jsonFileClassifier.classifyJsonFileByPath(path);
+
+
+//
+//        JsonFileClassifier jsonFileClassifier = new JsonFileClassifier();
+//        String path = "D:\\moara\\data\\law\\json5\\edit\\highlight\\";
+//
+////        for(int i = 0 ; i < 7 ; i++) {
+////            jsonFileClassifier.classifyJsonFileByIndex(path, i, i);
+////        }
+//        jsonFileClassifier.classifyJsonFileByIndex(path, 13, 15);
+//        jsonFileClassifier.classifyJsonFileByIndex(path, 16, 19);
+//        jsonFileClassifier.classifyJsonFileByIndex(path, 20, 25);
+//        jsonFileClassifier.classifyJsonFileByIndex(path, 26, 29);
+//        for (int i = 30 ; i < 230 ; i += 10) {
+//            jsonFileClassifier.classifyJsonFileByIndex(path, i, i + 9);
+//
+//        }
+
+    }
 
 }

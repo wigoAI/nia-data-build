@@ -1,0 +1,7 @@
+{
+  "id": "sns",
+  "name": "sns구분기",
+  "minimum_split_length": 5,
+  "conditions": ["terminator", "sns_terminator"],
+  "exceptions": ["bracket_exception"]
+}

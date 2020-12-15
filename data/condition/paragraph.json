@@ -1,0 +1,7 @@
+{
+  "id": "paragraph",
+  "use_public_validation": "N",
+  "split_position": "B",
+  "value": "paragraph_terminator",
+  "validations": []
+}

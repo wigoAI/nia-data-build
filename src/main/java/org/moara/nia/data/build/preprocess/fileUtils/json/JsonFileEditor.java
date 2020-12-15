@@ -265,5 +265,15 @@ public class JsonFileEditor extends JsonFileUtil{
     }
 
 
+    public static void main(String[] args) {
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+
+//        for(int i = 0 ; i < 6 ; i++) {
+//            String path = "D:\\moara\\data\\allData\\NIA_" + (i + 1) + "차_excel\\json\\";
+//            jsonFileEditor.editJsonFileByPath(path);
+//        }
+        String path = "D:\\moara\\data\\기고문_3차\\json\\edit\\";
+        jsonFileEditor.editJsonFileByPath(path);
+    }
 
 }

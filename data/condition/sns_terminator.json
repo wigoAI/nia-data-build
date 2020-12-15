@@ -1,0 +1,7 @@
+{
+  "id": "sns_terminator",
+  "use_public_validation": "N",
+  "split_position": "B",
+  "value": "sns_terminator",
+  "validations": ["NBSG_connective"]
+}

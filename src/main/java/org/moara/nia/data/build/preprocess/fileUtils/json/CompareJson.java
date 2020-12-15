@@ -18,12 +18,14 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.preprocess.DataPreprocessorImpl;
 import org.moara.nia.data.build.preprocess.fileUtils.CompareData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -184,7 +186,28 @@ public class CompareJson implements CompareData {
     }
 
 
+    public static void main(String[] args) {
 
+        JsonFileEditor jsonFileEditor = new JsonFileEditor();
+//        String beforePath = "D:\\moara\\data\\allData\\change\\before\\";
+//        String afterPath = "D:\\moara\\data\\allData\\change\\after\\";
+        String basePath = "D:\\moara\\data\\allData\\NIA_6차_excel\\";
+        String beforePath = basePath + "json\\";
+        String afterPath =  basePath + "edit\\";
 
+        List<File> afterFileList = FileUtil.getFileList(afterPath, ".json");
+        for (File file : afterFileList) {
+            System.out.println(file.getName());
+            JsonObject beforeJson = jsonFileEditor.getJsonObjectByFile(new File(beforePath + file.getName()));
+            JsonObject afterJson = jsonFileEditor.getJsonObjectByFile(file);
+            CompareJson compareData = new CompareJson(beforeJson, afterJson, basePath);
+            try {
+                compareData.compare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 }
