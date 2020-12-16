@@ -38,74 +38,8 @@ Bflysoft에서 제공되는 데이터를 json형태의 전처리 파일로 정�
 
 `가족·연인 "좋은 날만 가득하길" 기원, 정동진·간절곶 인산인해 \r\n\r\n▲ 1일 오전 강릉 경포 해변에서 수평선 위로 기해년(己亥年) 첫 태양이 힘차게 떠오르고 있다. 2019.1.1\r\n60년 만에 돌아온 황금돼지해인 기해년(己亥年) 첫 태양이 힘차게 떠올랐다. \r\n\r\n새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.\r\n\r\n ... 중략 ...가족과 함께 행사장을 찾은 김병우(68·보은군 보은읍)씨는 "60년 만에 맞는 황금 돼지해인 만큼 가족 모두 건강하고, 사회 전반에 희망이 넘치기 바란다"고 기원했다.\r\n\r\n제주 성산일출봉 정상에도 500명이 올라 첫 태양을 기다렸으나 아쉽게도 구름 많고 흐린 날씨 탓에 해돋이는 볼 수 없었다.\r\n\r\n`
 
-## 정제 데이터
-
-### 강원도민일보.json 중 일부
-
-```json
-{
-  "name": "강원도민일보.20200720_161845_6349건_",
-  "delivery_date": "2020-10-15 17:36:56",
-  "documents": [
-    {
-      "id": "329480480",
-      "category": "종합",
-      "media_type": "online",
-      "media_sub_type": "지역지",
-      "media_name": "강원도민일보",
-      "size": "large",
-      "char_count": "1822",
-      "publish_date": "2019-01-01 11:12:15",
-      "title": "\"해가 떴다! 2019년이 밝았다\"...동해안 해돋이명소에 인파 몰려",
-      "text": [
-        [
-          {
-            "index": 0,
-            "sentence": "▲ 1일 오전 강릉 경포 해변에서 수평선 위로 기해년(己亥年) 첫 태양이 힘차게 떠오르고 있다.",
-            "highlight_indices": "35,36"
-          },
-          {
-            "index": 1,
-            "sentence": "60년 만에 돌아온 황금돼지해인 기해년(己亥年) 첫 태양이 힘차게 떠올랐다.",
-            "highlight_indices": "27,28"
-          }
-        ],
-        [
-          {
-            "index": 2,
-            "sentence": "새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.",
-            "highlight_indices": "29,30"
-          }
-        ],
-        [
-          ...중략...
-        ],
-        [
-          {
-            "index": 26,
-            "sentence": "가족과 함께 행사장을 찾은 김병우(68·보은군 보은읍)씨는 \"60년 만에 맞는 황금 돼지해인 만큼 가족 모두 건강하고, 사회 전반에 희망이 넘치기 바란다\"고 기원했다.",
-            "highlight_indices": "4,6;58,60"
-          }
-        ],
-        [
-          {
-            "index": 27,
-            "sentence": "제주 성산일출봉 정상에도 500명이 올라 첫 태양을 기다렸으나 아쉽게도 구름 많고 흐린 날씨 탓에 해돋이는 볼 수 없었다.",
-            "highlight_indices": "23,24"
-          }
-        ]
-      ]
-    }
-  ]
-}
-```
-
-전처리가 적용된 파일의 형태는 원본 문서의 정보와 문서의 내용을 문단 및 문장 단위로 구분한 정보이다.
-
-전처리시 이후에 데이터가 사용되는 인공지능 학습에 필요가 없는 기자정보, 헤드라인, 이미지 정보 등등 필요 없는 정보들이 제거된다.
-
 ## 정제 과정
-### 예시
+### 문장과 토큰 출력
 ```java
 class TextMining{
     public void make(File file) {
@@ -175,8 +109,6 @@ class TextMining{
 }
 
 ```
-### 원본 데이터
-`가족·연인 "좋은 날만 가득하길" 기원, 정동진·간절곶 인산인해 \r\n\r\n▲ 1일 오전 강릉 경포 해변에서 수평선 위로 기해년(己亥年) 첫 태양이 힘차게 떠오르고 있다. 2019.1.1\r\n60년 만에 돌아온 황금돼지해인 기해년(己亥年) 첫 태양이 힘차게 떠올랐다. \r\n\r\n새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.\r\n\r\n해맞이 명소로 손꼽히는 강릉 정동진, 울산 간절곶, 포항 호미곶, 부산 해운대 등에는 해맞이객이 해안선을 따라 길게 늘어섰다.\r\n\r\n황금돼지해의 첫 태양이 수평선 위로 모습을 드러내자 해맞이객들은 탄성을 터뜨리며 가족·연인과 함께 저마다 간직한 새해 소망을 빌었다.\r\n\r\n해맞이객들은 첫 태양을 카메라에 담으며 다사다난했던 2018년을 훌훌 털어버리고 행복한 2019년이 되기를 기원했다.\r\n\r\n영하 10도 안팎을 맴도는 강추위에도  /* 생략 */`
 
 ### 결과
 ```text
@@ -239,3 +171,243 @@ Highlight :
 |SH|한자|
 |SN|숫자|
 
+## Json 추출
+### 추출 과정 예시
+#### 문서 정보 추출 (from .excel)
+```java
+// 각 항의 데이터 추출
+class DataPreprocessorImpl implements DataPreProcessor{
+
+  protected JsonObject getDocumentInfo(XSSFCell cell) {
+
+    String id = null ;
+    try{
+      id = Long.toString((long)cell.getNumericCellValue());
+    }catch(Exception e) {
+      try {
+        id = getCellValue(0);
+      }catch(Exception e1){
+        logger.error(ExceptionUtil.getStackTrace(e));
+      }
+    }
+
+    String sizeType = getCellValue(6);
+    sizeType = SizeTypeUtil.getSizeType(sizeType);
+
+    JsonObject document = new JsonObject();
+    document.addProperty("id", id);
+    document.addProperty("category", getCellValue(5));
+    document.addProperty("media_type", "online");
+    document.addProperty("media_sub_type", getCellValue(3));
+    document.addProperty("media_name", getCellValue(1));
+    document.addProperty("size", sizeType);
+    document.addProperty("char_count", getCellValue(7));
+    document.addProperty("publish_date", getCellValue(4));
+    document.addProperty("title", getCellValue(8));
+
+    return document;
+  }
+
+}
+
+```
+
+#### 문단 데이터 추출
+```java
+class TextMining{
+  private JsonArray getText(String contents) {
+    JsonArray text = new JsonArray();
+    Document document = new Document();
+
+    document.setType(documentType);
+    document.setContents(contents);
+
+    DocumentMiningParagraph documentMining = (DocumentMiningParagraph) DocumentMiningFactory.newDocumentMining(document);
+    Paragraph[] paragraphs = documentMining.miningParagraph();
+
+    int index = 0;
+    for (Paragraph paragraph : paragraphs) {
+
+      JsonArray paragraphJson = getParagraphJson(paragraph);
+
+      if(paragraphJson.size() == 0) { continue; }
+
+      for (int i = 0; i < paragraphJson.size(); i++) {
+        JsonObject sentenceObject = paragraphJson.get(i).getAsJsonObject();
+        sentenceObject.addProperty("index", index++);
+      }
+
+      text.add(paragraphJson);
+
+    }
+    return text;
+  }
+}
+
+```
+
+#### 문장 데이터 추출
+```java
+class TextMining{
+  private JsonArray getParagraphJson(Paragraph paragraph) {
+    JsonArray paragraphJson = new JsonArray();
+
+    for (Sentence sentence : paragraph.getSentences()) {
+      JsonObject sentenceJson = new JsonObject();
+
+      WordToken[] wordTokens = sentence.getTokens();
+
+      StringBuilder indexBuilder = new StringBuilder();
+      outer:
+      for (WordToken wordToken : wordTokens) {
+        String partOfSpeech = wordToken.getPartOfSpeech();
+
+        for (String out : outArray) {
+          if (partOfSpeech.startsWith(out)) {
+            indexBuilder.append(";").append(wordToken.getBegin()).append(",").append(wordToken.getEnd());
+            continue outer;
+          }
+        }
+      }
+
+      String highlightIndices = "";
+      if (indexBuilder.length() > 0) {
+        highlightIndices = indexBuilder.substring(1);
+      }
+
+
+
+      sentenceJson.addProperty("index", 0);
+      sentenceJson.addProperty("sentence", sentence.getContents());
+      sentenceJson.addProperty("highlight_indices", highlightIndices);
+      paragraphJson.add(sentenceJson);
+
+    }
+
+    return paragraphJson;
+  }
+}
+
+```
+
+#### 각 데이터 삽입
+```java
+class DataPreprocessorImpl{
+  
+    public JsonObject getDocument(XSSFSheet sheet, int rowIndex) {
+    row = sheet.getRow(rowIndex);
+
+    XSSFCell cell = row.getCell(0);
+
+    if (cell == null) {
+      logger.debug("rowIndex: " + rowIndex);
+      return null;
+    }
+
+    JsonObject documentJsonObject = getDocumentInfo(cell);
+    if(documentJsonObject == null) {
+      logger.debug("document null ");
+      return null;
+    }
+
+
+    String contents = getCellValue(9);
+    if(contents == null){
+      logger.debug("contents null");
+      return null;
+    }
+
+
+    JsonArray text = getText(contents);
+    if(text == null){
+      logger.debug("text null");
+      return null;
+    }
+
+    documentJsonObject.add("text", text);
+
+    return documentJsonObject;
+  }
+}
+```
+
+
+### 결과
+```json
+{
+  "name": "강원도민일보.20200720_161845_6349건_",
+  "delivery_date": "2020-12-16 14:20:52",
+  "documents": [
+    {
+      "id": "329480480",
+      "category": "종합",
+      "media_type": "online",
+      "media_sub_type": "지역지",
+      "media_name": "강원도민일보",
+      "size": "large",
+      "char_count": "1822",
+      "publish_date": "2019-01-01 11:12:15",
+      "title": "\"해가 떴다! 2019년이 밝았다\"...동해안 해돋이명소에 인파 몰려",
+      "text": [
+        [
+          {
+            "index": 0,
+            "sentence": "가족·연인 \"좋은 날만 가득하길\" 기원, 정동진·간절곶 인산인해 \\r\\n\\r\\n",
+            "highlight_indices": "13,15"
+          }
+        ],
+        [
+          {
+            "index": 1,
+            "sentence": "▲ 1일 오전 강릉 경포 해변에서 수평선 위로 기해년(己亥年) 첫 태양이 힘차게 떠오르고 있다.",
+            "highlight_indices": "35,36"
+          },
+          {
+            "index": 2,
+            "sentence": "2019.1.1\\r\\n60년 만에 돌아온 황금돼지해인 기해년(己亥年) 첫 태양이 힘차게 떠올랐다.",
+            "highlight_indices": "39,40"
+          },
+          {
+            "index": 3,
+            "sentence": "\\r\\n\\r\\n",
+            "highlight_indices": ""
+          }
+        ],
+        [
+          {
+            "index": 4,
+            "sentence": "새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.",
+            "highlight_indices": "29,30"
+          },
+          {
+            "index": 5,
+            "sentence": "\\r\\n\\r\\n",
+            "highlight_indices": ""
+          }
+        ],
+        [
+          ...
+          ...
+          ...
+        ],
+        [
+          {
+            "index": 49,
+            "sentence": "제주 성산일출봉 정상에도 500명이 올라 첫 태양을 기다렸으나 아쉽게도 구름 많고 흐린 날씨 탓에 해돋이는 볼 수 없었다.",
+            "highlight_indices": "23,24"
+          },
+          {
+            "index": 50,
+            "sentence": "\\r\\n\\r\\n",
+            "highlight_indices": ""
+          }
+        ]
+      ]
+    }
+  ]
+    
+}
+```
+전처리가 적용된 파일의 형태는 원본 문서의 정보와 문서의 내용을 문단 및 문장 단위로 구분한 정보이다.
+
+전처리시 데이터가 사용되는 인공지능 학습에 필요가 없는 기자정보, 헤드라인, 이미지 정보 등등 필요 없는 정보들을 추가적으로 제거할 수 있다.

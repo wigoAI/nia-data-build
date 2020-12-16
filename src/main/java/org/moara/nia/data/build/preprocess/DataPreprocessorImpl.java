@@ -88,7 +88,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
      */
     public void make(File file) {
         String path = file.getParentFile().getPath();
-        String outputPath = path + "json";
+        String outputPath = path + "//json";
+        System.out.println(outputPath);
         logger.debug("start file name: " +file.getName());
 
         JsonObject jsonObject = initJsonObject(getFileNameWithoutFormat(file));
@@ -142,7 +143,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return documents;
     }
 
-    private JsonObject getDocument(XSSFSheet sheet, int rowIndex) {
+    protected JsonObject getDocument(XSSFSheet sheet, int rowIndex) {
         row = sheet.getRow(rowIndex);
 
         XSSFCell cell = row.getCell(0);
@@ -162,6 +163,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             logger.debug("contents null");
             return null;
         }
+
+
 
         String documentId = document.get("id").getAsString();
 
@@ -199,7 +202,7 @@ public class DataPreprocessorImpl implements DataPreprocessor {
         return work.getSheetAt(0);
     }
 
-    private JsonObject getDocumentInfo(XSSFCell cell) {
+    protected JsonObject getDocumentInfo(XSSFCell cell) {
 
         String id = null ;
         try{
