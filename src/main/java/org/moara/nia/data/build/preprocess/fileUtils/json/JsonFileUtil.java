@@ -16,8 +16,7 @@
 package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.*;
-import org.moara.common.data.file.FileUtil;
-import org.moara.nia.data.build.preprocess.TextPreprocessor;
+import com.seomse.commons.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

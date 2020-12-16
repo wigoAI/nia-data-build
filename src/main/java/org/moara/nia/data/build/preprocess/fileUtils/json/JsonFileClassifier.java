@@ -19,8 +19,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.seomse.commons.utils.FileUtil;
 import org.apache.commons.io.FileUtils;
-import org.moara.common.data.file.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

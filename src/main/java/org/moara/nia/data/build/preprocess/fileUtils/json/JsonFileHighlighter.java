@@ -17,7 +17,7 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.moara.common.data.file.FileUtil;
+import com.seomse.commons.utils.FileUtil;
 import org.moara.yido.tokenizer.TokenizerManager;
 import org.moara.yido.tokenizer.word.WordToken;
 import org.slf4j.Logger;

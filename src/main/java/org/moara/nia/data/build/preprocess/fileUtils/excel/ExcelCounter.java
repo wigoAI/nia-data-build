@@ -15,12 +15,12 @@
  */
 package org.moara.nia.data.build.preprocess.fileUtils.excel;
 
+import com.seomse.commons.utils.FileUtil;
 import com.seomse.poi.excel.ExcelGet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.moara.common.data.file.FileUtil;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

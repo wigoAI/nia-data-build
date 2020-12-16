@@ -16,9 +16,9 @@
 
 package org.moara.nia.data.build.preprocess.fileUtils.json;
 
-import com.github.wjrmffldrhrl.Area;
 import com.google.gson.*;
-import org.moara.common.data.file.FileUtil;
+import com.seomse.commons.utils.FileUtil;
+import org.moara.splitter.utils.Area;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,7 +244,7 @@ public class JsonFileEditor extends JsonFileUtil{
             StringBuilder highlightIndicesStr = new StringBuilder();
             int areaCount = 0;
             for (Area area : highlightAreas) {
-                highlightIndicesStr.append(area.getStart()).append(",").append(area.getEnd());
+                highlightIndicesStr.append(area.getBegin()).append(",").append(area.getEnd());
                 if (++areaCount < highlightAreas.length) {
                     highlightIndicesStr.append(";");
                 }

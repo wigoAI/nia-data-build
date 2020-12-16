@@ -164,13 +164,17 @@ jsonFileClassifier.classifyJsonFileByPath(path);
 
 #### 하이라이팅
 ```java
-JsonFileEditor jsonFileEditor = new JsonFileHighlighter();
+class Test{
+    public static void main(String[] args) {
+        JsonFileEditor jsonFileEditor = new JsonFileHighlighter();
 
-String path = "D:\\moara\\data\\기고문_2차\\json\\edit\\new\\";
-List<File> fileList = FileUtil.getFileList(path, ".json");
+        String path = "D:\\moara\\data\\기고문_2차\\json\\edit\\new\\";
+        List<File> fileList = FileUtil.getFileList(path, ".json");
 
-for(File file : fileList) {
-    jsonFileEditor.editJsonFile(file, path);
+        for(File file : fileList) {
+            jsonFileEditor.editJsonFile(file, path);
+        }
+    }
 }
 
 ```

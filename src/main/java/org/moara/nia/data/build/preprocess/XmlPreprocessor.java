@@ -18,14 +18,13 @@ package org.moara.nia.data.build.preprocess;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.moara.ara.datamining.textmining.dictionary.sentence.SentenceDictionary;
-import org.moara.ara.datamining.textmining.dictionary.sentence.extract.SenExtract;
-import org.moara.ara.datamining.textmining.document.sentence.Sentence;
-import org.moara.common.code.LangCode;
-import org.moara.common.data.file.FileUtil;
-import org.moara.common.string.Check;
 
+import com.seomse.commons.data.BeginEnd;
+import com.seomse.commons.utils.FileUtil;
+import com.seomse.commons.utils.string.Check;
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileUtil;
+import org.moara.splitter.Splitter;
+import org.moara.splitter.SplitterManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,10 +46,10 @@ import java.util.regex.Pattern;
  */
 public class XmlPreprocessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(XmlPreprocessor.class);
-    private final SenExtract senExtract = SentenceDictionary.getInstance().getSenExtract(LangCode.KO, "NEWS");
     private HashSet<String> splitStrSet = new HashSet<>();
     private DocumentBuilder documentBuilder;
     private final String outputPath;
+    private Splitter splitter = SplitterManager.getInstance().getSplitter("news");
 
     /**
      * Constructor
@@ -188,10 +187,10 @@ public class XmlPreprocessor extends DataPreprocessorImpl {
         paragraphValue = editEscapeChar(paragraphValue);
 
         // sentence split
-        List<Sentence> extractSentenceList = senExtract.extractSentenceList(0, paragraphValue,"N");
-        for(Sentence sentence : extractSentenceList ){
+        BeginEnd[] extractSentenceList = splitter.split(paragraphValue);
+        for(BeginEnd beginEnd : extractSentenceList ){
 
-            List<String> editSentenceList = splitWithComma(sentence.getValue());
+            List<String> editSentenceList = splitWithComma(paragraphValue.substring(beginEnd.getBegin(), beginEnd.getEnd()));
             editSentenceList = splitWithRegx(editSentenceList);
 
             for (String sentenceValue : editSentenceList) {
