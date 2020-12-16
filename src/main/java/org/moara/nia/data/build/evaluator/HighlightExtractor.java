@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 Wigo Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.moara.nia.data.build.evaluator;
 
 import com.google.gson.JsonArray;
@@ -11,8 +26,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 하이라이팅 모델의 전처리 데이터에서 해당 모델의 성능 평가 데이터를 추출하는 클래스
+ *
+ * @author wjrmffldrhrl
+ */
 public class HighlightExtractor extends JsonFileUtil {
 
+    /**
+     * 전처리 과정으로 생성된 json 파일에서 하이라이팅 결과만 추출한다.
+     * @param file 전처리 json 데이터
+     */
     public void createHighlightFile(File file) {
         JsonObject jsonObject = getJsonObjectByFile(file);
 
@@ -23,7 +47,7 @@ public class HighlightExtractor extends JsonFileUtil {
         for (int i = 0; i < documents.size(); i++) {
             JsonObject document = documents.get(i).getAsJsonObject();
 
-            sentenceHighlight.addAll(SentenceHighlight(document));
+            sentenceHighlight.addAll(getSentenceHighlights(document));
 
 
             if (sentenceHighlight.size() > 1000) {
@@ -47,8 +71,7 @@ public class HighlightExtractor extends JsonFileUtil {
         }
     }
 
-
-    public List<SentenceHighlight> SentenceHighlight(JsonObject document) {
+    private List<SentenceHighlight> getSentenceHighlights(JsonObject document) {
         List<SentenceHighlight> sentenceHighlights = new ArrayList<>();
 
         JsonArray text = document.getAsJsonArray("text");

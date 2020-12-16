@@ -1,6 +1,23 @@
+/*
+ * Copyright (C) 2020 Wigo Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.moara.nia.data.build.evaluator;
 
-import org.moara.evaluation.Evaluation;
+
+
+import org.moara.classification.binary.BinaryClassificationEvaluation;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +28,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * 문장 구분 성능 평과 클래스
+ * @author wjrmffldrhrl
+ */
 public class SentenceSplitEvaluator {
     private final String[] answerSheet;
     private final Integer[] answerSplitPoints;
@@ -19,10 +40,14 @@ public class SentenceSplitEvaluator {
 
     private List<String> splitterSheet;
 
+    /**
+     * 정답 데이터 초기화
+     *
+     * @param fileName {@code SentenceExtractor}에 의해 추출된 문장 정보가 담긴 파일 명
+     */
     public SentenceSplitEvaluator(String fileName) {
 
         this.answerSheet = getSheetByFile(fileName).toArray(new String[0]);
-
 
         List<Integer> answerSplitPoints = getSplitPoints(Arrays.asList(answerSheet.clone()));
         Integer[] tmpAnswerSplitPoints = new Integer[answerSplitPoints.size()];
@@ -30,7 +55,6 @@ public class SentenceSplitEvaluator {
             tmpAnswerSplitPoints[i] = answerSplitPoints.get(i);
         }
         this.answerSplitPoints = tmpAnswerSplitPoints;
-
 
         StringBuilder answerSheetString = new StringBuilder();
         Arrays.stream(this.answerSheet).map(sheet -> sheet = sheet.replace(" ", ""))
@@ -47,11 +71,19 @@ public class SentenceSplitEvaluator {
         initSplitterSheet(Arrays.asList(splitterSheet.clone()));
     }
 
+    /**
+     * 문장 구분점 분류 모델의 결과 초기화
+     * @param fileName {@code SentenceExtractor}에 의해 추출된 문장 정보가 담긴 파일 명
+     */
     public void initSplitterSheet(String fileName) {
         List<String> splitterSheet = getSheetByFile(fileName);
         initSplitterSheet(splitterSheet);
     }
 
+    /**
+     * 장 구분점 분류 모델의 결과 초기화
+     * @param splitterSheet 추출된 문장 정보가 담긴 List
+     */
     public void initSplitterSheet(List<String> splitterSheet) {
         if (!isValidSplitterSheet(splitterSheet)) {
             throw new RuntimeException("Invalid splitter sheet");
@@ -69,7 +101,11 @@ public class SentenceSplitEvaluator {
         return answerStr.equals(sheetString.toString());
     }
 
-    public Evaluation answerCheck() {
+    /**
+     * 문장 구분기의 성능 평가
+     * @return {@code BinaryClassificationEvaluation}
+     */
+    public BinaryClassificationEvaluation answerCheck() {
         List<Integer> answerSplitPoints = new ArrayList(Arrays.asList(this.answerSplitPoints));
         List<Integer> answerNonSplitPoints = new ArrayList(Arrays.asList(this.answerNonSplitPoints));
         List<Integer> splitterSplitPoints = getSplitPoints(splitterSheet);
@@ -91,7 +127,7 @@ public class SentenceSplitEvaluator {
         int falseNegative = falseNegativePoints.size();
         int falsePositive = falsePositivePoints.size();
 
-        return new Evaluation(truePositive, trueNegative, falseNegative, falsePositive);
+        return new BinaryClassificationEvaluation(truePositive, trueNegative, falseNegative, falsePositive);
     }
 
 
@@ -159,7 +195,7 @@ public class SentenceSplitEvaluator {
         for (int i = 0; i < 1000; i++) {
             SentenceSplitEvaluator sentenceSplitEvaluator = new SentenceSplitEvaluator("answer/answer (" + (i + 1) + ")");
             sentenceSplitEvaluator.initSplitterSheet("submit/submit (" + (i + 1) + ")");
-            Evaluation evaluation = sentenceSplitEvaluator.answerCheck();
+            BinaryClassificationEvaluation evaluation = sentenceSplitEvaluator.answerCheck();
 
             if (evaluation.getP() == 0 && evaluation.getN() == 0) {
                 continue;

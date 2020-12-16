@@ -14,7 +14,7 @@ dependencies {
 
     implementation project(path: ':splitter')
     implementation project(path: ':text-mining')
-    implementation project(path: ':evaluation')
+    implementation project(path: ':classification')
     implementation 'com.seomse.commons:seomse-commons:1.2.3'
     implementation 'org.moara.yido:tokenizer:0.1.1'
 

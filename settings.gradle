@@ -8,5 +8,5 @@ project(':tokenizer').projectDir = new File(settingsDir,'../yido/tokenizer')
 include ':splitter'
 project(':splitter').projectDir = new File(settingsDir,'../yido/splitter')
 
-include ':evaluation'
-project(':evaluation').projectDir = new File(settingsDir,'../evaluation')
+include ':classification'
+project(':classification').projectDir = new File(settingsDir,'../evaluation/classification')

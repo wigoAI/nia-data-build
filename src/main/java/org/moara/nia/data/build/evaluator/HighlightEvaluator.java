@@ -1,6 +1,22 @@
+/*
+ * Copyright (C) 2020 Wigo Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.moara.nia.data.build.evaluator;
 
-import org.moara.evaluation.Evaluation;
+import org.moara.classification.binary.BinaryClassificationEvaluation;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -11,8 +27,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+/**
+ * 하이라이팅 성능 평가
+ *
+ * @author wjrmffldrhrl
+ */
 public class HighlightEvaluator {
 
     private final Integer[] answerPositives;
@@ -21,6 +41,13 @@ public class HighlightEvaluator {
     private Integer[] submitNegatives;
     private int sentenceLength;
 
+    /**
+     * 정답 데이터 초기화
+     * @param line 하이라이팅 답안 정보가 담겨있는 문자열
+     *             {@code HighlightExtractor}에 의해서 추출되는 정보를 주입하면 된다.
+     *             ex) [물 복지 실현에는 총 125억원의 사업비가 투입된다.] : [10, 11]
+     *
+     */
     public HighlightEvaluator(String line) {
         String[] data = line.split("\\] \\: \\[");
         String sentence = data[0].substring(1);
@@ -42,6 +69,12 @@ public class HighlightEvaluator {
     }
 
 
+    /**
+     * 하이라이팅 결과 데이터 초기화
+     * @param line 하이라이팅 정보가 담겨있는 문자열
+     *      *             {@code HighlightExtractor}에 의해서 추출되는 정보를 주입하면 된다.
+     *      *             ex) [물 복지 실현에는 총 125억원의 사업비가 투입된다.] : [10, 11]
+     */
     public void initSubmit(String line) {
         String[] data = line.split("\\] \\: \\[");
         String sentence = data[0].substring(1);
@@ -63,7 +96,12 @@ public class HighlightEvaluator {
     }
 
 
-    public Evaluation answerCheck() {
+    /**
+     * 초기화한 정답 데이터와 입력한 모델의 하이라이팅 데이터를 통해 해당 모델의 성능을 측정한다.
+     * 측정의 결과는 {@code BinaryClassificationEvaluation} 객체로 생성된다.
+     * @return BinaryClassificationEvaluation
+     */
+    public BinaryClassificationEvaluation answerCheck() {
         List<Integer> answerPositives = new ArrayList(Arrays.asList(this.answerPositives));
         List<Integer> answerNegatives = new ArrayList(Arrays.asList(this.answerNegatives));
         List<Integer> submitPositives = new ArrayList(Arrays.asList(this.submitPositives));
@@ -84,7 +122,7 @@ public class HighlightEvaluator {
         int falseNegative = falseNegativePoints.size();
         int falsePositive = falsePositivePoints.size();
 
-        return new Evaluation(truePositive, trueNegative, falseNegative, falsePositive);
+        return new BinaryClassificationEvaluation(truePositive, trueNegative, falseNegative, falsePositive);
     }
 
     public static void main(String[] args) {
@@ -119,7 +157,7 @@ public class HighlightEvaluator {
 
                 HighlightEvaluator highlightEvaluator = new HighlightEvaluator(answerLine);
                 highlightEvaluator.initSubmit(submitLine);
-                Evaluation evaluation = highlightEvaluator.answerCheck();
+                BinaryClassificationEvaluation evaluation = highlightEvaluator.answerCheck();
 
                 if (evaluation.getAccuracy() != 1.0) {
                     System.out.println("submit (" + (count + 1) + ") : " + evaluation.toString());
