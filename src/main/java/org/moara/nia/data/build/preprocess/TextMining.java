@@ -110,7 +110,6 @@ public class TextMining extends DataPreprocessorImpl {
 
         textMining.make(file);
 
-        System.out.println("2018.12.30\\r\\n소지섭이 올해 MBC TV에서 주연한 '내 뒤에 테리우스'는 시청률로만 보면 '숨바꼭질' 등 주말극이 더 높았지만 화제성은 단연 최고였다.".substring(72, 73));
     }
 
 }
