@@ -2,6 +2,7 @@
   "id": "sns",
   "name": "sns구분기",
   "minimum_split_length": 5,
+  "contain_split_condition": "Y",
   "conditions": ["terminator", "sns_terminator"],
   "exceptions": ["bracket_exception"]
 }

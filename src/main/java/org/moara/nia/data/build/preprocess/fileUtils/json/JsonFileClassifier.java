@@ -244,7 +244,7 @@ public class JsonFileClassifier extends JsonFileUtil{
 
     /**
      * Json 파일의 이름을 데이터 정제 이후 변경된 수에 따라서 변경
-     *
+     * TODO 1. copyFile()?
      * @param fileList List<File>
      * @param outputPath String
      */

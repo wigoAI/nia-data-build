@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.moara.nia.data.build.preprocess;
 
 import java.io.File;
@@ -44,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * 데이터 전처리기
  * DataPreprocessor 의 구현체로 실제 데이터 전처리 과정을 수행
@@ -60,7 +58,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     protected String fileExtension;
     protected JsonFileUtil jsonFileUtil = new JsonFileUtil();
     protected final ExcelGet excelGet = new ExcelGet();
-
 
     /**
      * Constructor
@@ -163,8 +160,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             logger.debug("contents null");
             return null;
         }
-
-
 
         String documentId = document.get("id").getAsString();
 

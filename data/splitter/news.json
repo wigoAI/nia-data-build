@@ -2,6 +2,7 @@
   "id": "news",
   "name": "뉴스구분기",
   "minimum_split_length": 5,
+  "contain_split_condition": "Y",
   "conditions": ["terminator"],
   "exceptions": ["bracket_exception"]
 }

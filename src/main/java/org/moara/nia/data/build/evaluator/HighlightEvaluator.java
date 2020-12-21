@@ -165,14 +165,14 @@ public class HighlightEvaluator {
 
 //                System.out.println("submit (" + (count + 1) + ") : " + evaluation.toString());
                 count++;
-                truePositive += evaluation.getTruePositive();
-                trueNegative += evaluation.getTrueNegative();
-                falseNegative += evaluation.getFalseNegative();
-                falsePositive += evaluation.getFalsePositive();
+//                truePositive += evaluation.getTruePositive();
+//                trueNegative += evaluation.getTrueNegative();
+//                falseNegative += evaluation.getFalseNegative();
+//                falsePositive += evaluation.getFalsePositive();
 
                 accuracy += evaluation.getAccuracy();
                 geometricMean += evaluation.getGeometricMean();
-                recall += evaluation.getRecall();
+                recall += evaluation.getSpecificity();
                 precision += evaluation.getPrecision();
                 f1Score += evaluation.getF1Score();
             }

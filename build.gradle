@@ -16,6 +16,7 @@ dependencies {
     implementation project(path: ':text-mining')
     implementation project(path: ':classification')
     implementation 'com.seomse.commons:seomse-commons:1.2.3'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation 'org.moara.yido:tokenizer:0.1.1'
 
     //log

@@ -197,23 +197,23 @@ public class SentenceSplitEvaluator {
             sentenceSplitEvaluator.initSplitterSheet("submit/submit (" + (i + 1) + ")");
             BinaryClassificationEvaluation evaluation = sentenceSplitEvaluator.answerCheck();
 
-            if (evaluation.getP() == 0 && evaluation.getN() == 0) {
-                continue;
-            }
+//            if (evaluation.getP() == 0 && evaluation.getN() == 0) {
+//                continue;
+//            }
 
             if (evaluation.getAccuracy() != 1.0) {
                 System.out.println("submit (" + (i + 1) + ") : " + evaluation.toString());
             }
 
             count++;
-            truePositive += evaluation.getTruePositive();
-            trueNegative += evaluation.getTrueNegative();
-            falseNegative += evaluation.getFalseNegative();
-            falsePositive += evaluation.getFalsePositive();
+//            truePositive += evaluation.getTruePositive();
+//            trueNegative += evaluation.getTrueNegative();
+//            falseNegative += evaluation.getFalseNegative();
+//            falsePositive += evaluation.getFalsePositive();
 
             accuracy += evaluation.getAccuracy();
             geometricMean += evaluation.getGeometricMean();
-            recall += evaluation.getRecall();
+            recall += evaluation.getSpecificity();
             precision += evaluation.getPrecision();
             f1Score += evaluation.getF1Score();
 

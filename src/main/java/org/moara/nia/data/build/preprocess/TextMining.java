@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.seomse.commons.config.Config;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.moara.splitter.SplitterManager;
 import org.moara.yido.textmining.*;
 import org.moara.yido.tokenizer.word.WordToken;
 import org.slf4j.Logger;
@@ -115,6 +116,7 @@ public class TextMining extends DataPreprocessorImpl {
             WordToken[] wordTokens = sentence.getTokens();
 
             StringBuilder indexBuilder = new StringBuilder();
+
             outer:
             for (WordToken wordToken : wordTokens) {
                 String partOfSpeech = wordToken.getPartOfSpeech();
@@ -131,8 +133,6 @@ public class TextMining extends DataPreprocessorImpl {
             if (indexBuilder.length() > 0) {
                 highlightIndices = indexBuilder.substring(1);
             }
-
-
 
             sentenceJson.addProperty("index", 0);
             sentenceJson.addProperty("sentence", sentence.getContents());
@@ -151,6 +151,10 @@ public class TextMining extends DataPreprocessorImpl {
         File file = new File("D:\\moara\\data\\allData\\test_text_mining\\test.xlsx");
 
         textMining.make(file);
+
+        String data = "가족·연인 \"좋은 날만 가득하길\" 기원, 정동진·간절곶 인산인해 \\r\\n\\r\\n";
+
+        System.out.println(SplitterManager.getInstance().getSplitter("paragraph").split(data)[0]);
 
     }
 
