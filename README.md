@@ -352,7 +352,7 @@ class DataPreprocessorImpl{
         [
           {
             "index": 0,
-            "sentence": "가족·연인 \"좋은 날만 가득하길\" 기원, 정동진·간절곶 인산인해 \\r\\n\\r\\n",
+            "sentence": "가족·연인 \"좋은 날만 가득하길\" 기원, 정동진·간절곶 인산인해",
             "highlight_indices": "13,15"
           }
         ],
@@ -366,23 +366,27 @@ class DataPreprocessorImpl{
             "index": 2,
             "sentence": "2019.1.1\\r\\n60년 만에 돌아온 황금돼지해인 기해년(己亥年) 첫 태양이 힘차게 떠올랐다.",
             "highlight_indices": "39,40"
-          },
+          }
+        ],
+        [
           {
             "index": 3,
-            "sentence": "\\r\\n\\r\\n",
-            "highlight_indices": ""
+            "sentence": "새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.",
+            "highlight_indices": "29,30"
           }
         ],
         [
           {
             "index": 4,
-            "sentence": "새해 첫해는 7시 33분 울산 간절곶을 시작으로 동해안 수평선 위로 힘차게 솟았다.",
-            "highlight_indices": "29,30"
-          },
+            "sentence": "해맞이 명소로 손꼽히는 강릉 정동진, 울산 간절곶, 포항 호미곶, 부산 해운대 등에는 해맞이객이 해안선을 따라 길게 늘어섰다.",
+            "highlight_indices": ""
+          }
+        ],
+        [
           {
             "index": 5,
-            "sentence": "\\r\\n\\r\\n",
-            "highlight_indices": ""
+            "sentence": "황금돼지해의 첫 태양이 수평선 위로 모습을 드러내자 해맞이객들은 탄성을 터뜨리며 가족·연인과 함께 저마다 간직한 새해 소망을 빌었다.",
+            "highlight_indices": "7,8;52,54;55,58"
           }
         ],
         [
@@ -392,14 +396,23 @@ class DataPreprocessorImpl{
         ],
         [
           {
-            "index": 49,
+            "index": 26,
+            "sentence": "어둠이 걷히기 전 고갯마루에 오른 시민들은 새해 소망을 담은 촛불을 밝히고, '하늘 소리 난타 공연단'의 대북 연주와 풍물 공연을 감상하면서 새해 각오를 다졌다.",
+            "highlight_indices": "8,9"
+          }
+        ],
+        [
+          {
+            "index": 27,
+            "sentence": "가족과 함께 행사장을 찾은 김병우(68·보은군 보은읍)씨는 \"60년 만에 맞는 황금 돼지해인 만큼 가족 모두 건강하고, 사회 전반에 희망이 넘치기 바란다\"고 기원했다.",
+            "highlight_indices": "4,6;58,60"
+          }
+        ],
+        [
+          {
+            "index": 28,
             "sentence": "제주 성산일출봉 정상에도 500명이 올라 첫 태양을 기다렸으나 아쉽게도 구름 많고 흐린 날씨 탓에 해돋이는 볼 수 없었다.",
             "highlight_indices": "23,24"
-          },
-          {
-            "index": 50,
-            "sentence": "\\r\\n\\r\\n",
-            "highlight_indices": ""
           }
         ]
       ]
