@@ -1,6 +1,6 @@
 {
   "id": "sns_terminator",
-  "use_public_validation": "N",
+  "use_public_validation": false,
   "split_position": "B",
   "value": "sns_terminator",
   "validations": ["NBSG_connective"]

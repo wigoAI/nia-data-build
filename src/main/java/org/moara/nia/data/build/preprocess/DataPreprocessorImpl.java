@@ -58,6 +58,8 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     protected String fileExtension;
     protected JsonFileUtil jsonFileUtil = new JsonFileUtil();
     protected final ExcelGet excelGet = new ExcelGet();
+    protected int contentsSizeLimit = 300;
+    protected boolean checkQNA = true;
 
     /**
      * Constructor
@@ -86,7 +88,6 @@ public class DataPreprocessorImpl implements DataPreprocessor {
     public void make(File file) {
         String path = file.getParentFile().getPath();
         String outputPath = path + "//json";
-        System.out.println(outputPath);
         logger.debug("start file name: " +file.getName());
 
         JsonObject jsonObject = initJsonObject(getFileNameWithoutFormat(file));
@@ -298,9 +299,9 @@ public class DataPreprocessorImpl implements DataPreprocessor {
             if(exceptionDataCheck) { sentenceValue = deleteExceptionData(sentenceValue, 50); }
             if(sentenceValue.length() == 0){
                 continue;
-            } else if(sentenceValue.contains("Q : ") || sentenceValue.contains("A : ")){
+            } else if(checkQNA && (sentenceValue.contains("Q : ") || sentenceValue.contains("A : "))){
                 throw new RuntimeException("this data is Q&A type : " + sentenceValue);
-            }else if(sentenceValue.length() > 300) {
+            }else if(sentenceValue.length() > contentsSizeLimit) {
                 throw new RuntimeException("this data is too long : " + sentenceValue);
             }
 

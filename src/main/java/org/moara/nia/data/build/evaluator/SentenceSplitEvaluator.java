@@ -127,7 +127,7 @@ public class SentenceSplitEvaluator {
         int falseNegative = falseNegativePoints.size();
         int falsePositive = falsePositivePoints.size();
 
-        return new BinaryClassificationEvaluation(truePositive, trueNegative, falseNegative, falsePositive);
+        return new BinaryClassificationEvaluation(truePositive, falsePositive, falseNegative, trueNegative);
     }
 
 
@@ -177,60 +177,27 @@ public class SentenceSplitEvaluator {
 
     public static void main(String[] args) {
 
-
-
         int count = 0;
-        double accuracy = 0.0;
-        double geometricMean = 0.0;
-        double recall = 0.0;
-        double precision = 0.0;
-        double f1Score = 0.0;
-
-        double truePositive = 0;
-        double trueNegative = 0;
-        double falseNegative = 0;
-        double falsePositive = 0;
 
 
-        for (int i = 0; i < 1000; i++) {
-            SentenceSplitEvaluator sentenceSplitEvaluator = new SentenceSplitEvaluator("answer/answer (" + (i + 1) + ")");
-            sentenceSplitEvaluator.initSplitterSheet("submit/submit (" + (i + 1) + ")");
-            BinaryClassificationEvaluation evaluation = sentenceSplitEvaluator.answerCheck();
-
-//            if (evaluation.getP() == 0 && evaluation.getN() == 0) {
-//                continue;
-//            }
-
-            if (evaluation.getAccuracy() != 1.0) {
-                System.out.println("submit (" + (i + 1) + ") : " + evaluation.toString());
-            }
-
-            count++;
-//            truePositive += evaluation.getTruePositive();
-//            trueNegative += evaluation.getTrueNegative();
-//            falseNegative += evaluation.getFalseNegative();
-//            falsePositive += evaluation.getFalsePositive();
-
-            accuracy += evaluation.getAccuracy();
-            geometricMean += evaluation.getGeometricMean();
-            recall += evaluation.getSpecificity();
-            precision += evaluation.getPrecision();
-            f1Score += evaluation.getF1Score();
-
-        }
+        SentenceSplitEvaluator sentenceSplitEvaluator = new SentenceSplitEvaluator("answer");
+        sentenceSplitEvaluator.initSplitterSheet("submit");
+        BinaryClassificationEvaluation binaryClassificationEvaluation = sentenceSplitEvaluator.answerCheck();
 
 
-        System.out.println("\nData count : " + count);
+        double accuracy = binaryClassificationEvaluation.getAccuracy();
+        double geometricMean = binaryClassificationEvaluation.getGeometricMean();
+        double recall = binaryClassificationEvaluation.getSpecificity();
+        double precision = binaryClassificationEvaluation.getPrecision();
+        double f1Score = binaryClassificationEvaluation.getF1Score();
 
-        System.out.println("True Positive = " + truePositive);
-        System.out.println("True Negative = " + trueNegative);
-        System.out.println("False Negative = " + falseNegative);
-        System.out.println("False Positive = " + falsePositive);
 
-        System.out.println("Accuracy (정확도) \t\t: " + accuracy / count);
-        System.out.println("Geometric Mean (균형 정확도)\t: " + geometricMean / count);
-        System.out.println("Recall (재현율)\t\t\t: " + recall / count);
-        System.out.println("Precision (정밀도)\t\t: " + precision / count);
-        System.out.println("F1Score (F1 지수)\t\t: " + f1Score / count);
+
+
+        System.out.println("Accuracy (정확도) \t\t: " + accuracy);
+        System.out.println("Geometric Mean (균형 정확도)\t: " + geometricMean );
+        System.out.println("Recall (재현율)\t\t\t: " + recall );
+        System.out.println("Precision (정밀도)\t\t: " + precision );
+        System.out.println("F1Score (F1 지수)\t\t: " + f1Score );
     }
 }

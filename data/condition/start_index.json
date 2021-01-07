@@ -1,6 +1,6 @@
 {
   "id": "start_index",
-  "use_public_validation": "N",
+  "use_public_validation": false,
   "split_position": "F",
   "value": "start_index",
   "validations": []

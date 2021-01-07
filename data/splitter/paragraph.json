@@ -2,7 +2,7 @@
   "id": "paragraph",
   "name": "문단구분기",
   "minimum_split_length": 5,
-  "contain_split_condition": "N",
+  "contain_split_condition": false,
   "conditions": ["paragraph"],
   "exceptions": []
 }

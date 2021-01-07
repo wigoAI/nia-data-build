@@ -6,7 +6,7 @@ JSON
 ## 내부 정보
 - id : 구분 조건 ID
 - use_public_validation : 공통 유효성 사용 여부
-  - `Y`, `N`
+  - `true` or `false`
 - split_position : 구분 위치
   - `B`, `F`
 - value : 구분시 사용하는 값
@@ -44,10 +44,10 @@ ID의 앞 네글자는 해당 유효성에 적용되는 속성값을 뜻한다.
 ```json
 {
   "id": "terminator",
-  "use_public_validation": "N",
+  "use_public_validation": false,
   "split_position": "B",
-  "value": "terminator_1",
-  "validations": ["NBSG_connective_1", "NBSG_connective_2"]
+  "value": "terminator",
+  "validations": ["NBSG_connective"]
 }
 ```
 
