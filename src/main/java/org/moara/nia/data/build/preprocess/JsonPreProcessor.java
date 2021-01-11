@@ -5,21 +5,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.moara.ner.NamedEntity;
 import org.moara.ner.NamedEntityRecognizer;
-import org.moara.ner.ReporterRecognizer;
+import org.moara.ner.person.PersonNamedEntityRecognizerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  *
  */
 public class JsonPreProcessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    NamedEntityRecognizer namedEntityRecognizer = new ReporterRecognizer();
+    NamedEntityRecognizer namedEntityRecognizer = PersonNamedEntityRecognizerManager.getInstance().getNamedEntityRecognizer("reporter");
     public JsonPreProcessor() {
         this.fileExtension = ".json";
         contentsSizeLimit = 99999;
@@ -50,6 +47,12 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
 
             }
 
+            if (!contents.contains("기자")) {
+                noEntityCount++;
+                continue;
+            }
+
+
 
             JsonObject document = new JsonObject();
             document.addProperty("CONTENTS_NO", contentsNo);
@@ -57,18 +60,21 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
             document.addProperty("ORIGINAL_URL", originalUrl);
             NamedEntity[] namedEntities = namedEntityRecognizer.recognize(contents);
 
-            StringBuilder stringBuilder = new StringBuilder();
+
+            JsonArray entities = new JsonArray();
+
             for (NamedEntity namedEntity : namedEntities) {
-                stringBuilder.append(", ").append(namedEntity.getValue());
-            }
-            String entityStr = "";
-            if (stringBuilder.length() > 2) {
-                entityStr = stringBuilder.substring(2);
-            } else {
-                noEntityCount++;
+                JsonObject entity = new JsonObject();
+                entity.addProperty("NAME", namedEntity.getText());
+                entity.addProperty("TYPE", namedEntity.getType());
+                entity.addProperty("BEGIN", namedEntity.getBegin());
+                entity.addProperty("END", namedEntity.getEnd());
+                entities.add(entity);
             }
 
-            document.addProperty("ENTITY", entityStr);
+
+
+            document.add("ENTITIES", entities);
 
             documents.add(document);
 
