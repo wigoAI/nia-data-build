@@ -5,18 +5,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.moara.ner.NamedEntity;
 import org.moara.ner.NamedEntityRecognizer;
-import org.moara.ner.person.PersonNamedEntityRecognizerManager;
+import org.moara.ner.NamedEntityRecognizerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  */
 public class JsonPreProcessor extends DataPreprocessorImpl {
     private static final Logger logger = LoggerFactory.getLogger(DataPreprocessorImpl.class);
-    NamedEntityRecognizer namedEntityRecognizer = PersonNamedEntityRecognizerManager.getInstance().getNamedEntityRecognizer("reporter");
+    NamedEntityRecognizer namedEntityRecognizer = NamedEntityRecognizerManager.getInstance().getNamedEntityRecognizer("reporter");
+    NamedEntityRecognizer emailEntityRecognizer = NamedEntityRecognizerManager.getInstance().getNamedEntityRecognizer("email");
     public JsonPreProcessor() {
         this.fileExtension = ".json";
         contentsSizeLimit = 99999;
@@ -29,7 +35,7 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
         JsonObject jsonData = jsonFileUtil.getJsonObjectByFile(file);
         JsonArray documents = new JsonArray();
         JsonArray data = jsonData.getAsJsonArray("data");
-
+        Set<String> reporters = new HashSet<>();
 
         int noEntityCount = 0;
 
@@ -47,24 +53,20 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
 
             }
 
-            if (!contents.contains("기자")) {
-                noEntityCount++;
-                continue;
-            }
-
-
-
             JsonObject document = new JsonObject();
             document.addProperty("CONTENTS_NO", contentsNo);
             document.addProperty("CONTENTS", contents);
             document.addProperty("ORIGINAL_URL", originalUrl);
             NamedEntity[] namedEntities = namedEntityRecognizer.recognize(contents);
-
+            NamedEntity[] emailEntities = emailEntityRecognizer.recognize(contents);
 
             JsonArray entities = new JsonArray();
 
             for (NamedEntity namedEntity : namedEntities) {
                 JsonObject entity = new JsonObject();
+
+                reporters.add(namedEntity.getText());
+
                 entity.addProperty("NAME", namedEntity.getText());
                 entity.addProperty("TYPE", namedEntity.getType());
                 entity.addProperty("BEGIN", namedEntity.getBegin());
@@ -72,7 +74,17 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
                 entities.add(entity);
             }
 
+            for (NamedEntity namedEntity : emailEntities) {
+                JsonObject entity = new JsonObject();
 
+                reporters.add(namedEntity.getText());
+
+                entity.addProperty("NAME", namedEntity.getText());
+                entity.addProperty("TYPE", namedEntity.getType());
+                entity.addProperty("BEGIN", namedEntity.getBegin());
+                entity.addProperty("END", namedEntity.getEnd());
+                entities.add(entity);
+            }
 
             document.add("ENTITIES", entities);
 
@@ -84,7 +96,17 @@ public class JsonPreProcessor extends DataPreprocessorImpl {
             }
         }
 
-        System.out.println("no entity news count : " + noEntityCount);
+
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file.getParent() + "/reporters.txt"))) {
+            for (String str : reporters) {
+                bw.write(str + "\n");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         return documents;
     }

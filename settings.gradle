@@ -11,6 +11,8 @@ project(':splitter').projectDir = new File(settingsDir,'../yido/splitter')
 include ':classification'
 project(':classification').projectDir = new File(settingsDir,'../evaluation/classification')
 
-
 include ':ner'
 project(':ner').projectDir = new File(settingsDir,'../yido/ner')
+
+include ':file-manager'
+project(':file-manager').projectDir = new File(settingsDir, '../yido/file-manager')
