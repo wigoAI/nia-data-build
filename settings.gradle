@@ -1,1 +1,4 @@
 rootProject.name = 'nia-data-build'
+include 'modules:sentence-line'
+findProject(':modules:sentence-line')?.name = 'sentence-line'
+
