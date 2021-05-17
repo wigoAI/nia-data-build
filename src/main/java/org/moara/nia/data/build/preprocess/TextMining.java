@@ -21,7 +21,7 @@ import com.google.gson.JsonObject;
 import com.seomse.commons.config.Config;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.moara.splitter.SplitterManager;
+import org.moara.yido.splitter.SplitterManager;
 import org.moara.yido.textmining.*;
 import org.moara.yido.tokenizer.word.WordToken;
 import org.slf4j.Logger;

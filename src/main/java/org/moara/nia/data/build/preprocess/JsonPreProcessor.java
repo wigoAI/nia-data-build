@@ -3,9 +3,9 @@ package org.moara.nia.data.build.preprocess;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.moara.ner.NamedEntity;
-import org.moara.ner.NamedEntityRecognizer;
-import org.moara.ner.NamedEntityRecognizerManager;
+import org.moara.yido.ner.entity.NamedEntity;
+import org.moara.yido.ner.NamedEntityRecognizer;
+import org.moara.yido.ner.NamedEntityRecognizerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

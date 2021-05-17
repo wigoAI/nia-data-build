@@ -30,9 +30,9 @@ import org.moara.nia.data.build.preprocess.exceptionData.ExceptionDataFinder;
 import org.moara.nia.data.build.preprocess.exceptionData.ExceptionFinderFactory;
 
 import org.moara.nia.data.build.preprocess.fileUtils.json.JsonFileUtil;
-import org.moara.splitter.Splitter;
-import org.moara.splitter.SplitterManager;
-import org.moara.splitter.utils.Area;
+import org.moara.yido.splitter.Splitter;
+import org.moara.yido.splitter.SplitterManager;
+import org.moara.yido.splitter.utils.Area;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

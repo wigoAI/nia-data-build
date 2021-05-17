@@ -1,18 +1,1 @@
 rootProject.name = 'nia-data-build'
-include ':text-mining'
-project(':text-mining').projectDir = new File(settingsDir,'../yido/text-mining')
-
-include ':tokenizer'
-project(':tokenizer').projectDir = new File(settingsDir,'../yido/tokenizer')
-
-include ':splitter'
-project(':splitter').projectDir = new File(settingsDir,'../yido/splitter')
-
-include ':classification'
-project(':classification').projectDir = new File(settingsDir,'../evaluation/classification')
-
-include ':ner'
-project(':ner').projectDir = new File(settingsDir,'../yido/ner')
-
-include ':file-manager'
-project(':file-manager').projectDir = new File(settingsDir, '../yido/file-manager')

@@ -18,7 +18,7 @@ package org.moara.nia.data.build.preprocess.fileUtils.json;
 
 import com.google.gson.*;
 import com.seomse.commons.utils.FileUtil;
-import org.moara.splitter.utils.Area;
+import org.moara.yido.splitter.utils.Area;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

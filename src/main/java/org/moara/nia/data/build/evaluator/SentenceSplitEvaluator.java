@@ -17,7 +17,7 @@ package org.moara.nia.data.build.evaluator;
 
 
 
-import org.moara.classification.binary.BinaryClassificationEvaluation;
+import org.moara.yido.classification.binary.BinaryClassificationEvaluation;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
